@@ -14,7 +14,6 @@ import java.awt.geom.*;
 import java.util.Hashtable;
 import java.util.Enumeration;
 
-import javax.swing.*;
 
 /**
  *
@@ -27,16 +26,6 @@ public class Face {
     public int symmetricHorizonal(int x) {
         return maxwidth - x;
     }
-    /*
-     * public void drawBezier(int bXL1, int bY1, int bXL2, int bY2, Graphics2D g2d)
-     * {
-     * // draws bezier lines for reference
-     * Path2D.Double bh1 = new Path2D.Double();
-     * bh1.moveTo(bXL1, bY1);
-     * bh1.lineTo(bXL2, bY2);
-     * g2d.draw(bh1);
-     * }
-     */
 
     // gets the approximate bounding box of a shape
     public Rectangle getBoundingBox(int leftMostX, int topMostY, int rightMostX, int bottomMostY) {
@@ -83,10 +72,10 @@ public class Face {
     TextureHandler texture = new TextureHandler();
     final int thinness = 50; // larger number == thinner values range [0-50]
 
-    Color makeupEye, eyeColor;
+    Color makeupEyeColor, eyePupilColor,eyeballColor;
 
     Head head = new Head();
-    Eyes eyes;//= new Eyes();
+    Eyes eyes= new Eyes();
 
 
     public Face(int w, int h) {
@@ -97,6 +86,9 @@ public class Face {
         maxwidth = w;
         midWidth = maxwidth / 2;
 
+        eyeballColor= Color.white;
+        makeupEyeColor=Color.gray;
+        eyePupilColor=Color.green;
     }
 
     // puts everything together
@@ -104,13 +96,11 @@ public class Face {
         // calculates the basic rectangles that contain various elements
         head.calcHead();
 
-        eyes = new Eyes();
-
         // these methods show the assisting rectangles and guidlines
         //toRect(halfFace, g2d);
         calcGuidingLines(8, g2d);
 
-      
+                   
         eyes.drawEyes(g2d);
 
         head.drawHead(g2d);
@@ -180,13 +170,14 @@ public class Face {
 
     abstract class SymmetricalFeature {
 
-        Hashtable<String, Integer> leftValues = new Hashtable<String, Integer>();  // has the values for the left side
-        Hashtable<String, Integer> rightValues = new Hashtable<String, Integer>(); // has the values for the right side
-        Hashtable<String, Integer> cacheValues = new Hashtable<String, Integer>(); // temporary hashtable
+        Hashtable<String, Integer> leftValues ;//= new Hashtable<>();  // has the values for the left side
+        Hashtable<String, Integer> rightValues ;//= new Hashtable<>(); // has the values for the right side
+        Hashtable<String, Integer> cacheValues ;//= new Hashtable<>(); // temporary hashtable
 
         SymmetricalFeature() {
-        //    calcLeftSideValues();
-        //    coverttoRightSideValues();
+            leftValues = new Hashtable<>();  // has the values for the left side
+            rightValues = new Hashtable<>(); // has the values for the right side
+            cacheValues = new Hashtable<>(); // temporary hashtable
         }
 
         // used to calculate the values of the left side
@@ -212,9 +203,11 @@ public class Face {
   
         public void setcacheValues(String side){
             if (side.equals("Left")){
-                cacheValues=leftValues;
+                cacheValues.clear();
+                cacheValues.putAll(leftValues);
             }else if(side.equals("Right")){
-                cacheValues=rightValues;
+                cacheValues.clear();
+                cacheValues.putAll(rightValues);
             }else{
                 System.out.println("No side is chosen for selection of HashTable");
             }
@@ -240,14 +233,11 @@ public class Face {
         // the further from 0, the wider the eye becomes
         int distortion1, // for upper eyeball -- [-10,10]
                 distortion2, // for lower eyeball -- [-10,10]
-
                 distortion3; // eyelid openness-- [0,75], 0=closed, 75=wide open
 
-        public void Eye() {
+        // sets up the parameters        
+        public void setup() {
 
-            // toRect(boundRect, g2d);
-
-            // we get what we need from the rect
             left = boundRect.x;
             width = boundRect.width;
             height = boundRect.height;
@@ -256,39 +246,48 @@ public class Face {
             bottom = boundRect.height + boundRect.y;
             midy = (top + bottom) / 2;
 
-            distortion1 = 0;
-            distortion2 = 0;
-            distortion3 = 0;
+            distortion1 = r.randomBetween(-10, 10);
+            distortion2 = r.randomBetween(-10, 10);
+            distortion3 = r.randomBetween(0, 75);
 
             eyeball = new EyeBall();
             pupil = new Pupil();
             eyelids = new Eyelids();
+
+            
         }
 
         public void drawEyes(Graphics2D g2d) {
-            eyeball.calcLeftSideValues();
-            eyeball.coverttoRightSideValues();
-            System.out.println(eyeball.leftValues.size());
-          //  eyeball.drawEyeballs(g2d);
-          //  pupil.drawPupils(g2d);
-          //  eyelids.drawEyelids(g2d);
+
+            setup();
+
+            eyeball.drawEyeballs(g2d);
+
+            pupil.drawPupils(g2d);
+            eyelids.drawEyelids(g2d);
         }
 
         class EyeBall extends SymmetricalFeature {
 
-            EyeBall(){
-                
-            }
 
             @Override
             public void calcLeftSideValues() {
+                                
+                int left1 = left;
+                int right1 = (left + width);
+                int bhu1 = left + (width / 3);
+                int bhu2 = left + (width * 2 / 3);
 
-                leftValues.put("left", left);
-                leftValues.put("right", left + width * 2 / 3);
-                leftValues.put("bhU1", left + width / 3);
-                leftValues.put("bhU2", left + width * 2 / 3);
-  
+                // WHY DOES IT CALCULATE EVERYTHING TWICE????
+              System.out.println(width);
+
+                leftValues.put("left", left1);
+                leftValues.put("right", right1);
+                leftValues.put("bhU1", bhu1);
+                leftValues.put("bhU2", bhu2);
+
             }
+
 
             void drawEyeball(String side, Graphics2D g2d) {
 
@@ -304,20 +303,16 @@ public class Face {
                 cacheValues.get("left"), midy);
                 eye.closePath();
                 g2d.draw(eye);
-
                 // paint eyeball -- TODO: add various tones of red
-                g2d.setColor(makeupEye);
+                g2d.setColor(eyeballColor);
                 g2d.fill(eye);
                 g2d.setColor(Color.black);
             }
 
             public void drawEyeballs(Graphics2D g2d){
 
-                System.out.println("enters");
-
                 calcLeftSideValues();
                 coverttoRightSideValues();
-
                 drawEyeball("Left",g2d);
                 drawEyeball("Right",g2d);
             }
@@ -339,10 +334,10 @@ public class Face {
                 Ellipse2D.Double pupil = new Ellipse2D.Double();
 
                 if (side.equals("Left")){
-                    iris=new Ellipse2D.Double(left + width / 3, top, width / 3, height);
+                    iris=new Ellipse2D.Double(left + width / 3, top+height/4, width / 3, height*4/6);
                     pupil = new Ellipse2D.Double(left + width * 4 / 9, top + height / 2, width / 9,width / 9);
                 }else if(side.equals("Right")){
-                    iris=new Ellipse2D.Double((symmetricHorizonal(left + width / 3)-(width / 3)), top, width / 3, height);
+                    iris=new Ellipse2D.Double((symmetricHorizonal(left + width / 3)-(width / 3)), top+height/4, width / 3, height*4/6);
                     pupil = new Ellipse2D.Double((symmetricHorizonal(left + width * 4 / 9)-(width / 9)), top + height / 2, width / 9,width / 9);
                 }else{
                     System.out.println("Pupils: mistyped side choice");
@@ -350,7 +345,7 @@ public class Face {
 
                 // create iris
                 g2d.draw(iris);
-                g2d.setColor(eyeColor);
+                g2d.setColor(eyePupilColor);
                 g2d.fill(iris);
                 g2d.setColor(Color.black);
 
@@ -370,17 +365,23 @@ public class Face {
 
             @Override
             public void calcLeftSideValues() {
-                leftValues.put("left",left);
-                leftValues.put("bh1",left + width / 3);
-                leftValues.put("bh2",left + width * 2 / 3);
-                leftValues.put("right", right);
+
+                int left1 = left;
+                int right1 = (left + width);
+                int bhu1 = left + (width / 3);
+                int bhu2 = left + (width * 2 / 3);
+
+                leftValues.put("left",left1);
+                leftValues.put("bh1",bhu1);
+                leftValues.put("bh2",bhu2);
+                leftValues.put("right", right1);
             }
 
             void drawEyelid(String side,Graphics2D g2d){
+
                 setcacheValues(side);
 
                 // draw eyelid
-
                 Path2D.Double eyelidUP = new Path2D.Double();
                 eyelidUP.moveTo(cacheValues.get("left"), midy);
                 eyelidUP.curveTo(cacheValues.get("bh1"), top + distortion1, cacheValues.get("bh2"), top + distortion1, cacheValues.get("right"),
@@ -390,9 +391,8 @@ public class Face {
                         midy);
                 eyelidUP.closePath();
                 g2d.draw(eyelidUP);
-                // can add eyeshadow
-                // g2d.fill(eyelidUP);
-
+                
+                // draw bottom eyelid
                 Path2D.Double eyelidBOT = new Path2D.Double();
                 eyelidBOT.moveTo(cacheValues.get("right"), midy);
                 eyelidBOT.curveTo(cacheValues.get("bh2"), bottom + distortion2,cacheValues.get("bh1"), bottom + distortion2,
@@ -402,11 +402,18 @@ public class Face {
                         bottom + distortion3 / 5, cacheValues.get("right"), midy);
                 eyelidBOT.closePath();
                 g2d.draw(eyelidBOT);
+
                 // can add eyeshadow
-                // g2d.fill(eyelidBOT);
+                g2d.setColor(makeupEyeColor);
+                g2d.fill(eyelidUP);
+                g2d.fill(eyelidBOT);
             }
 
             void drawEyelids(Graphics2D g2d) {
+
+                calcLeftSideValues();
+                coverttoRightSideValues();
+
                 drawEyelid("Left",g2d);
                 drawEyelid("Right",g2d);
 
