@@ -14,7 +14,6 @@ import java.awt.geom.*;
 import java.util.Hashtable;
 import java.util.Enumeration;
 
-
 /**
  *
  * @author chris
@@ -45,7 +44,53 @@ public class Face {
     }
 
     // divides the face to calculate bounding rectangles for facial features
-    public void calcGuidingLines(int numLines, Graphics2D g2d) {
+    public void calcGuidingLines(int numLines) {
+
+        int x1 = (int) halfFace.getX();
+        int y1 = (int) halfFace.getY();
+        int width1 = (int) halfFace.getWidth();
+        int height1 = (int) halfFace.getHeight();
+
+        /* we get the bounding boxes for all facial features */
+        eyes.boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 3 / numLines),
+                (x1 + width1 * 5 / 6),
+                (y1 + height1 * 4 / numLines));
+
+        eyebrows.boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 2 / numLines),
+                (x1 + width1),
+                (y1 + height1 * 3 / numLines));
+
+        nose.boundRect = getBoundingBox(x1 + width1 * 4 / 6, (y1 + height1 * 3 / numLines),
+                (x1 + width1),
+                (y1 + height1 * 11 / 2 / numLines));
+
+        moustache.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 11 / 2 / numLines),
+                (x1 + width1),
+                (y1 + height1 * 6 / numLines));
+
+        mouth.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 6 / numLines),
+                (x1 + width1),
+                (y1 + height1 * 7 / numLines));
+
+        chin.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 7 / numLines),
+                (x1 + width1),
+                (y1 + height1));
+
+        ears.boundRect = getBoundingBox(x1 - width1 / 6, (y1 + height1 * 5 / 2 / numLines),
+                (x1 + width1 * 3 / 12),
+                (y1 + height1 * 5 / numLines));
+
+        topOfHead.boundRect = getBoundingBox(x1 + width1 * 3 / 2 / 12, (y1),
+                (x1 + width1),
+                (y1 + height1 * 5 / 2 / numLines));
+
+        temples.boundRect = getBoundingBox(x1 + width1 * 1 / 12, (y1 + height1 * 3 / 2 / numLines),
+                (x1 + width1 * 3 / 6),
+                (y1 + height1 * 3 / numLines));
+
+    }
+
+    public void drawGuidingLines(int numLines, Graphics2D g2d) {
 
         int x1 = (int) halfFace.getX();
         int y1 = (int) halfFace.getY();
@@ -54,29 +99,68 @@ public class Face {
 
         // draws the horizontal lines
         for (int i = 0; i < numLines; i++) {
-             g2d.drawLine(x1,y1+height1*i/numLines, width1+x1,y1+ height1*i/numLines);
+            // g2d.drawLine(x1, y1 + height1 * i / numLines, width1 + x1, y1 + height1 * i /
+            // numLines);
         }
 
         // draw vertical lines for the eyes
-         g2d.drawLine(x1+width1*2/6, y1, x1+width1*2/6, height1+y1);
-     g2d.drawLine(x1+width1*5/6, y1, x1+width1*5/6, height1+y1);
+        // g2d.drawLine(x1 + width1 * 2 / 6, y1, x1 + width1 * 2 / 6, height1 + y1);
+        // g2d.drawLine(x1 + width1 * 5 / 6, y1, x1 + width1 * 5 / 6, height1 + y1);
 
-        eyes.setBoundRect(getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 3 / numLines),
-                (x1 + width1 * 5 / 6),
-                (y1 + height1 * 4 / numLines)));
+        // toRect(nose.boundRect, g2d);
+         toRect(eyebrows.boundRect, g2d);
+        
+        // toRect(moustache.boundRect, g2d);
+       //  toRect(mouth.boundRect, g2d);
+        // toRect(chin.boundRect, g2d);
+       //  toRect(ears.boundRect, g2d);
+        // toRect(topOfHead.boundRect, g2d);
+        // toRect(temples.boundRect, g2d);
+    }
 
+    // calculates coordinates for facial features
+    void calcAllFeatures() {
+
+        // these two first
+        head.calcHead(); // gets ratios for the rest
+        calcGuidingLines(8); // calculates assisting rectangles
+
+        // the rest
+        eyes.setup();
+        nose.setup();
+        eyebrows.setup();
+    }
+
+    // draws the features -- most important method!!!
+    void drawAllFeatures(Graphics2D g2d) {
+
+        drawGuidingLines(8, g2d);
+        head.drawHead(g2d);
+        eyes.drawEyes(g2d);
+        nose.drawNose(g2d);
+        eyebrows.drawEyebrows(g2d);
     }
 
     int minHeight, height, maxwidth, midHeight, midWidth;
     Rectangle halfFace; // denominates the
     TextureHandler texture = new TextureHandler();
-    final int thinness = 50; // larger number == thinner values range [0-50]
+    int thiccness; // larger number == thinner values range [0-50]
+    int noseSize;
 
-    Color makeupEyeColor, eyePupilColor,eyeballColor;
+    Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor;
 
     Head head = new Head();
-    Eyes eyes= new Eyes();
+    Eyes eyes = new Eyes();
+    Nose nose = new Nose();
+    Eyebrows eyebrows = new Eyebrows();
+    Mouth mouth = new Mouth();
+    Ears ears = new Ears();
+    TopOfHead topOfHead = new TopOfHead();
+    Temples temples = new Temples();
+    MoustacheArea moustache = new MoustacheArea();
+    ChinArea chin = new ChinArea();
 
+    Randomizer r=new Randomizer();
 
     public Face(int w, int h) {
 
@@ -86,29 +170,35 @@ public class Face {
         maxwidth = w;
         midWidth = maxwidth / 2;
 
-        //  eyeballColor= Color.pink;
-        eyeballColor= Color.white;
-        //makeupEyeColor=Color.white;
-        makeupEyeColor=Color.darkGray;
-        eyePupilColor=Color.darkGray;
+    /*       adjustable parameters    */
+
+        //face
+        thiccness = r.randomBetween(0, 50); // thiccness of the face
+        skinColor = Color.pink;
+
+        //eyes
+        eyeballColor = Color.white;
+        eyePupilColor = Color.darkGray;
+        // makeupEyeColor=skinColor;                    // ==skincolor if no make-up
+        eyes.distortion1 = r.randomBetween(-10, 10);    // width for upper eyeball -- [-10,10]
+        eyes.distortion2 = r.randomBetween(-10, 10);    // for lower eyeball -- [-10,10]
+        eyes.distortion3 = r.randomBetween(25, 75);     // eyelid openness-- [0,75], 0=closed, 75=wide open
+
+        //nose
+        noseSize = r.randomBetween(1, 10); //--[1,8]?????????? greatness of noseSIze;
+
+
+        
+
     }
-
-
 
     // puts everything together
     public void drawFace(Graphics2D g2d) {
         // calculates the basic rectangles that contain various elements
-        head.calcHead();
 
-        // these methods show the assisting rectangles and guidlines
-        toRect(halfFace, g2d);
+        calcAllFeatures();
+        drawAllFeatures(g2d);
 
-        calcGuidingLines(8, g2d);
-
-        head.drawHead(g2d);           
-        eyes.drawEyes(g2d);
-
-        
     }
 
     // encompasses all features of the head
@@ -120,12 +210,13 @@ public class Face {
         // calculates head size
         public void calcHead() {
 
-            int mod1 = new Randomizer().randomBetween(0, thinness);
+            int thinness = 50-thiccness;
+            int mod1 = r.randomBetween(0, thinness);
             // sum of numenators of (bXL1 + bXL2) must be in [0,5]
             bXL1 = midWidth * mod1 / 120;
 
             // bY1 numenator deviation must always be equal or lesser than 10% of height
-            int mod2 = new Randomizer().randomBetween(0, 10);
+            int mod2 = r.randomBetween(0, 10);
             bY1 = (minHeight + ((height * mod2) / 120));
 
             // sum of numenators of (bXL1 + bXL2) must be in [0,5]
@@ -133,7 +224,7 @@ public class Face {
             bXL2 = midWidth * mod3 / 120;
 
             // bY2 numenator must always be greater than 90% of height
-            int mod4 = new Randomizer().randomBetween(110, 120);
+            int mod4 = r.randomBetween(110, 120);
             bY2 = (height - (minHeight * mod4) / 120);
 
             // calculates the other half of the head
@@ -167,24 +258,40 @@ public class Face {
 
             g2d.draw(head);
 
-            // g2d.setColor(Color.pink);
+            g2d.setColor(skinColor);
             // g2d.fill(head);
 
         }
 
     }
 
-    // conserns facial parts that are symmetrical
+    /************************* HEAD FEATURES *******************************/
+
+    // conserns facial parts that are symmetrical --practically everything
     abstract class SymmetricalFeature {
 
-        Hashtable<String, Integer> leftValues ;
-        Hashtable<String, Integer> rightValues ;
-        Hashtable<String, Integer> cacheValues ;
+        int left, width, height, right, top, bottom, midy;
+        Rectangle boundRect = new Rectangle();
+
+        Hashtable<String, Integer> leftValues;
+        Hashtable<String, Integer> rightValues;
+        Hashtable<String, Integer> cacheValues;
 
         SymmetricalFeature() {
-            leftValues = new Hashtable<>();  // has the values for the left side
+            leftValues = new Hashtable<>(); // has the values for the left side
             rightValues = new Hashtable<>(); // has the values for the right side
             cacheValues = new Hashtable<>(); // temporary hashtable
+        }
+
+        // convenience method to have on hand the necessary numbers for drawing
+        public void setBoundingBoxParameters() {
+            left = boundRect.x; // leftmost x of box
+            width = boundRect.width; // box width
+            height = boundRect.height; // box height
+            right = width + boundRect.x; // rightmost x
+            top = boundRect.y; // topmost y
+            bottom = boundRect.height + boundRect.y; // bottomost y
+            midy = (top + bottom) / 2; // middle of height
         }
 
         // used to calculate the values of the left side
@@ -207,27 +314,27 @@ public class Face {
 
             }
         }
-  
-        public void setcacheValues(String side){
-            if (side.equals("Left")){
+
+        public void setcacheValues(String side) {
+            if (side.equals("Left")) {
                 cacheValues.clear();
                 cacheValues.putAll(leftValues);
-            }else if(side.equals("Right")){
+            } else if (side.equals("Right")) {
                 cacheValues.clear();
                 cacheValues.putAll(rightValues);
-            }else{
+            } else {
                 System.out.println("No side is chosen for selection of HashTable");
             }
         }
     }
 
     // responsible for drawing the components of the eyes
-    class Eyes extends SymmetricalFeature{
+    class Eyes extends SymmetricalFeature {
 
         // calculates values of left eye
         @Override
         public void calcLeftSideValues() {
-                            
+
             int left1 = left;
             int right1 = (left + width);
             int bhu1 = left + (width / 3);
@@ -240,71 +347,50 @@ public class Face {
             leftValues.put("right", right1);
             leftValues.put("bhU1", bhu1);
             leftValues.put("bhU2", bhu2);
-
         }
 
-        public void setBoundRect(Rectangle rect) {
-            this.boundRect = rect;
-        }
-
-        Rectangle boundRect = new Rectangle();
         EyeBall eyeball;
         Pupil pupil;
         Eyelids eyelids;
-
-        // todo: check if can be made static or even singleton
-        Randomizer r = new Randomizer();
-
-        int left, width, height, right, top, bottom, midy;
 
         // the further from 0, the wider the eye becomes
         int distortion1, // for upper eyeball -- [-10,10]
                 distortion2, // for lower eyeball -- [-10,10]
                 distortion3; // eyelid openness-- [0,75], 0=closed, 75=wide open
 
-        // sets up the parameters        
+        // sets up the parameters
         void setup() {
 
-            left = boundRect.x;
-            width = boundRect.width;
-            height = boundRect.height;
-            right = width + boundRect.x;
-            top = boundRect.y;
-            bottom = boundRect.height + boundRect.y;
-            midy = (top + bottom) / 2;
+            // always must be at begging of setup
+            setBoundingBoxParameters();
 
-            distortion1 = r.randomBetween(-10, 10);
-            distortion2 = r.randomBetween(-10, 10);
-            distortion3 = r.randomBetween(0, 75);
-
-            //sets up the hashtables of the points that will be needed
+            // sets up the hashtables of the points that will be needed
             calcLeftSideValues();
             coverttoRightSideValues();
 
             eyeball = new EyeBall();
             pupil = new Pupil();
             eyelids = new Eyelids();
-
-            
         }
 
         void drawEyes(Graphics2D g2d) {
 
-            setup();
+            // setup();
 
             // draw left eye
-            String side ="Left";
+            String side = "Left";
             setcacheValues(side);
+            
             eyeball.drawEyeball(side, g2d);
-            pupil.drawPupil(side,g2d);
-            eyelids.drawEyelid(side,g2d);
+            pupil.drawPupil(side, g2d);
+            eyelids.drawEyelid(side, g2d);
 
             // draw right eye
-            side ="Right";
+            side = "Right";
             setcacheValues(side);
             eyeball.drawEyeball(side, g2d);
-            pupil.drawPupil(side,g2d);
-            eyelids.drawEyelid(side,g2d);
+            pupil.drawPupil(side, g2d);
+            eyelids.drawEyelid(side, g2d);
         }
 
         class EyeBall {
@@ -315,33 +401,37 @@ public class Face {
                 Path2D.Double eye = new Path2D.Double();
                 eye.moveTo(cacheValues.get("left"), midy);
                 eye.curveTo(cacheValues.get("bhU1"), top + distortion1, cacheValues.get("bhU2"), top + distortion1,
-                cacheValues.get("right"), midy);
-                eye.curveTo(cacheValues.get("bhU2"), bottom + distortion2, cacheValues.get("bhU1"), bottom + distortion2,
-                cacheValues.get("left"), midy);
+                        cacheValues.get("right"), midy);
+                eye.curveTo(cacheValues.get("bhU2"), bottom + distortion2, cacheValues.get("bhU1"),
+                        bottom + distortion2,
+                        cacheValues.get("left"), midy);
                 eye.closePath();
                 g2d.draw(eye);
-                // paint eyeball -- TODO: add various tones of red
+                // paint eyeball 
                 g2d.setColor(eyeballColor);
                 g2d.fill(eye);
                 g2d.setColor(Color.black);
+
             }
 
         }
 
-        class Pupil  {
+        class Pupil {
 
             void drawPupil(String side, Graphics2D g2d) {
 
-                Ellipse2D.Double iris=new Ellipse2D.Double();
+                Ellipse2D.Double iris = new Ellipse2D.Double();
                 Ellipse2D.Double pupil = new Ellipse2D.Double();
 
-                if (side.equals("Left")){
-                    iris=new Ellipse2D.Double(left + width / 3, top+height/4, width / 3, height*4/6);
-                    pupil = new Ellipse2D.Double(left + width * 4 / 9, top + height / 2, width / 9,width / 9);
-                }else if(side.equals("Right")){
-                    iris=new Ellipse2D.Double((symmetricHorizonal(left + width / 3)-(width / 3)), top+height/4, width / 3, height*4/6);
-                    pupil = new Ellipse2D.Double((symmetricHorizonal(left + width * 4 / 9)-(width / 9)), top + height / 2, width / 9,width / 9);
-                }else{
+                if (side.equals("Left")) {
+                    iris = new Ellipse2D.Double(left + width / 3, top + height / 4, width / 3, height * 4 / 6);
+                    pupil = new Ellipse2D.Double(left + width * 4 / 9, top + height / 2, width / 9, width / 9);
+                } else if (side.equals("Right")) {
+                    iris = new Ellipse2D.Double((symmetricHorizonal(left + width / 3) - (width / 3)), top + height / 4,
+                            width / 3, height * 4 / 6);
+                    pupil = new Ellipse2D.Double((symmetricHorizonal(left + width * 4 / 9) - (width / 9)),
+                            top + height / 2, width / 9, width / 9);
+                } else {
                     System.out.println("Pupils: mistyped side choice");
                 }
 
@@ -355,31 +445,34 @@ public class Face {
                 g2d.draw(pupil);
                 g2d.fill(pupil);
             }
-        }        
+        }
 
-        class Eyelids{
+        class Eyelids {
 
-            void drawEyelid(String side,Graphics2D g2d){
+            void drawEyelid(String side, Graphics2D g2d) {
 
                 // draw eyelid
                 Path2D.Double eyelidUP = new Path2D.Double();
                 eyelidUP.moveTo(cacheValues.get("left"), midy);
-                eyelidUP.curveTo(cacheValues.get("bhU1"), top + distortion1, cacheValues.get("bhU2"), top + distortion1, cacheValues.get("right"),
+                eyelidUP.curveTo(cacheValues.get("bhU1"), top + distortion1, cacheValues.get("bhU2"), top + distortion1,
+                        cacheValues.get("right"),
                         midy);
-                eyelidUP.curveTo(cacheValues.get("bhU2"), bottom - distortion3, cacheValues.get("bhU1"), bottom - distortion3,
-                cacheValues.get("left"),
+                eyelidUP.curveTo(cacheValues.get("bhU2"), bottom - distortion3, cacheValues.get("bhU1"),
+                        bottom - distortion3,
+                        cacheValues.get("left"),
                         midy);
                 eyelidUP.closePath();
                 g2d.draw(eyelidUP);
-                
+
                 // draw bottom eyelid
                 Path2D.Double eyelidBOT = new Path2D.Double();
                 eyelidBOT.moveTo(cacheValues.get("right"), midy);
-                eyelidBOT.curveTo(cacheValues.get("bhU2"), bottom + distortion2,cacheValues.get("bhU1"), bottom + distortion2,
-                cacheValues.get("left"),
+                eyelidBOT.curveTo(cacheValues.get("bhU2"), bottom + distortion2, cacheValues.get("bhU1"),
+                        bottom + distortion2,
+                        cacheValues.get("left"),
                         midy);
-                eyelidBOT.curveTo(cacheValues.get("bhU1"), bottom + distortion3 / 5, cacheValues.get("bhU2"),
-                        bottom + distortion3 / 5, cacheValues.get("right"), midy);
+                eyelidBOT.curveTo(cacheValues.get("bhU1"), bottom + distortion3 / 10, cacheValues.get("bhU2"),
+                        bottom + distortion3 / 10, cacheValues.get("right"), midy);
                 eyelidBOT.closePath();
                 g2d.draw(eyelidBOT);
 
@@ -393,18 +486,172 @@ public class Face {
         }
     }
 
+    class Eyebrows extends SymmetricalFeature {
 
-    class eyebrows {
+        // begin = starting point
+        // end = ending point
+        // both bezier handles will have Xs dependent on boundRect size
+        // endY depends on beginY
+        // bh2Y dependent on bh1Y
 
-        public eyebrows() {
+        int beginX, beginY, endX,bh1Y;
 
+        // calculates values of left side
+        @Override
+        public void calcLeftSideValues() {
+        }
+    
+        void setup(){
+            // always must be at begging of setup
+            setBoundingBoxParameters();
+
+            // sets up the hashtables of the points that will be needed
+            calcLeftSideValues();
+            coverttoRightSideValues();
+
+        }
+    
+       void drawEyebrows(Graphics2D g2d){
+
+        }
+    
+    }
+
+    class Nose extends SymmetricalFeature {
+
+
+        // calculates values of left side
+        @Override
+        public void calcLeftSideValues() {
+
+            int pos2 = 9 - noseSize;
+            int bridgeBeginx = left + width * noseSize / 9;
+            int bh1x = right;
+            int bh2x = left + width / 2;
+            int bridgeEndx = left + width * pos2 / 9;
+            int bh3x = bridgeEndx - width * pos2 / 2 / 9;
+            int bh4x = left + width * 4 / 5;
+            int bh5x = left + width * 8 / 9;
+
+            leftValues.put("pos2", pos2);
+            leftValues.put("bridgeBeginx", bridgeBeginx);
+            leftValues.put("bh1x", bh1x);
+            leftValues.put("bh2x", bh2x);
+            leftValues.put("bridgeEndx", bridgeEndx);
+            leftValues.put("bh3x", bh3x);
+            leftValues.put("bh4x", bh4x);
+            leftValues.put("bh5x", bh5x);
+
+        }
+
+        // sets up the parameters
+        void setup() {
+
+            // always must be at begging of setup
+            setBoundingBoxParameters();
+
+            // sets up the hashtables of the points that will be needed
+            calcLeftSideValues();
+            coverttoRightSideValues();
+
+        }
+
+        void drawNose(Graphics2D g2d) {
+
+            int bridgeBeginy = top;
+            int bh1y = top + height * 1 / 5;
+            int bh2y = top + height * 3 / 5;
+            int bridgeEndy = top + height * 4 / 5;
+            int bh3y = top + height * 8 / 9;
+            int bh4y = top + height * 18 / 19;// bh3y+20;
+            int bh5y = top + height * 11 / 10;
+
+            Path2D.Double nose = new Path2D.Double();
+
+            String side = "Left";
+            setcacheValues(side);
+
+            nose.moveTo(cacheValues.get("bridgeBeginx"), bridgeBeginy);
+
+            nose.curveTo(cacheValues.get("bh1x"), bh1y, cacheValues.get("bh2x"),
+                    bh2y,
+                    cacheValues.get("bridgeEndx"), bridgeEndy);
+
+            nose.curveTo(cacheValues.get("bh3x"), bh3y, cacheValues.get("bh4x"),
+                    bh4y,
+                    cacheValues.get("bh4x"), bh4y);
+
+            nose.curveTo(cacheValues.get("bh5x"), bh5y, right, bh5y, left + width,
+                    bh5y);
+
+            g2d.draw(nose);
+
+
+            side = "Right";
+            setcacheValues(side);
+
+            nose.moveTo(cacheValues.get("bridgeBeginx"), bridgeBeginy);
+
+            nose.curveTo(cacheValues.get("bh1x"), bh1y, cacheValues.get("bh2x"),
+                    bh2y,
+                    cacheValues.get("bridgeEndx"), bridgeEndy);
+
+            nose.curveTo(cacheValues.get("bh3x"), bh3y, cacheValues.get("bh4x"),
+                    bh4y,
+                    cacheValues.get("bh4x"), bh4y);
+
+            nose.curveTo(cacheValues.get("bh5x"), bh5y, right, bh5y, left + width,
+                    bh5y);
+
+            g2d.draw(nose);
+
+
+        }
+
+    }
+
+    class Mouth extends SymmetricalFeature {
+
+        // calculates values of left side
+        @Override
+        public void calcLeftSideValues() {
         }
     }
 
-    class nose {
+    class Ears extends SymmetricalFeature {
 
-        public nose() {
+        // calculates values of left side
+        @Override
+        public void calcLeftSideValues() {
+        }
+    }
 
+    class TopOfHead extends SymmetricalFeature {
+        // calculates values of left side
+        @Override
+        public void calcLeftSideValues() {
+        }
+    }
+
+    class Temples extends SymmetricalFeature {
+
+        // calculates values of left side
+        @Override
+        public void calcLeftSideValues() {
+        }
+    }
+
+    class MoustacheArea extends SymmetricalFeature {
+        // calculates values of left side
+        @Override
+        public void calcLeftSideValues() {
+        }
+    }
+
+    class ChinArea extends SymmetricalFeature {
+        // calculates values of left side
+        @Override
+        public void calcLeftSideValues() {
         }
     }
 
