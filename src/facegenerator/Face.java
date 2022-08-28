@@ -110,10 +110,10 @@ public class Face {
         // toRect(nose.boundRect, g2d);
         // toRect(eyebrows.boundRect, g2d);
 
-        // toRect(moustache.boundRect, g2d);
-        // toRect(mouth.boundRect, g2d);
+         toRect(moustache.boundRect, g2d);
+         toRect(mouth.boundRect, g2d);
         // toRect(chin.boundRect, g2d);
-        // toRect(ears.boundRect, g2d);
+         toRect(ears.boundRect, g2d);
         // toRect(topOfHead.boundRect, g2d);
         // toRect(temples.boundRect, g2d);
     }
@@ -129,6 +129,7 @@ public class Face {
         eyes.setup();
         nose.setup();
         eyebrows.setup();
+        ears.setup();
     }
 
     // draws the features -- most important method!!!
@@ -139,6 +140,7 @@ public class Face {
         eyes.drawEyes(g2d);
         nose.drawNose(g2d);
         eyebrows.drawEyebrows(g2d);
+        ears.drawEars(g2d);
     }
 
     int minHeight, height, maxwidth, midHeight, midWidth;
@@ -331,7 +333,7 @@ public class Face {
         }
     }
 
-    // responsible for drawing the components of the eyes
+    // components of the eyes: eyeball, pupil, eyelid
     class Eyes extends SymmetricalFeature {
 
         // calculates values of left eye
@@ -491,6 +493,7 @@ public class Face {
         }
     }
 
+    //done
     class Eyebrows extends SymmetricalFeature {
 
         int eyebrowSize;
@@ -563,6 +566,7 @@ public class Face {
 
     }
 
+    //done
     class Nose extends SymmetricalFeature {
 
         int noseSize;
@@ -667,6 +671,52 @@ public class Face {
         @Override
         public void calcLeftSideValues() {
         }
+    
+        void setup(){
+
+                        // always must be at begging of setup
+                        setBoundingBoxParameters();
+
+                        // sets up the hashtables of the points that will be needed
+                        calcLeftSideValues();
+                        coverttoRightSideValues();
+        }
+
+        Shape leftFeature(){
+            Path2D.Double ear = new Path2D.Double();
+
+            ear.moveTo(100,200);
+            ear.lineTo(150,300);
+            ear.closePath();
+
+            return ear;
+        }
+
+        void drawEars(Graphics2D g2d){
+
+            g2d.draw(leftFeature());
+
+            Shape rightFeature=leftFeature();
+
+            AffineTransform at = new AffineTransform();
+
+            // first move to new position around center Y axis
+            int newMaxX = (int)(rightFeature.getBounds().getX());
+            
+            at.translate(symmetricHorizonal(newMaxX), 0);
+
+            // we mirror it (around axis x=0)
+            at.scale(-1, 1);
+
+            //  return it to its original (new) position
+            at.translate(-newMaxX, 0);
+
+
+
+            g2d.draw(at.createTransformedShape(rightFeature));
+            
+        }
+    
     }
 
     class TopOfHead extends SymmetricalFeature {
