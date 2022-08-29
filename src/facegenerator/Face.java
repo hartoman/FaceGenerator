@@ -145,7 +145,7 @@ public class Face {
     Rectangle halfFace; // denominates the
     TextureHandler texture = new TextureHandler();
 
-    Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor;
+    Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor,hairColor;
 
     Head head = new Head();
     Eyes eyes = new Eyes();
@@ -171,7 +171,7 @@ public class Face {
         /* adjustable parameters */
 
         // face
-        head.thiccness = 0;//r.randomBetween(0, 50); // thiccness of the face
+        head.thiccness = 0;// r.randomBetween(0, 50); // thiccness of the face
         skinColor = Color.pink;
 
         // eyes
@@ -184,14 +184,15 @@ public class Face {
         eyes.angle = 0;// r.randomBetween(-25, 25); // angle of the eyes 0=straight, 20= inward
 
         // nose
-        nose.noseSize = 1;//r.randomBetween(1, 8); // -- [1,8] greatness of noseSIze;
+        nose.noseSize = 1;// r.randomBetween(1, 8); // -- [1,8] greatness of noseSIze;
 
         // mouth
         // mouthSize=
 
         // eyebrows
-        eyebrows.eyebrowSize =  0;// r.randomBetween(0,25); // [0,25] min-max
-        eyebrows.anger =  0;// r.randomBetween(-50, 50);//eyes.angle*2;  // [-50,50] angle to determine expression, 0= neutral
+        eyebrows.eyebrowSize = 0;// r.randomBetween(0,25); // [0,25] min-max
+        eyebrows.anger = 0;// r.randomBetween(-50, 50);//eyes.angle*2; // [-50,50] angle to determine
+                           // expression, 0= neutral
     }
 
     // puts everything together
@@ -276,14 +277,31 @@ public class Face {
         int left, width, height, right, top, bottom, midy;
         Rectangle boundRect = new Rectangle();
 
-        Hashtable<String, Integer> leftValues;
-        Hashtable<String, Integer> rightValues;
-        Hashtable<String, Integer> cacheValues;
+        Hashtable<String, Integer> valuesTable;
 
         SymmetricalFeature() {
-            leftValues = new Hashtable<>(); // has the values for the left side
-            rightValues = new Hashtable<>(); // has the values for the right side
-            cacheValues = new Hashtable<>(); // temporary hashtable
+            valuesTable = new Hashtable<>(); // has the values for the left side
+        }
+
+        //for every feature,draws its mirrored equivalent on the right
+        Shape drawMirrored(Shape leftFeature, Graphics2D g2d) {
+
+            // set up for right feature
+            Shape rightFeature = leftFeature;
+            AffineTransform at = new AffineTransform();
+
+            // move to new position around center Y axis
+            int newMaxX = (int) (rightFeature.getBounds().getX());
+
+            at.translate(symmetricHorizonal(newMaxX), 0);
+
+            // mirror it (around axis x=0)
+            at.scale(-1, 1);
+
+            // return it to its original (new) position
+            at.translate(-newMaxX, 0);
+
+            return at.createTransformedShape(rightFeature);
         }
 
         // convenience method to have on hand the necessary numbers for drawing
@@ -298,37 +316,8 @@ public class Face {
         }
 
         // used to calculate the values of the left side
-        public abstract void calcLeftSideValues();
+        public abstract void calcValuesTable();
 
-        // determines the values of the hashtable of the right-side based on the ones on
-        // the left
-        public void coverttoRightSideValues() {
-
-            String valueName = new String();
-            int rightSidenum = 0;
-            Enumeration<String> values = leftValues.keys();
-
-            while (values.hasMoreElements()) {
-
-                // Getting the key of a particular entry
-                valueName = values.nextElement();
-                rightSidenum = symmetricHorizonal(leftValues.get(valueName));
-                rightValues.put(valueName, rightSidenum);
-
-            }
-        }
-
-        public void setcacheValues(String side) {
-            if (side.equals("Left")) {
-                cacheValues.clear();
-                cacheValues.putAll(leftValues);
-            } else if (side.equals("Right")) {
-                cacheValues.clear();
-                cacheValues.putAll(rightValues);
-            } else {
-                System.out.println("No side is chosen for selection of HashTable");
-            }
-        }
     }
 
     // responsible for drawing the components of the eyes
@@ -336,7 +325,7 @@ public class Face {
 
         // calculates values of left eye
         @Override
-        public void calcLeftSideValues() {
+        public void calcValuesTable() {
 
             int left1 = left;
             int right1 = (left + width);
@@ -344,17 +333,13 @@ public class Face {
             int bhu2 = left + (width * 2 / 3);
 
             // WHY DOES IT CALCULATE EVERYTHING TWICE????
-            System.out.println(width);
+       //     System.out.println(width);
 
-            leftValues.put("left", left1);
-            leftValues.put("right", right1);
-            leftValues.put("bhU1", bhu1);
-            leftValues.put("bhU2", bhu2);
+            valuesTable.put("left", left1);
+            valuesTable.put("right", right1);
+            valuesTable.put("bhU1", bhu1);
+            valuesTable.put("bhU2", bhu2);
         }
-
-        EyeBall eyeball;
-        Pupil pupil;
-        Eyelids eyelids;
 
         // the further from 0, the wider the eye becomes
         int distortion1, // for upper eyeball -- [-10,10]
@@ -366,129 +351,113 @@ public class Face {
         // sets up the parameters
         void setup() {
 
-            // always must be at begging of setup
             setBoundingBoxParameters();
+            calcValuesTable();
 
-            // sets up the hashtables of the points that will be needed
-            calcLeftSideValues();
-            coverttoRightSideValues();
-
-            eyeball = new EyeBall();
-            pupil = new Pupil();
-            eyelids = new Eyelids();
         }
 
         void drawEyes(Graphics2D g2d) {
 
-            // setup();
-
-            // draw left eye
-            String side = "Left";
-            setcacheValues(side);
-
-            eyeball.drawEyeball(side, g2d);
-            pupil.drawPupil(side, g2d);
-            eyelids.drawEyelid(side, g2d);
-
-            // draw right eye
-            side = "Right";
-            setcacheValues(side);
-            eyeball.drawEyeball(side, g2d);
-            pupil.drawPupil(side, g2d);
-            eyelids.drawEyelid(side, g2d);
+            drawEyeball(g2d);
+            drawPupil(g2d);
+            drawEyelid(g2d);
+            
         }
 
-        class EyeBall {
+        
+        void drawEyeball (Graphics2D g2d) {
+            Path2D.Double eye = new Path2D.Double();
+            eye.moveTo(valuesTable.get("left"), midy - angle);
+            eye.curveTo(valuesTable.get("bhU1"), top + distortion1, valuesTable.get("bhU2"), top + distortion1,
+                    valuesTable.get("right"), midy + angle);
+            eye.curveTo(valuesTable.get("bhU2"), bottom + distortion2, valuesTable.get("bhU1"),
+                    bottom + distortion2,
+                    valuesTable.get("left"), midy - angle);
+            eye.closePath();
+            
+            Shape eye2= drawMirrored(eye, g2d);
+            g2d.draw(eye);
+            g2d.draw(eye2);
+            // paint eyeball
+            g2d.setColor(eyeballColor);
+            g2d.fill(eye);
+            g2d.fill(eye2);
+            
+            g2d.setColor(Color.black);
+        }
 
-            void drawEyeball(String side, Graphics2D g2d) {
 
-                // draw eyeball shape
-                Path2D.Double eye = new Path2D.Double();
-                eye.moveTo(cacheValues.get("left"), midy - angle);
-                eye.curveTo(cacheValues.get("bhU1"), top + distortion1, cacheValues.get("bhU2"), top + distortion1,
-                        cacheValues.get("right"), midy + angle);
-                eye.curveTo(cacheValues.get("bhU2"), bottom + distortion2, cacheValues.get("bhU1"),
-                        bottom + distortion2,
-                        cacheValues.get("left"), midy - angle);
-                eye.closePath();
-                g2d.draw(eye);
-                // paint eyeball
-                g2d.setColor(eyeballColor);
-                g2d.fill(eye);
-                g2d.setColor(Color.black);
+        void drawPupil(Graphics2D g2d) {
 
-            }
+            Ellipse2D.Double iris = new Ellipse2D.Double();
+            Ellipse2D.Double pupil = new Ellipse2D.Double();
+            iris = new Ellipse2D.Double(left + width / 3, top + height / 4, width / 3, height * 4 / 6);
+            pupil = new Ellipse2D.Double(left + width * 4 / 9, top + height / 2, width / 9, width / 9);
+
+            // create iris
+            Shape iris2=drawMirrored(iris, g2d);
+            Shape pupil2=drawMirrored(pupil, g2d);
+
+            g2d.draw(iris);
+            g2d.draw(iris2);
+            g2d.setColor(eyePupilColor);
+            g2d.fill(iris);
+            g2d.fill(iris2);
+            g2d.setColor(Color.black);
+        
+            // draws the pupis
+            g2d.draw(pupil);
+            g2d.draw(pupil2);
+            g2d.fill(pupil2);
+            g2d.fill(pupil);
 
         }
 
-        class Pupil {
 
-            void drawPupil(String side, Graphics2D g2d) {
+        void drawEyelid(Graphics2D g2d) {
+                        // draw upper eyelid
+                        Path2D.Double eyelidUP = new Path2D.Double();
+                        eyelidUP.moveTo(valuesTable.get("left"), midy - angle);
+                        eyelidUP.curveTo(valuesTable.get("bhU1"), top + distortion1, valuesTable.get("bhU2"), top + distortion1,
+                                valuesTable.get("right"),
+                                midy + angle);
+                        eyelidUP.curveTo(valuesTable.get("bhU2"), bottom - distortion3, valuesTable.get("bhU1"),
+                                bottom - distortion3,
+                                valuesTable.get("left"),
+                                midy - angle);
+                        eyelidUP.closePath();
+                        
+            
+                        // draw bottom eyelid
+                        Path2D.Double eyelidBOT = new Path2D.Double();
+                        eyelidBOT.moveTo(valuesTable.get("right"), midy + angle);
+                        eyelidBOT.curveTo(valuesTable.get("bhU2"), bottom + distortion2, valuesTable.get("bhU1"),
+                                bottom + distortion2,
+                                valuesTable.get("left"),
+                                midy - angle);
+                        eyelidBOT.curveTo(valuesTable.get("bhU1"), bottom + distortion3 / 10, valuesTable.get("bhU2"),
+                                bottom + distortion3 / 10, valuesTable.get("right"), midy + angle);
+                        eyelidBOT.closePath();
+            
+                        Shape eyelidUP2=drawMirrored(eyelidUP, g2d);
+                        Shape eyelidBOT2=drawMirrored(eyelidBOT, g2d);
+            
+                        g2d.setColor(Color.BLACK);
+                        g2d.draw(eyelidUP);
+                        g2d.draw(eyelidBOT);
+                        g2d.draw(eyelidUP2);
+                        g2d.draw(eyelidBOT2);
+            
+                        // can add eyeshadow
+                        g2d.setColor(makeupEyeColor);
+                        g2d.fill(eyelidUP);
+                        g2d.fill(eyelidBOT);
+                        g2d.fill(eyelidUP2);
+                        g2d.fill(eyelidBOT2);
+                        g2d.setColor(Color.BLACK);
+                    }
 
-                Ellipse2D.Double iris = new Ellipse2D.Double();
-                Ellipse2D.Double pupil = new Ellipse2D.Double();
 
-                if (side.equals("Left")) {
-                    iris = new Ellipse2D.Double(left + width / 3, top + height / 4, width / 3, height * 4 / 6);
-                    pupil = new Ellipse2D.Double(left + width * 4 / 9, top + height / 2, width / 9, width / 9);
-                } else if (side.equals("Right")) {
-                    iris = new Ellipse2D.Double((symmetricHorizonal(left + width / 3) - (width / 3)), top + height / 4,
-                            width / 3, height * 4 / 6);
-                    pupil = new Ellipse2D.Double((symmetricHorizonal(left + width * 4 / 9) - (width / 9)),
-                            top + height / 2, width / 9, width / 9);
-                } else {
-                    System.out.println("Pupils: mistyped side choice");
-                }
-
-                // create iris
-                g2d.draw(iris);
-                g2d.setColor(eyePupilColor);
-                g2d.fill(iris);
-                g2d.setColor(Color.black);
-
-                // draws the pupis
-                g2d.draw(pupil);
-                g2d.fill(pupil);
-            }
-        }
-
-        class Eyelids {
-
-            void drawEyelid(String side, Graphics2D g2d) {
-
-                // draw eyelid
-                Path2D.Double eyelidUP = new Path2D.Double();
-                eyelidUP.moveTo(cacheValues.get("left"), midy - angle);
-                eyelidUP.curveTo(cacheValues.get("bhU1"), top + distortion1, cacheValues.get("bhU2"), top + distortion1,
-                        cacheValues.get("right"),
-                        midy + angle);
-                eyelidUP.curveTo(cacheValues.get("bhU2"), bottom - distortion3, cacheValues.get("bhU1"),
-                        bottom - distortion3,
-                        cacheValues.get("left"),
-                        midy - angle);
-                eyelidUP.closePath();
-                g2d.draw(eyelidUP);
-
-                // draw bottom eyelid
-                Path2D.Double eyelidBOT = new Path2D.Double();
-                eyelidBOT.moveTo(cacheValues.get("right"), midy + angle);
-                eyelidBOT.curveTo(cacheValues.get("bhU2"), bottom + distortion2, cacheValues.get("bhU1"),
-                        bottom + distortion2,
-                        cacheValues.get("left"),
-                        midy - angle);
-                eyelidBOT.curveTo(cacheValues.get("bhU1"), bottom + distortion3 / 10, cacheValues.get("bhU2"),
-                        bottom + distortion3 / 10, cacheValues.get("right"), midy + angle);
-                eyelidBOT.closePath();
-                g2d.draw(eyelidBOT);
-
-                // can add eyeshadow
-                g2d.setColor(makeupEyeColor);
-                g2d.fill(eyelidUP);
-                g2d.fill(eyelidBOT);
-                g2d.setColor(Color.BLACK);
-            }
-
-        }
     }
 
     class Eyebrows extends SymmetricalFeature {
@@ -501,23 +470,18 @@ public class Face {
 
         // calculates values of left side
         @Override
-        public void calcLeftSideValues() {
+        public void calcValuesTable() {
 
-            // in hash
+            int lengthEB = (width * (eyebrowSize + 75) / 100); 
 
-            int lengthEB = (width * (eyebrowSize + 75) / 100); // keep in calcs
             int bh1x = left + lengthEB * 1 / 3;
             int bh2x = left + lengthEB * 2 / 3;
-
             int bh3x = left + lengthEB;
 
-            // leftValues.put("angerpointL", angerpointL);
-            // leftValues.put("angerpointR", angerpointR );
-            leftValues.put("bh1x", bh1x);
-            leftValues.put("bh2x", bh2x);
-            // leftValues.put("lengthEB",lengthEB );
-            leftValues.put("left", left);
-            leftValues.put("bh3x", bh3x);
+            valuesTable.put("bh1x", bh1x);
+            valuesTable.put("bh2x", bh2x);
+            valuesTable.put("left", left);
+            valuesTable.put("bh3x", bh3x);
         }
 
         void setup() {
@@ -529,36 +493,30 @@ public class Face {
             widthEB = (width * (eyebrowSize + 75) / 100) / 9;
 
             // sets up the hashtables of the points that will be needed
-            calcLeftSideValues();
-            coverttoRightSideValues();
+            calcValuesTable();
 
         }
 
-        void drawEyebrow(String side, Graphics2D g2d) {
-
-            Path2D.Double eyebrow = new Path2D.Double();
-            eyebrow.moveTo(cacheValues.get("left"), angerpointL);
-            eyebrow.curveTo(cacheValues.get("bh1x"), angerpointL - widthEB / 2, cacheValues.get("bh2x"),
-                    angerpointL - widthEB / 2, cacheValues.get("bh3x"), angerpointR);
-            eyebrow.lineTo(cacheValues.get("bh3x"), angerpointR + widthEB);
-            eyebrow.curveTo(cacheValues.get("bh2x"), angerpointL, cacheValues.get("bh1x"), angerpointL,
-                    cacheValues.get("left"), angerpointL + widthEB);
-            eyebrow.closePath();
-
-            g2d.draw(eyebrow);
-            // g2d.fill(eyebrow);
-            g2d.setColor(Color.black);
-        }
 
         void drawEyebrows(Graphics2D g2d) {
 
-            String side = "Left";
-            setcacheValues(side);
-            drawEyebrow(side, g2d);
+            Path2D.Double eyebrow = new Path2D.Double();
+            eyebrow.moveTo(valuesTable.get("left"), angerpointL);
+            eyebrow.curveTo(valuesTable.get("bh1x"), angerpointL - widthEB / 2, valuesTable.get("bh2x"),
+                    angerpointL - widthEB / 2, valuesTable.get("bh3x"), angerpointR);
+            eyebrow.lineTo(valuesTable.get("bh3x"), angerpointR + widthEB);
+            eyebrow.curveTo(valuesTable.get("bh2x"), angerpointL, valuesTable.get("bh1x"), angerpointL,
+                    valuesTable.get("left"), angerpointL + widthEB);
+            eyebrow.closePath();
 
-            side = "Right";
-            setcacheValues(side);
-            drawEyebrow(side, g2d);
+            Shape eyebrow2 = drawMirrored(eyebrow, g2d);
+
+            g2d.draw(eyebrow);
+            g2d.draw(eyebrow2);
+            // g2d.setColor(hairColor);
+            // g2d.fill(eyebrow2);
+            // g2d.fill(eyebrow);
+            g2d.setColor(Color.black);
         }
 
     }
@@ -569,7 +527,7 @@ public class Face {
 
         // calculates values of left side
         @Override
-        public void calcLeftSideValues() {
+        public void calcValuesTable() {
 
             int pos2 = 9 - noseSize;
             int bridgeBeginx = left + width * noseSize / 9;
@@ -580,14 +538,14 @@ public class Face {
             int bh4x = left + width * 4 / 5;
             int bh5x = left + width * 8 / 9;
 
-            leftValues.put("pos2", pos2);
-            leftValues.put("bridgeBeginx", bridgeBeginx);
-            leftValues.put("bh1x", bh1x);
-            leftValues.put("bh2x", bh2x);
-            leftValues.put("bridgeEndx", bridgeEndx);
-            leftValues.put("bh3x", bh3x);
-            leftValues.put("bh4x", bh4x);
-            leftValues.put("bh5x", bh5x);
+            valuesTable.put("pos2", pos2);
+            valuesTable.put("bridgeBeginx", bridgeBeginx);
+            valuesTable.put("bh1x", bh1x);
+            valuesTable.put("bh2x", bh2x);
+            valuesTable.put("bridgeEndx", bridgeEndx);
+            valuesTable.put("bh3x", bh3x);
+            valuesTable.put("bh4x", bh4x);
+            valuesTable.put("bh5x", bh5x);
 
         }
 
@@ -598,8 +556,8 @@ public class Face {
             setBoundingBoxParameters();
 
             // sets up the hashtables of the points that will be needed
-            calcLeftSideValues();
-            coverttoRightSideValues();
+            calcValuesTable();
+
 
         }
 
@@ -613,41 +571,25 @@ public class Face {
             int bh4y = top + height * 18 / 19;// bh3y+20;
             int bh5y = top + height * 11 / 10;
 
-            String side = "Left";
-            setcacheValues(side);
+
             Path2D.Double nose = new Path2D.Double();
-            nose.moveTo(cacheValues.get("bridgeBeginx"), bridgeBeginy);
+            nose.moveTo(valuesTable.get("bridgeBeginx"), bridgeBeginy);
 
-            nose.curveTo(cacheValues.get("bh1x"), bh1y, cacheValues.get("bh2x"),
+            nose.curveTo(valuesTable.get("bh1x"), bh1y, valuesTable.get("bh2x"),
                     bh2y,
-                    cacheValues.get("bridgeEndx"), bridgeEndy);
+                    valuesTable.get("bridgeEndx"), bridgeEndy);
 
-            nose.curveTo(cacheValues.get("bh3x"), bh3y, cacheValues.get("bh4x"),
+            nose.curveTo(valuesTable.get("bh3x"), bh3y, valuesTable.get("bh4x"),
                     bh4y,
-                    cacheValues.get("bh4x"), bh4y);
+                    valuesTable.get("bh4x"), bh4y);
 
-            nose.curveTo(cacheValues.get("bh5x"), bh5y, right, bh5y, left + width,
+            nose.curveTo(valuesTable.get("bh5x"), bh5y, right, bh5y, left + width,
                     bh5y);
 
             g2d.draw(nose);
 
-            side = "Right";
-            setcacheValues(side);
-
-            nose.moveTo(cacheValues.get("bridgeBeginx"), bridgeBeginy);
-
-            nose.curveTo(cacheValues.get("bh1x"), bh1y, cacheValues.get("bh2x"),
-                    bh2y,
-                    cacheValues.get("bridgeEndx"), bridgeEndy);
-
-            nose.curveTo(cacheValues.get("bh3x"), bh3y, cacheValues.get("bh4x"),
-                    bh4y,
-                    cacheValues.get("bh4x"), bh4y);
-
-            nose.curveTo(cacheValues.get("bh5x"), bh5y, right, bh5y, left + width,
-                    bh5y);
-
-            g2d.draw(nose);
+            Shape nose2 = drawMirrored(nose, g2d);
+            g2d.draw(nose2);
 
         }
 
@@ -657,7 +599,7 @@ public class Face {
 
         // calculates values of left side
         @Override
-        public void calcLeftSideValues() {
+        public void calcValuesTable() {
         }
     }
 
@@ -665,14 +607,14 @@ public class Face {
 
         // calculates values of left side
         @Override
-        public void calcLeftSideValues() {
+        public void calcValuesTable() {
         }
     }
 
     class TopOfHead extends SymmetricalFeature {
         // calculates values of left side
         @Override
-        public void calcLeftSideValues() {
+        public void calcValuesTable() {
         }
     }
 
@@ -680,21 +622,21 @@ public class Face {
 
         // calculates values of left side
         @Override
-        public void calcLeftSideValues() {
+        public void calcValuesTable() {
         }
     }
 
     class MoustacheArea extends SymmetricalFeature {
         // calculates values of left side
         @Override
-        public void calcLeftSideValues() {
+        public void calcValuesTable() {
         }
     }
 
     class ChinArea extends SymmetricalFeature {
         // calculates values of left side
         @Override
-        public void calcLeftSideValues() {
+        public void calcValuesTable() {
         }
     }
 
