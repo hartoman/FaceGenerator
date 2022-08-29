@@ -26,7 +26,6 @@ public class FaceFrame extends JFrame {
    int w,h,rows,columns,wdOfRow,htOfRow;
    Grid grid;
    UiPanel uipanel;
-   Face face;//=new Face(w,h);;
 
     public FaceFrame(String title, int w, int h, int rows, int columns){
         this.w=w;
@@ -35,7 +34,7 @@ public class FaceFrame extends JFrame {
         this.columns=columns;
         wdOfRow = w/columns;
         htOfRow = h/rows;
-        
+
         setSize(w*2, h + 40);
         setTitle(title);
         
@@ -45,7 +44,6 @@ public class FaceFrame extends JFrame {
         uipanel = new UiPanel();
         add(uipanel);
        
-        face=new Face(w,h);
     }
 
 //sets up basic dimensions and layout
@@ -66,13 +64,13 @@ public class FaceFrame extends JFrame {
     class Grid extends JPanel {
 
         private BufferedImage background;
-        
+        private Face face;
     
         Grid() {
             setSize(w,  h);
             setMinimumSize(new Dimension(w/2, h));
             setMaximumSize(new Dimension(w/2, h));
-          //  face = new Face(w,h);
+            face = new Face(w,h);
         }
     
         @Override
@@ -136,10 +134,8 @@ public class FaceFrame extends JFrame {
                 RenderingHints.VALUE_ANTIALIAS_ON);
                 g2d.setRenderingHints(rh);
 
-                if(face!=null){
             // and draw the face
             face.drawFace(g2d);
-        }
         }
     
     }
