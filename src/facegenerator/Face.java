@@ -130,12 +130,12 @@ public class Face {
         calcGuidingLines(8); // calculates assisting rectangles
 
         // the rest
-        eyes.setup();
-        nose.setup();
-        eyebrows.setup();
-        ears.setup();
+        eyes.setBoundingBoxParameters();
+        nose.setBoundingBoxParameters();
+        eyebrows.setBoundingBoxParameters();;
+        ears.setBoundingBoxParameters();
 
-        mouth.setup();
+        mouth.setBoundingBoxParameters();
 
     }
 
@@ -293,14 +293,6 @@ public class Face {
         int left, width, height, right, top, bottom, midy;
         Rectangle boundRect = new Rectangle();
 
-        Hashtable<String, Integer> valuesTable;
-
-        SymmetricalFeature() {
-            valuesTable = new Hashtable<>(); // has the values for the left side
-            setBoundingBoxParameters();
-            calcValuesTable();
-            // setup();
-        }
 
         // for every feature,draws its mirrored equivalent on the right
         Shape drawMirrored(Shape leftFeature, Graphics2D g2d) {
@@ -334,11 +326,7 @@ public class Face {
             midy = (top + bottom) / 2; // middle of height
         }
 
-        // sets up everything
-        abstract void setup();
 
-        // used to calculate the values of the left side
-        abstract void calcValuesTable();
 
     }
 
@@ -351,27 +339,6 @@ public class Face {
 
         int angle; // angle of the shape of the eyes
 
-        @Override
-        void setup() {
-            setBoundingBoxParameters();
-            calcValuesTable();
-        }
-
-
-                // calculates values of left eye
-                @Override
-                public void calcValuesTable() {
-        
-                    int left1 = left;
-                    int right1 = (left + width);
-                    int bhu1 = left + (width / 3);
-                    int bhu2 = left + (width * 2 / 3);
-        
-                    valuesTable.put("left", left1);
-                    valuesTable.put("right", right1);
-                    valuesTable.put("bhU1", bhu1);
-                    valuesTable.put("bhU2", bhu2);
-                }
         
                 void drawEyes(Graphics2D g2d) {
         
@@ -382,13 +349,19 @@ public class Face {
                 }
         
                 void drawEyeball(Graphics2D g2d) {
+                    
+                    int left1 = left;
+                    int right1 = (left + width);
+                    int bhu1 = left + (width / 3);
+                    int bhu2 = left + (width * 2 / 3);
+
                     Path2D.Double eye = new Path2D.Double();
-                    eye.moveTo(valuesTable.get("left"), midy - angle);
-                    eye.curveTo(valuesTable.get("bhU1"), top + distortion1, valuesTable.get("bhU2"), top + distortion1,
-                            valuesTable.get("right"), midy + angle);
-                    eye.curveTo(valuesTable.get("bhU2"), bottom + distortion2, valuesTable.get("bhU1"),
+                    eye.moveTo(left1, midy - angle);
+                    eye.curveTo(bhu1, top + distortion1, bhu2, top + distortion1,
+                    right1, midy + angle);
+                    eye.curveTo(bhu2, bottom + distortion2, bhu1,
                             bottom + distortion2,
-                            valuesTable.get("left"), midy - angle);
+                            left1, midy - angle);
                     eye.closePath();
         
                     Shape eye2 = drawMirrored(eye, g2d);
@@ -430,27 +403,33 @@ public class Face {
                 }
         
                 void drawEyelid(Graphics2D g2d) {
+
+                    int left1 = left;
+                    int right1 = (left + width);
+                    int bhu1 = left + (width / 3);
+                    int bhu2 = left + (width * 2 / 3);
+
                     // draw upper eyelid
                     Path2D.Double eyelidUP = new Path2D.Double();
-                    eyelidUP.moveTo(valuesTable.get("left"), midy - angle);
-                    eyelidUP.curveTo(valuesTable.get("bhU1"), top + distortion1, valuesTable.get("bhU2"), top + distortion1,
-                            valuesTable.get("right"),
+                    eyelidUP.moveTo(left1, midy - angle);
+                    eyelidUP.curveTo(bhu1, top + distortion1, bhu2, top + distortion1,
+                    right1,
                             midy + angle);
-                    eyelidUP.curveTo(valuesTable.get("bhU2"), bottom - distortion3, valuesTable.get("bhU1"),
+                    eyelidUP.curveTo(bhu2, bottom - distortion3, bhu1,
                             bottom - distortion3,
-                            valuesTable.get("left"),
+                            left1,
                             midy - angle);
                     eyelidUP.closePath();
         
                     // draw bottom eyelid
                     Path2D.Double eyelidBOT = new Path2D.Double();
-                    eyelidBOT.moveTo(valuesTable.get("right"), midy + angle);
-                    eyelidBOT.curveTo(valuesTable.get("bhU2"), bottom + distortion2, valuesTable.get("bhU1"),
+                    eyelidBOT.moveTo(right1, midy + angle);
+                    eyelidBOT.curveTo(bhu2, bottom + distortion2, bhu1,
                             bottom + distortion2,
-                            valuesTable.get("left"),
+                            left1,
                             midy - angle);
-                    eyelidBOT.curveTo(valuesTable.get("bhU1"), bottom + distortion3 / 10, valuesTable.get("bhU2"),
-                            bottom + distortion3 / 10, valuesTable.get("right"), midy + angle);
+                    eyelidBOT.curveTo(bhu1, bottom + distortion3 / 10, bhu2,
+                            bottom + distortion3 / 10, right1, midy + angle);
                     eyelidBOT.closePath();
         
                     Shape eyelidUP2 = drawMirrored(eyelidUP, g2d);
@@ -471,8 +450,6 @@ public class Face {
                     g2d.setColor(Color.BLACK);
                 }
 
-
-
     }
 
 
@@ -486,9 +463,7 @@ public class Face {
         int angerpointL, angerpointR, widthEB;
         // beginX always on left, beginY based on anger
 
-        // calculates values of left side
-        @Override
-        public void calcValuesTable() {
+        void drawEyebrows(Graphics2D g2d) {
 
             angerpointL = midy + height * (-anger) / 100;
             angerpointR = midy + height * (+anger) / 100;
@@ -499,28 +474,13 @@ public class Face {
             int bh2x = left + lengthEB * 2 / 3;
             int bh3x = left + lengthEB;
 
-            valuesTable.put("bh1x", bh1x);
-            valuesTable.put("bh2x", bh2x);
-            valuesTable.put("left", left);
-            valuesTable.put("bh3x", bh3x);
-        }
-
-        @Override
-        void setup() {
-
-            setBoundingBoxParameters();
-            calcValuesTable();
-        }
-
-        void drawEyebrows(Graphics2D g2d) {
-
             Path2D.Double eyebrow = new Path2D.Double();
-            eyebrow.moveTo(valuesTable.get("left"), angerpointL);
-            eyebrow.curveTo(valuesTable.get("bh1x"), angerpointL - widthEB / 2, valuesTable.get("bh2x"),
-                    angerpointL - widthEB / 2, valuesTable.get("bh3x"), angerpointR);
-            eyebrow.lineTo(valuesTable.get("bh3x"), angerpointR + widthEB);
-            eyebrow.curveTo(valuesTable.get("bh2x"), angerpointL, valuesTable.get("bh1x"), angerpointL,
-                    valuesTable.get("left"), angerpointL + widthEB);
+            eyebrow.moveTo(left, angerpointL);
+            eyebrow.curveTo(bh1x, angerpointL - widthEB / 2, bh2x,
+                    angerpointL - widthEB / 2, bh3x, angerpointR);
+            eyebrow.lineTo(bh3x, angerpointR + widthEB);
+            eyebrow.curveTo(bh2x, angerpointL, bh1x, angerpointL,
+            left, angerpointL + widthEB);
             eyebrow.closePath();
 
             Shape eyebrow2 = drawMirrored(eyebrow, g2d);
@@ -540,36 +500,6 @@ public class Face {
 
         int noseSize;
 
-        // calculates values of left side
-        @Override
-        public void calcValuesTable() {
-
-            int pos2 = 9 - noseSize;
-            int bridgeBeginx = left + width * noseSize / 9;
-            int bh1x = right;
-            int bh2x = left + width / 2;
-            int bridgeEndx = left + width * pos2 / 9;
-            int bh3x = bridgeEndx - width * pos2 / 2 / 9;
-            int bh4x = left + width * 4 / 5;
-            int bh5x = left + width * 8 / 9;
-
-            valuesTable.put("pos2", pos2);
-            valuesTable.put("bridgeBeginx", bridgeBeginx);
-            valuesTable.put("bh1x", bh1x);
-            valuesTable.put("bh2x", bh2x);
-            valuesTable.put("bridgeEndx", bridgeEndx);
-            valuesTable.put("bh3x", bh3x);
-            valuesTable.put("bh4x", bh4x);
-            valuesTable.put("bh5x", bh5x);
-
-        }
-
-        @Override
-        void setup() {
-            setBoundingBoxParameters();
-            calcValuesTable();
-        }
-
         void drawNose(Graphics2D g2d) {
 
             int bridgeBeginy = top;
@@ -580,18 +510,30 @@ public class Face {
             int bh4y = top + height * 18 / 19;// bh3y+20;
             int bh5y = top + height * 11 / 10;
 
+
+
+            int pos2 = 9 - noseSize;
+            int bridgeBeginx = left + width * noseSize / 9;
+            int bh1x = right;
+            int bh2x = left + width / 2;
+            int bridgeEndx = left + width * pos2 / 9;
+            int bh3x = bridgeEndx - width * pos2 / 2 / 9;
+            int bh4x = left + width * 4 / 5;
+            int bh5x = left + width * 8 / 9;
+
+
             Path2D.Double nose = new Path2D.Double();
-            nose.moveTo(valuesTable.get("bridgeBeginx"), bridgeBeginy);
+            nose.moveTo(bridgeBeginx, bridgeBeginy);
 
-            nose.curveTo(valuesTable.get("bh1x"), bh1y, valuesTable.get("bh2x"),
+            nose.curveTo(bh1x, bh1y, bh2x,
                     bh2y,
-                    valuesTable.get("bridgeEndx"), bridgeEndy);
+                    bridgeEndx, bridgeEndy);
 
-            nose.curveTo(valuesTable.get("bh3x"), bh3y, valuesTable.get("bh4x"),
+            nose.curveTo(bh3x, bh3y, bh4x,
                     bh4y,
-                    valuesTable.get("bh4x"), bh4y);
+                    bh4x, bh4y);
 
-            nose.curveTo(valuesTable.get("bh5x"), bh5y, right, bh5y, left + width,
+            nose.curveTo(bh5x, bh5y, right, bh5y, left + width,
                     bh5y);
 
             g2d.draw(nose);
@@ -608,14 +550,14 @@ public class Face {
         int smile;
         int openness;
 
-        @Override
-        void setup() {
-            setBoundingBoxParameters();
-            calcValuesTable();
-        }
 
-        @Override
-        public void calcValuesTable() {
+        void drawMouth(Graphics2D g2d) {
+
+             mouthSize=0;
+             smile=0;
+             openness=20;
+
+
             int midx=(left+width/2);
             int mouthpointUL1 = midx-width/5-mouthSize-0;
             int mouthpointUR1 = midx+width/5+mouthSize+0;
@@ -631,41 +573,25 @@ public class Face {
             int bh2X=symmetricHorizonal(bh1X);
             int bh2Y=mouthLLY+smile;
 
-            valuesTable.put("mouthpointUL1",mouthpointUL1);
-            valuesTable.put("mouthpointUR1",mouthpointUR1);
-            valuesTable.put("mouthULY",mouthULY);
-            valuesTable.put("mouthpointLL1",mouthpointLL1);
-
-            valuesTable.put("mouthpointLR1",mouthpointLR1);
-            valuesTable.put("mouthLLY",mouthLLY);
-            valuesTable.put("mouthLRY",mouthLRY);
-            valuesTable.put("bh1X",bh1X);
-            valuesTable.put("bh1Y",bh1Y);
-
-            valuesTable.put("bh2X",bh2X);
-            valuesTable.put("bh2Y",bh2Y);
-        }
-
-        void drawMouth(Graphics2D g2d) {
 
 
             Path2D.Double mouth = new Path2D.Double();
-            mouth.moveTo(valuesTable.get("mouthpointUL1"), valuesTable.get("mouthULY"));
-            mouth.curveTo(valuesTable.get("bh1X"), valuesTable.get("bh1Y"), valuesTable.get("bh2X"), valuesTable.get("bh1Y"), valuesTable.get("mouthpointUR1"), valuesTable.get("mouthULY"));
-            mouth.lineTo(valuesTable.get("mouthpointLR1"), valuesTable.get("mouthLLY"));
-            mouth.curveTo(valuesTable.get("bh2X"), valuesTable.get("bh2Y"), valuesTable.get("bh1X"), valuesTable.get("bh2Y"), valuesTable.get("mouthpointLL1"), valuesTable.get("mouthLRY"));
+            mouth.moveTo(mouthpointUL1, mouthULY);
+            mouth.curveTo(bh1X, bh1Y, bh2X, bh1Y, mouthpointUR1, mouthULY);
+            mouth.lineTo(mouthpointLR1, mouthLLY);
+       //     mouth.curveTo(bh2Y, bh1X,-mouthpointLL1 ,bh2Y, mouthpointLL1 ,mouthLRY);
             mouth.closePath();
             
             // upper lips
             Path2D.Double lipsUp = new Path2D.Double();
-            lipsUp.moveTo(valuesTable.get("mouthpointUL1"), valuesTable.get("mouthULY"));
-            lipsUp.curveTo(valuesTable.get("bh1X"), valuesTable.get("bh1Y"), valuesTable.get("bh2X"), valuesTable.get("bh1Y"), valuesTable.get("mouthpointUR1"), valuesTable.get("mouthULY"));
+            lipsUp.moveTo(mouthpointUL1, mouthULY);
+            lipsUp.curveTo(bh1X, bh1Y, bh2X, bh1Y, mouthpointUR1, mouthULY);
             lipsUp.closePath();
                       
             // lower lips
             Path2D.Double lipsDn = new Path2D.Double();
-            lipsDn.moveTo(valuesTable.get("mouthpointLR1"), valuesTable.get("mouthLLY"));
-            lipsDn.curveTo(valuesTable.get("bh2X"), valuesTable.get("bh2Y"), valuesTable.get("bh1X"), valuesTable.get("bh2Y"), valuesTable.get("mouthpointLL1"), valuesTable.get("mouthLRY"));
+            lipsDn.moveTo(mouthpointLR1, mouthLLY);
+            lipsDn.curveTo(bh2X,bh2Y, bh1X, bh2Y, mouthpointLL1, mouthLRY);
             lipsDn.closePath();
 
             g2d.draw(mouth);
@@ -682,22 +608,8 @@ public class Face {
     //
     class Ears extends SymmetricalFeature {
 
-        // calculates values of left side
-        @Override
-        public void calcValuesTable() {
-        }
 
     
-        void setup(){
-
-                        // always must be at begging of setup
-                        setBoundingBoxParameters();
-
-                        // sets up the hashtables of the points that will be needed
-                        calcValuesTable();
-
-        }
-
         Shape leftFeature(){
             Path2D.Double ear = new Path2D.Double();
 
@@ -741,50 +653,24 @@ public class Face {
     }
 
     class TopOfHead extends SymmetricalFeature {
-        @Override
-        void setup() {
-
-        }
-
-        @Override
-        public void calcValuesTable() {
-        }
+   
+        
     }
 
     class Temples extends SymmetricalFeature {
 
-        @Override
-        void setup() {
-
+  
         }
-
-        @Override
-        public void calcValuesTable() {
-        }
-    }
-
+    
+   
     class MoustacheArea extends SymmetricalFeature {
 
-        @Override
-        void setup() {
-
+ 
         }
-
-        @Override
-        public void calcValuesTable() {
-        }
-    }
+   
 
     class ChinArea extends SymmetricalFeature {
 
-        @Override
-        void setup() {
-
-        }
-
-        @Override
-        public void calcValuesTable() {
-        }
     }
 
     class TextureHandler {
