@@ -110,14 +110,13 @@ public class Face {
         // toRect(nose.boundRect, g2d);
         // toRect(eyebrows.boundRect, g2d);
 
-
- //        toRect(moustache.boundRect, g2d);
- //        toRect(mouth.boundRect, g2d);
-  //      toRect(moustache.boundRect, g2d);
-     //   toRect(mouth.boundRect, g2d);
+        // toRect(moustache.boundRect, g2d);
+        // toRect(mouth.boundRect, g2d);
+        // toRect(moustache.boundRect, g2d);
+        // toRect(mouth.boundRect, g2d);
 
         // toRect(chin.boundRect, g2d);
-    //     toRect(ears.boundRect, g2d);
+        // toRect(ears.boundRect, g2d);
         // toRect(topOfHead.boundRect, g2d);
         // toRect(temples.boundRect, g2d);
     }
@@ -132,24 +131,9 @@ public class Face {
         // the rest
         eyes.setBoundingBoxParameters();
         nose.setBoundingBoxParameters();
-        eyebrows.setBoundingBoxParameters();;
+        eyebrows.setBoundingBoxParameters();
         ears.setBoundingBoxParameters();
-
         mouth.setBoundingBoxParameters();
-
-    }
-
-    // draws the features -- most important method!!!
-    void drawAllFeatures(Graphics2D g2d) {
-
-        drawGuidingLines(8, g2d);
-        head.drawHead(g2d);
-        eyes.drawEyes(g2d);
-        nose.drawNose(g2d);
-        eyebrows.drawEyebrows(g2d);
-        ears.drawEars(g2d);
-
-        mouth.drawMouth(g2d);
 
     }
 
@@ -157,18 +141,18 @@ public class Face {
     Rectangle halfFace; // denominates the
     TextureHandler texture = new TextureHandler();
 
-    Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor, hairColor,lipsColor;
+    Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor, hairColor, lipsColor;
 
-    Head head = new Head();
-    Eyes eyes = new Eyes();
-    Nose nose = new Nose();
-    Eyebrows eyebrows = new Eyebrows();
-    Mouth mouth = new Mouth();
-    Ears ears = new Ears();
-    TopOfHead topOfHead = new TopOfHead();
-    Temples temples = new Temples();
-    MoustacheArea moustache = new MoustacheArea();
-    ChinArea chin = new ChinArea();
+    Head head;
+    Eyes eyes;
+    Nose nose;
+    Eyebrows eyebrows;
+    Mouth mouth;
+    Ears ears;
+    TopOfHead topOfHead;
+    Temples temples;
+    MoustacheArea moustache;
+    ChinArea chin;
 
     Randomizer r = new Randomizer();
 
@@ -180,8 +164,18 @@ public class Face {
         maxwidth = w;
         midWidth = maxwidth / 2;
 
-        /* adjustable parameters */
+        head = new Head();
+        eyes = new Eyes();
+        nose = new Nose();
+        eyebrows = new Eyebrows();
+        mouth = new Mouth();
+        ears = new Ears();
+        topOfHead = new TopOfHead();
+        temples = new Temples();
+        moustache = new MoustacheArea();
 
+        chin = new ChinArea();
+        /* adjustable parameters */
         // face
         head.thiccness = 0;// r.randomBetween(0, 50); // thiccness of the face
         skinColor = Color.pink;
@@ -200,24 +194,31 @@ public class Face {
 
         // mouth
         lipsColor = Color.red;
-        mouth.mouthSize = 0;//r.randomBetween(0, 40);        // [0,50]  ??40?
-        mouth.smile = 0;//r.randomBetween(-15, 15);             // [-15,15]
-        mouth.openness =0;// r.randomBetween(0, (int)(Math.abs((double)mouth.smile))); //     [0,(abs)smile*3] 
-    
-    
+        mouth.lipSize = 10;  // r.randomBetween(0,30)    // [0,30]   ?can also 40, but will be caricature
+        mouth.mouthSize = 20;// r.randomBetween(0, 40); // [0,50] ??40?
+        mouth.smile =0;// r.randomBetween(-20, 20); // [-15,15]
+        mouth.openness = 40;// r.randomBetween(0,40)   // [0,40]
 
         // eyebrows
         eyebrows.eyebrowSize = 0;// r.randomBetween(0,25); // [0,25] min-max
         eyebrows.anger = 0;// r.randomBetween(-50, 50);//eyes.angle*2; // [-50,50] angle to determine
                            // expression, 0= neutral
+
+        // always last
+        // calculates all the permanent numbers for the features
+        calcAllFeatures();
     }
 
     // puts everything together
     public void drawFace(Graphics2D g2d) {
-        // calculates the basic rectangles that contain various elements
 
-        calcAllFeatures();
-        drawAllFeatures(g2d);
+        drawGuidingLines(8, g2d);
+        head.drawHead(g2d);
+        eyes.drawEyes(g2d);
+        nose.drawNose(g2d);
+        eyebrows.drawEyebrows(g2d);
+        ears.drawEars(g2d);
+        mouth.drawMouth(g2d);
 
     }
 
@@ -293,7 +294,6 @@ public class Face {
         int left, width, height, right, top, bottom, midy;
         Rectangle boundRect = new Rectangle();
 
-
         // for every feature,draws its mirrored equivalent on the right
         Shape drawMirrored(Shape leftFeature, Graphics2D g2d) {
 
@@ -325,11 +325,9 @@ public class Face {
             bottom = boundRect.height + boundRect.y; // bottomost y
             midy = (top + bottom) / 2; // middle of height
         }
-
-
-
     }
 
+    // done
     class Eyes extends SymmetricalFeature {
 
         // the further from 0, the wider the eye becomes
@@ -339,122 +337,119 @@ public class Face {
 
         int angle; // angle of the shape of the eyes
 
-        
-                void drawEyes(Graphics2D g2d) {
-        
-                    drawEyeball(g2d);
-                    drawPupil(g2d);
-                    drawEyelid(g2d);
-        
-                }
-        
-                void drawEyeball(Graphics2D g2d) {
-                    
-                    int left1 = left;
-                    int right1 = (left + width);
-                    int bhu1 = left + (width / 3);
-                    int bhu2 = left + (width * 2 / 3);
+        void drawEyes(Graphics2D g2d) {
 
-                    Path2D.Double eye = new Path2D.Double();
-                    eye.moveTo(left1, midy - angle);
-                    eye.curveTo(bhu1, top + distortion1, bhu2, top + distortion1,
+            drawEyeball(g2d);
+            drawPupil(g2d);
+            drawEyelid(g2d);
+
+        }
+
+        void drawEyeball(Graphics2D g2d) {
+
+            int left1 = left;
+            int right1 = (left + width);
+            int bhu1 = left + (width / 3);
+            int bhu2 = left + (width * 2 / 3);
+
+            Path2D.Double eye = new Path2D.Double();
+            eye.moveTo(left1, midy - angle);
+            eye.curveTo(bhu1, top + distortion1, bhu2, top + distortion1,
                     right1, midy + angle);
-                    eye.curveTo(bhu2, bottom + distortion2, bhu1,
-                            bottom + distortion2,
-                            left1, midy - angle);
-                    eye.closePath();
-        
-                    Shape eye2 = drawMirrored(eye, g2d);
-        
-                    // paint eyeball
-                    g2d.draw(eye);
-                    g2d.draw(eye2);
-                    g2d.setColor(eyeballColor);
-                    g2d.fill(eye);
-                    g2d.fill(eye2);
-        
-                    g2d.setColor(Color.black);
-                }
-        
-                void drawPupil(Graphics2D g2d) {
-        
-                    Ellipse2D.Double iris = new Ellipse2D.Double();
-                    Ellipse2D.Double pupil = new Ellipse2D.Double();
-                    iris = new Ellipse2D.Double(left + width / 3, top + height / 4, width / 3, height * 4 / 6);
-                    pupil = new Ellipse2D.Double(left + width * 4 / 9, top + height / 2, width / 9, width / 9);
-        
-                    // create iris
-                    Shape iris2 = drawMirrored(iris, g2d);
-                    Shape pupil2 = drawMirrored(pupil, g2d);
-        
-                    g2d.draw(iris);
-                    g2d.draw(iris2);
-                    g2d.setColor(eyePupilColor);
-                    g2d.fill(iris);
-                    g2d.fill(iris2);
-                    g2d.setColor(Color.black);
-        
-                    // draws the pupis
-                    g2d.draw(pupil);
-                    g2d.draw(pupil2);
-                    g2d.fill(pupil2);
-                    g2d.fill(pupil);
-        
-                }
-        
-                void drawEyelid(Graphics2D g2d) {
+            eye.curveTo(bhu2, bottom + distortion2, bhu1,
+                    bottom + distortion2,
+                    left1, midy - angle);
+            eye.closePath();
 
-                    int left1 = left;
-                    int right1 = (left + width);
-                    int bhu1 = left + (width / 3);
-                    int bhu2 = left + (width * 2 / 3);
+            Shape eye2 = drawMirrored(eye, g2d);
 
-                    // draw upper eyelid
-                    Path2D.Double eyelidUP = new Path2D.Double();
-                    eyelidUP.moveTo(left1, midy - angle);
-                    eyelidUP.curveTo(bhu1, top + distortion1, bhu2, top + distortion1,
+            // paint eyeball
+            g2d.draw(eye);
+            g2d.draw(eye2);
+            g2d.setColor(eyeballColor);
+            g2d.fill(eye);
+            g2d.fill(eye2);
+
+            g2d.setColor(Color.black);
+        }
+
+        void drawPupil(Graphics2D g2d) {
+
+            Ellipse2D.Double iris = new Ellipse2D.Double();
+            Ellipse2D.Double pupil = new Ellipse2D.Double();
+            iris = new Ellipse2D.Double(left + width / 3, top + height / 4, width / 3, height * 4 / 6);
+            pupil = new Ellipse2D.Double(left + width * 4 / 9, top + height / 2, width / 9, width / 9);
+
+            // create iris
+            Shape iris2 = drawMirrored(iris, g2d);
+            Shape pupil2 = drawMirrored(pupil, g2d);
+
+            g2d.draw(iris);
+            g2d.draw(iris2);
+            g2d.setColor(eyePupilColor);
+            g2d.fill(iris);
+            g2d.fill(iris2);
+            g2d.setColor(Color.black);
+
+            // draws the pupis
+            g2d.draw(pupil);
+            g2d.draw(pupil2);
+            g2d.fill(pupil2);
+            g2d.fill(pupil);
+
+        }
+
+        void drawEyelid(Graphics2D g2d) {
+
+            int left1 = left;
+            int right1 = (left + width);
+            int bhu1 = left + (width / 3);
+            int bhu2 = left + (width * 2 / 3);
+
+            // draw upper eyelid
+            Path2D.Double eyelidUP = new Path2D.Double();
+            eyelidUP.moveTo(left1, midy - angle);
+            eyelidUP.curveTo(bhu1, top + distortion1, bhu2, top + distortion1,
                     right1,
-                            midy + angle);
-                    eyelidUP.curveTo(bhu2, bottom - distortion3, bhu1,
-                            bottom - distortion3,
-                            left1,
-                            midy - angle);
-                    eyelidUP.closePath();
-        
-                    // draw bottom eyelid
-                    Path2D.Double eyelidBOT = new Path2D.Double();
-                    eyelidBOT.moveTo(right1, midy + angle);
-                    eyelidBOT.curveTo(bhu2, bottom + distortion2, bhu1,
-                            bottom + distortion2,
-                            left1,
-                            midy - angle);
-                    eyelidBOT.curveTo(bhu1, bottom + distortion3 / 10, bhu2,
-                            bottom + distortion3 / 10, right1, midy + angle);
-                    eyelidBOT.closePath();
-        
-                    Shape eyelidUP2 = drawMirrored(eyelidUP, g2d);
-                    Shape eyelidBOT2 = drawMirrored(eyelidBOT, g2d);
-        
-                    g2d.setColor(Color.BLACK);
-                    g2d.draw(eyelidUP);
-                    g2d.draw(eyelidBOT);
-                    g2d.draw(eyelidUP2);
-                    g2d.draw(eyelidBOT2);
-        
-                    // can add eyeshadow
-                    g2d.setColor(makeupEyeColor);
-                    g2d.fill(eyelidUP);
-                    g2d.fill(eyelidBOT);
-                    g2d.fill(eyelidUP2);
-                    g2d.fill(eyelidBOT2);
-                    g2d.setColor(Color.BLACK);
-                }
+                    midy + angle);
+            eyelidUP.curveTo(bhu2, bottom - distortion3, bhu1,
+                    bottom - distortion3,
+                    left1,
+                    midy - angle);
+            eyelidUP.closePath();
+
+            // draw bottom eyelid
+            Path2D.Double eyelidBOT = new Path2D.Double();
+            eyelidBOT.moveTo(right1, midy + angle);
+            eyelidBOT.curveTo(bhu2, bottom + distortion2, bhu1,
+                    bottom + distortion2,
+                    left1,
+                    midy - angle);
+            eyelidBOT.curveTo(bhu1, bottom + distortion3 / 10, bhu2,
+                    bottom + distortion3 / 10, right1, midy + angle);
+            eyelidBOT.closePath();
+
+            Shape eyelidUP2 = drawMirrored(eyelidUP, g2d);
+            Shape eyelidBOT2 = drawMirrored(eyelidBOT, g2d);
+
+            g2d.setColor(Color.BLACK);
+            g2d.draw(eyelidUP);
+            g2d.draw(eyelidBOT);
+            g2d.draw(eyelidUP2);
+            g2d.draw(eyelidBOT2);
+
+            // can add eyeshadow
+            g2d.setColor(makeupEyeColor);
+            g2d.fill(eyelidUP);
+            g2d.fill(eyelidBOT);
+            g2d.fill(eyelidUP2);
+            g2d.fill(eyelidBOT2);
+            g2d.setColor(Color.BLACK);
+        }
 
     }
 
-
-
-    //done
+    // done
     class Eyebrows extends SymmetricalFeature {
 
         int eyebrowSize;
@@ -480,7 +475,7 @@ public class Face {
                     angerpointL - widthEB / 2, bh3x, angerpointR);
             eyebrow.lineTo(bh3x, angerpointR + widthEB);
             eyebrow.curveTo(bh2x, angerpointL, bh1x, angerpointL,
-            left, angerpointL + widthEB);
+                    left, angerpointL + widthEB);
             eyebrow.closePath();
 
             Shape eyebrow2 = drawMirrored(eyebrow, g2d);
@@ -495,7 +490,7 @@ public class Face {
 
     }
 
-    //done
+    // done
     class Nose extends SymmetricalFeature {
 
         int noseSize;
@@ -510,8 +505,6 @@ public class Face {
             int bh4y = top + height * 18 / 19;// bh3y+20;
             int bh5y = top + height * 11 / 10;
 
-
-
             int pos2 = 9 - noseSize;
             int bridgeBeginx = left + width * noseSize / 9;
             int bh1x = right;
@@ -520,7 +513,6 @@ public class Face {
             int bh3x = bridgeEndx - width * pos2 / 2 / 9;
             int bh4x = left + width * 4 / 5;
             int bh5x = left + width * 8 / 9;
-
 
             Path2D.Double nose = new Path2D.Double();
             nose.moveTo(bridgeBeginx, bridgeBeginy);
@@ -549,125 +541,99 @@ public class Face {
         int mouthSize;
         int smile;
         int openness;
-
+        int lipSize;
 
         void drawMouth(Graphics2D g2d) {
 
-             mouthSize=0;
-             smile=0;
-             openness=20;
+      //      mouthSize = 0;
+       //     smile = 0;
+        //    openness = 0;
+
+            int midx = (left + width / 2);
+            int mouthpointUL1 = midx - width / 5 - mouthSize - 0;
+            int mouthpointUR1 = midx + width / 5 + mouthSize + 0;
+            int mouthULY = midy - ((height * smile) / 100);
+            int mouthLLY = midy + (height * smile / 100);
+            int bh1X = left + (width * 2 / 5);
+            int bh1Y = mouthULY -openness+smile;
+            int bh2X = symmetricHorizonal(bh1X);
+            int bh2Y = mouthLLY + openness+smile;
+
+            
+            // lips
+            Path2D.Double lips = new Path2D.Double();
+            lips.moveTo(mouthpointUL1, mouthULY);
+            lips.curveTo(bh1X, bh1Y-lipSize, bh2X, bh1Y-lipSize, mouthpointUR1, mouthULY);
+            lips.curveTo(bh2X, bh2Y+lipSize, bh1X, bh2Y+lipSize, mouthpointUL1, mouthULY);
+            lips.closePath();
 
 
-            int midx=(left+width/2);
-            int mouthpointUL1 = midx-width/5-mouthSize-0;
-            int mouthpointUR1 = midx+width/5+mouthSize+0;
-            int mouthULY= midy-((height*openness)/100);
-            int mouthpointLL1 = midx-width/5-mouthSize+smile;
-
-            int mouthpointLR1 = midx+width/5+mouthSize-smile;
-            int mouthLLY= midy+(height*openness/100);
-            int mouthLRY =midy+((height*openness)/100);
-            int bh1X=left+(width*1/5);
-            int bh1Y=mouthULY+smile;
-
-            int bh2X=symmetricHorizonal(bh1X);
-            int bh2Y=mouthLLY+smile;
-
-
-
+            // mouth
             Path2D.Double mouth = new Path2D.Double();
             mouth.moveTo(mouthpointUL1, mouthULY);
             mouth.curveTo(bh1X, bh1Y, bh2X, bh1Y, mouthpointUR1, mouthULY);
-            mouth.lineTo(mouthpointLR1, mouthLLY);
-       //     mouth.curveTo(bh2Y, bh1X,-mouthpointLL1 ,bh2Y, mouthpointLL1 ,mouthLRY);
+            mouth.curveTo(bh2X, bh2Y, bh1X, bh2Y, mouthpointUL1, mouthULY);
             mouth.closePath();
-            
-            // upper lips
-            Path2D.Double lipsUp = new Path2D.Double();
-            lipsUp.moveTo(mouthpointUL1, mouthULY);
-            lipsUp.curveTo(bh1X, bh1Y, bh2X, bh1Y, mouthpointUR1, mouthULY);
-            lipsUp.closePath();
-                      
-            // lower lips
-            Path2D.Double lipsDn = new Path2D.Double();
-            lipsDn.moveTo(mouthpointLR1, mouthLLY);
-            lipsDn.curveTo(bh2X,bh2Y, bh1X, bh2Y, mouthpointLL1, mouthLRY);
-            lipsDn.closePath();
 
+            g2d.setColor(lipsColor);
+            g2d.draw(lips);
+            g2d.fill(lips);
+            g2d.setColor(Color.black);
             g2d.draw(mouth);
             g2d.fill(mouth);
-            g2d.draw(lipsUp);
-            g2d.draw(lipsDn);
-            g2d.setColor(lipsColor);
-            g2d.fill(lipsUp);
-            g2d.fill(lipsDn);
-            g2d.setColor(Color.black);
+           
         }
     }
 
     //
     class Ears extends SymmetricalFeature {
 
-
-    
-        Shape leftFeature(){
+        Shape leftFeature() {
             Path2D.Double ear = new Path2D.Double();
 
-            ear.moveTo(100,200);
-            ear.lineTo(150,300);
+            ear.moveTo(100, 200);
+            ear.lineTo(150, 300);
             ear.closePath();
 
             return ear;
         }
 
-        void drawEars(Graphics2D g2d){
+        void drawEars(Graphics2D g2d) {
 
             g2d.draw(leftFeature());
 
-            Shape rightFeature=leftFeature();
+            Shape rightFeature = leftFeature();
 
             AffineTransform at = new AffineTransform();
 
             // first move to new position around center Y axis
-            int newMaxX = (int)(rightFeature.getBounds().getX());
-            
+            int newMaxX = (int) (rightFeature.getBounds().getX());
+
             at.translate(symmetricHorizonal(newMaxX), 0);
 
             // we mirror it (around axis x=0)
             at.scale(-1, 1);
 
-            //  return it to its original (new) position
+            // return it to its original (new) position
             at.translate(-newMaxX, 0);
 
-
-
             g2d.draw(at.createTransformedShape(rightFeature));
-            
+
         }
-    
-
-
-
-
 
     }
 
     class TopOfHead extends SymmetricalFeature {
-   
-        
+
     }
 
     class Temples extends SymmetricalFeature {
 
-  
-        }
-    
-   
+    }
+
     class MoustacheArea extends SymmetricalFeature {
 
- 
-        }
-   
+    }
 
     class ChinArea extends SymmetricalFeature {
 
