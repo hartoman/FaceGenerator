@@ -11,8 +11,6 @@ package facegenerator;
 import Toolz.*;
 import java.awt.*;
 import java.awt.geom.*;
-import java.util.Hashtable;
-//import java.util.Enumeration;
 
 /**
  *
@@ -76,9 +74,14 @@ public class Face {
                 (x1 + width1),
                 (y1 + height1));
 
-        ears.boundRect = getBoundingBox(x1 - width1 / 6, (y1 + height1 * 5 / 2 / numLines),
-                (x1 + width1 * 3 / 12),
-                (y1 + height1 * 5 / numLines));
+        // the box for the ears is a bit trickier.. we need to calculate the exact X of
+        // the bezier for given Ys
+        int yPos1 = (y1 + height1 * 6 / 2 / numLines);
+        int yPos2 = (y1 + height1 * 5 / numLines);
+        Point bezPoint1 = headPointOnYpos(yPos1);
+        Point bezPoint2 = headPointOnYpos(yPos2);
+        int rightbound = (int) Math.max(bezPoint1.x, bezPoint2.x);
+        ears.boundRect = getBoundingBox(rightbound - width1 * 3 / 6, yPos1, rightbound, yPos2);
 
         topOfHead.boundRect = getBoundingBox(x1 + width1 * 3 / 2 / 12, (y1),
                 (x1 + width1),
@@ -97,6 +100,9 @@ public class Face {
         int width1 = (int) halfFace.getWidth();
         int height1 = (int) halfFace.getHeight();
 
+        // blue color for assisting lines
+        g2d.setColor(Color.blue);
+
         // draws the horizontal lines
         for (int i = 0; i < numLines; i++) {
             // g2d.drawLine(x1, y1 + height1 * i / numLines, width1 + x1, y1 + height1 * i /
@@ -106,6 +112,17 @@ public class Face {
         // draw vertical lines for the eyes
         // g2d.drawLine(x1 + width1 * 2 / 6, y1, x1 + width1 * 2 / 6, height1 + y1);
         // g2d.drawLine(x1 + width1 * 5 / 6, y1, x1 + width1 * 5 / 6, height1 + y1);
+
+        // show bezier handles (endpoints of the line)
+        Path2D.Double bez = new Path2D.Double();
+        bez.moveTo(head.bXL1, head.bY1);
+        bez.lineTo(head.bXL2, head.bY2);
+        g2d.draw(bez);
+
+        // gray color for bounding rectangles
+        g2d.setColor(Color.gray);
+
+        // toRect(halfFace, g2d);
 
         // toRect(nose.boundRect, g2d);
         // toRect(eyebrows.boundRect, g2d);
@@ -119,6 +136,36 @@ public class Face {
         // toRect(ears.boundRect, g2d);
         // toRect(topOfHead.boundRect, g2d);
         // toRect(temples.boundRect, g2d);
+
+        // line starting from middle of face and ending on outline at the given height
+        drawBezHeight(height/2,g2d);
+
+       //back to default
+       g2d.setColor(Color.black);
+    }
+
+    void drawBezHeight(int yPos1, Graphics2D g2d) {
+
+        Path2D.Double bezheight1 = new Path2D.Double();
+        Point bezPoint1 = headPointOnYpos(yPos1);
+
+        bezheight1.moveTo(maxwidth - midWidth, yPos1);
+        bezheight1.lineTo(bezPoint1.x, yPos1);
+        g2d.setColor(Color.red);
+        g2d.draw(bezheight1);
+        g2d.setColor(Color.black);
+    }
+
+    // returns the point of the face outline corresponding to height = yPos
+    Point headPointOnYpos(int yPos) {
+
+        Point x = new Point(midWidth-50, yPos);
+        Point ptA = new Point(midWidth, minHeight);
+        Point ptB = new Point(midWidth, height);
+        Point cp0 = new Point(head.bXL1, head.bY1);
+        Point cp1 = new Point(head.bXL2, head.bY2);
+        LineHandler lh = new LineHandler();
+        return lh.bezierPointAt(x, ptA, ptB, cp0, cp1);
     }
 
     // calculates coordinates for facial features
@@ -138,7 +185,7 @@ public class Face {
     }
 
     int minHeight, height, maxwidth, midHeight, midWidth;
-    Rectangle halfFace; // denominates the
+    Rectangle halfFace; // marks the area of the left half of the face
     TextureHandler texture = new TextureHandler();
 
     Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor, hairColor, lipsColor;
@@ -177,7 +224,10 @@ public class Face {
         chin = new ChinArea();
         /* adjustable parameters */
         // face
-        head.thiccness = 0;// r.randomBetween(0, 50); // thiccness of the face
+        head.thiccness = 50;// r.randomBetween(0, 50); // thiccness of the face
+        head.mod1 = 50;// r.randomBetween(0, 50 - head.thiccness); // head shape [0,50]: 0 is sharp, 50
+                      // is potatohead
+
         skinColor = Color.pink;
 
         // eyes
@@ -186,7 +236,7 @@ public class Face {
         // makeupEyeColor=skinColor; // ==skincolor if no make-up
         eyes.distortion1 = 0;// r.randomBetween(-10, 10); // width for upper eyeball -- [-10,10]
         eyes.distortion2 = 0;// r.randomBetween(-10, 10); // for lower eyeball -- [-10,10]
-        eyes.distortion3 = 50;// r.randomBetween(25, 75); // eyelid openness-- [0,75], 0=closed, 75=wide open
+        eyes.distortion3 = 45;// r.randomBetween(25, 75); // eyelid openness-- [0,75], 0=closed, 75=wide open
         eyes.angle = 0;// r.randomBetween(-25, 25); // angle of the eyes 0=straight, 20= inward
 
         // nose
@@ -194,19 +244,25 @@ public class Face {
 
         // mouth
         lipsColor = Color.red;
-        mouth.lipSize = 10;  // r.randomBetween(0,30)    // [0,30]   ?can also 40, but will be caricature
-        mouth.mouthSize = 20;// r.randomBetween(0, 40); // [0,50] ??40?
-        mouth.smile =0;// r.randomBetween(-20, 20); // [-15,15]
-        mouth.openness = 40;// r.randomBetween(0,40)   // [0,40]
+        mouth.lipSize = 0; // r.randomBetween(0,30) // [0,30] ?can also 40, but will be caricature
+        mouth.mouthSize = 0;// r.randomBetween(0, 40); // [0,50] ??40?
+        mouth.smile = 0;// r.randomBetween(-20, 20); // [-15,15]
+        mouth.openness = 0;// r.randomBetween(0,40) // [0,40]
 
         // eyebrows
         eyebrows.eyebrowSize = 0;// r.randomBetween(0,25); // [0,25] min-max
         eyebrows.anger = 0;// r.randomBetween(-50, 50);//eyes.angle*2; // [-50,50] angle to determine
                            // expression, 0= neutral
 
+        // ears
+        ears.earSize = 0; // r.randomBetween(0,50); // [0,50]
         // always last
         // calculates all the permanent numbers for the features
         calcAllFeatures();
+
+        LineHandler ln = new LineHandler();
+        System.out.println(ln.pointsToLinear(new Point(0,1), new Point(1,5)).toString());
+
     }
 
     // puts everything together
@@ -226,27 +282,22 @@ public class Face {
     class Head {
 
         int thiccness; // larger number == fatter, values range [0-50]
+        int mod1;// ,mod2,mod4,mod3;
+
         int bXL1, bXR1, bY1; // bezier handle 1 (ear-eye axis) -- x for L, R and Y is the same
         int bXL2, bXR2, bY2; // bezier handle 2 (nose-mouth axis) -- x for L, R and Y is the same
 
         // calculates head size
         public void calcHead() {
 
-            int thinness = 50 - thiccness;
-            int mod1 = r.randomBetween(0, thinness);
-            // sum of numenators of (bXL1 + bXL2) must be in [0,5]
-            bXL1 = midWidth * mod1 / 120;
+            int mod2 = r.randomBetween(0, 10); // [0,10]
+            int mod4 = r.randomBetween(110, 120); // [110,120]
+            int mod3 = 50 - thiccness - mod1;
 
-            // bY1 numenator deviation must always be equal or lesser than 10% of height
-            int mod2 = r.randomBetween(0, 10);
+            bXL1 = midWidth * mod1 / 120;
             bY1 = (minHeight + ((height * mod2) / 120));
 
-            // sum of numenators of (bXL1 + bXL2) must be in [0,5]
-            int mod3 = thinness - mod1;
             bXL2 = midWidth * mod3 / 120;
-
-            // bY2 numenator must always be greater than 90% of height
-            int mod4 = r.randomBetween(110, 120);
             bY2 = (height - (minHeight * mod4) / 120);
 
             // calculates the other half of the head
@@ -279,9 +330,8 @@ public class Face {
             head.closePath();
 
             g2d.draw(head);
-
             g2d.setColor(skinColor);
-            // g2d.fill(head);
+            // g2d.fill(head); //with skin color
 
         }
 
@@ -537,6 +587,7 @@ public class Face {
 
     }
 
+    // done
     class Mouth extends SymmetricalFeature {
         int mouthSize;
         int smile;
@@ -545,9 +596,9 @@ public class Face {
 
         void drawMouth(Graphics2D g2d) {
 
-      //      mouthSize = 0;
-       //     smile = 0;
-        //    openness = 0;
+            // mouthSize = 0;
+            // smile = 0;
+            // openness = 0;
 
             int midx = (left + width / 2);
             int mouthpointUL1 = midx - width / 5 - mouthSize - 0;
@@ -555,18 +606,16 @@ public class Face {
             int mouthULY = midy - ((height * smile) / 100);
             int mouthLLY = midy + (height * smile / 100);
             int bh1X = left + (width * 2 / 5);
-            int bh1Y = mouthULY -openness+smile;
+            int bh1Y = mouthULY - openness + smile;
             int bh2X = symmetricHorizonal(bh1X);
-            int bh2Y = mouthLLY + openness+smile;
+            int bh2Y = mouthLLY + openness + smile;
 
-            
             // lips
             Path2D.Double lips = new Path2D.Double();
             lips.moveTo(mouthpointUL1, mouthULY);
-            lips.curveTo(bh1X, bh1Y-lipSize, bh2X, bh1Y-lipSize, mouthpointUR1, mouthULY);
-            lips.curveTo(bh2X, bh2Y+lipSize, bh1X, bh2Y+lipSize, mouthpointUL1, mouthULY);
+            lips.curveTo(bh1X, bh1Y - lipSize, bh2X, bh1Y - lipSize, mouthpointUR1, mouthULY);
+            lips.curveTo(bh2X, bh2Y + lipSize, bh1X, bh2Y + lipSize, mouthpointUL1, mouthULY);
             lips.closePath();
-
 
             // mouth
             Path2D.Double mouth = new Path2D.Double();
@@ -581,44 +630,46 @@ public class Face {
             g2d.setColor(Color.black);
             g2d.draw(mouth);
             g2d.fill(mouth);
-           
+
         }
     }
 
     //
     class Ears extends SymmetricalFeature {
 
-        Shape leftFeature() {
-            Path2D.Double ear = new Path2D.Double();
-
-            ear.moveTo(100, 200);
-            ear.lineTo(150, 300);
-            ear.closePath();
-
-            return ear;
-        }
+        int earSize;
 
         void drawEars(Graphics2D g2d) {
 
-            g2d.draw(leftFeature());
+            earSize = 0; // [0,50]
 
-            Shape rightFeature = leftFeature();
+            int earMidpoint = ((left + width / 2) - width * earSize / 100);
 
-            AffineTransform at = new AffineTransform();
+            int bh1x = right;// earMidpoint+width/2;//+width*2/3;
+            int bh1y = top;
+            int bh2x = left;// +width/5;
+            int bh2y = top;
 
-            // first move to new position around center Y axis
-            int newMaxX = (int) (rightFeature.getBounds().getX());
+            int bh3x = bh2x + width * 2 / 3;
+            int bh3y = bottom;
+            int bh4x = left + width;
+            int bh4y = bottom + height / 3;
 
-            at.translate(symmetricHorizonal(newMaxX), 0);
+            /*
+             * Path2D.Double bh1line = new Path2D.Double();
+             * bh1line.moveTo(bh3x, bh3y);
+             * bh1line.lineTo(bh4x, bh4y);
+             * g2d.draw(bh1line);
+             */
 
-            // we mirror it (around axis x=0)
-            at.scale(-1, 1);
+            Path2D.Double ear = new Path2D.Double();
+            ear.moveTo(right, top + height / 3);
+            ear.curveTo(bh1x, bh1y, bh2x, bh1y, earMidpoint + width / 4, midy + height / 3);
+            ear.curveTo(bh3x, bh3y, bh4x, bh4y, right, top + height * 4 / 5);
+            ear.closePath();
+            g2d.draw(ear);
 
-            // return it to its original (new) position
-            at.translate(-newMaxX, 0);
-
-            g2d.draw(at.createTransformedShape(rightFeature));
-
+            g2d.draw(drawMirrored(ear,g2d));
         }
 
     }
