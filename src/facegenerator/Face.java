@@ -19,18 +19,6 @@ import java.awt.geom.*;
 
 public class Face {
 
-    /* AUXILIARY METHODS */
-    /* THESE ARE COMMON FUNCTIONAL COMPONENTS OF */
-    // gets ths symmentrical of x on the horizontal axis
-    public int symmetricHorizonal(int x) {
-        return maxwidth - x;
-    }
-
-    // gets the approximate bounding box of a shape
-    public Rectangle getBoundingBox(int leftMostX, int topMostY, int rightMostX, int bottomMostY) {
-        return new Rectangle(leftMostX, topMostY, rightMostX - leftMostX, bottomMostY - topMostY);
-    }
-
     // directly draws inserted rect
     public void toRect(Rectangle rect, Graphics2D g2d) {
 
@@ -43,67 +31,12 @@ public class Face {
 
     }
 
-    // divides the face to calculate bounding rectangles for facial features
-    public void calcGuidingLines(int numLines) {
-
-        int x1 = (int) halfFace.getX();
-        int y1 = (int) halfFace.getY();
-        int width1 = (int) halfFace.getWidth();
-        int height1 = (int) halfFace.getHeight();
-
-        /* we get the bounding boxes for all facial features */
-        eyes.boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 3 / numLines),
-                (x1 + width1 * 5 / 6),
-                (y1 + height1 * 4 / numLines));
-
-        eyebrows.boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 5 / 2 / numLines),
-                (x1 + width1),
-                (y1 + height1 * 3 / numLines));
-
-        nose.boundRect = getBoundingBox(x1 + width1 * 4 / 6, (y1 + height1 * 3 / numLines),
-                (x1 + width1),
-                (y1 + height1 * 11 / 2 / numLines));
-
-        moustache.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 11 / 2 / numLines),
-                (x1 + width1),
-                (y1 + height1 * 13 / 2 / numLines));
-
-        mouth.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 6 / numLines),
-                symmetricHorizonal(x1 + width1 * 3 / 6),
-                (y1 + height1 * 7 / numLines));
-
-        chin.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 7 / numLines),
-                (x1 + width1),
-                (y1 + height1));
-
-        // the box for the ears is a bit trickier.. we need to calculate the exact X of
-        // the bezier for given Ys
-        int yPos1 = (y1 + height1 * 5 / 2 / numLines);
-        int yPos2 = (y1 + height1 * 5 / numLines);
-        Point bezPoint1 = headPointOnYpos(yPos1);
-        Point bezPoint2 = headPointOnYpos(yPos2);
-        int rightbound = (int) Math.max(bezPoint1.x, bezPoint2.x);
-        ears.boundRect = getBoundingBox(rightbound - width1 * 3 / 6, yPos1, rightbound, yPos2);
-
-        topOfHead.boundRect = getBoundingBox(x1 + width1 * 3 / 2 / 12, (y1),
-                (x1 + width1),
-                (y1 + height1 * 5 / 2 / numLines));
-
-        ///
-        int yTmpl1 = (y1 + height1 * 4 / numLines);
-        Point temple1 = headPointOnYpos(yTmpl1);
-        temples.boundRect = getBoundingBox(temple1.x, (y1 + height1 * 6 / 5 / numLines),
-                (x1 + width1 * 3 / 2 / 6),
-                (y1 + height1 * 3 / numLines));
-
-    }
-
     // draws a single horizontal line from middle of screen up to bezier curve of
     // face
     void drawBezHeight(int yPos1, Graphics2D g2d) {
 
         Path2D.Double bezheight1 = new Path2D.Double();
-        Point bezPoint1 = headPointOnYpos(yPos1);
+        Point bezPoint1 = rc.headPointOnYpos(yPos1);
 
         bezheight1.moveTo(maxwidth - midWidth, yPos1);
         bezheight1.lineTo(bezPoint1.x, yPos1);
@@ -112,23 +45,14 @@ public class Face {
         g2d.setColor(Color.black);
     }
 
-    // returns the point of the face outline corresponding to height = yPos
-    Point headPointOnYpos(int yPos) {
-
-        Point x = new Point(midWidth, yPos);
-        Point ptA = new Point(midWidth, minHeight);
-        Point ptB = new Point(midWidth, height);
-        Point cp0 = new Point(head.bXL1, head.bY1);
-        Point cp1 = new Point(head.bXL2, head.bY2);
-        LineHandler lh = new LineHandler();
-        return lh.bezierPointAt(x, ptA, ptB, cp0, cp1);
-    }
-/************************************************************************************* */
-
+    /************************************************************************************* */
 
     int minHeight, height, maxwidth, midHeight, midWidth;
     Rectangle halfFace; // marks the area of the left half of the face
-    TextureHandler texture = new TextureHandler();
+
+    TextureHandler texture;// = new TextureHandler();
+    RectComputer rc = new RectComputer(); // calculates all rects
+    Randomizer r = new Randomizer();
 
     Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor, hairColor, lipsColor;
 
@@ -142,8 +66,6 @@ public class Face {
     Temples temples;
     MoustacheArea moustache;
     ChinArea chin;
-
-    Randomizer r = new Randomizer();
 
     // in the constructor all important parameters can be calibrated
     public Face(int w, int h) {
@@ -206,12 +128,12 @@ public class Face {
 
         // moustache
         moustache.hasHair = false;
-        moustache.moustacheSize = 10;       //      [0,30]
-        moustache.curled = -15;             //      [0,50]
-     
+        moustache.moustacheSize = 10; // [0,30]
+        moustache.curled = -15; // [0,50]
+
         // always last
         // calculates all the permanent numbers for the features
-        calcAllFeatures();
+        rc.calcAllFeatures();
 
     }
 
@@ -265,25 +187,6 @@ public class Face {
         g2d.setColor(Color.black);
     }
 
-    // calculates coordinates for facial features
-    void calcAllFeatures() {
-
-        // these two first
-        head.calcHead(); // gets ratios for the rest
-        calcGuidingLines(8); // calculates assisting rectangles
-
-        // the rest
-        eyes.setBoundingBoxParameters();
-        nose.setBoundingBoxParameters();
-        eyebrows.setBoundingBoxParameters();
-        ears.setBoundingBoxParameters();
-        mouth.setBoundingBoxParameters();
-        temples.setBoundingBoxParameters();
-        topOfHead.setBoundingBoxParameters();
-        moustache.setBoundingBoxParameters();
-
-    }
-
     // puts everything together
     public void drawFace(Graphics2D g2d) {
 
@@ -299,7 +202,8 @@ public class Face {
         moustache.drawMoustache(g2d);
     }
 
-    // encompasses all features of the head. The rest of the features are drawn based on these
+    // encompasses all features of the head. The rest of the features are drawn
+    // based on these
     class Head {
 
         int thiccness; // larger number == fatter, values range [0-50]
@@ -322,11 +226,11 @@ public class Face {
             bY2 = (height - (minHeight * mod4) / 120);
 
             // calculates the other half of the head
-            bXR1 = symmetricHorizonal(bXL1);
-            bXR2 = symmetricHorizonal(bXL2);
+            bXR1 = rc.symmetricHorizonal(bXL1);
+            bXR2 = rc.symmetricHorizonal(bXL2);
 
             // sets the rectangle boundary of the left half of the face
-            halfFace = getBoundingBox(Math.max(bXL1, bXL2), minHeight, midWidth, height);
+            halfFace = rc.getBoundingBox(Math.max(bXL1, bXL2), minHeight, midWidth, height);
 
         }
 
@@ -375,7 +279,7 @@ public class Face {
             // move to new position around center Y axis
             int newMaxX = (int) (rightFeature.getBounds().getX());
 
-            at.translate(symmetricHorizonal(newMaxX), 0);
+            at.translate(rc.symmetricHorizonal(newMaxX), 0);
 
             // mirror it (around axis x=0)
             at.scale(-1, 1);
@@ -628,7 +532,7 @@ public class Face {
             int mouthLLY = midy + (height * smile / 100);
             int bh1X = left + (width * 2 / 5);
             int bh1Y = mouthULY - openness + smile;
-            int bh2X = symmetricHorizonal(bh1X);
+            int bh2X = rc.symmetricHorizonal(bh1X);
             int bh2Y = mouthLLY + openness + smile;
 
             // lips
@@ -752,31 +656,33 @@ public class Face {
             }
         }
     }
-//done
+
+    // done
     class MoustacheArea extends SymmetricalFeature {
 
         boolean hasHair;
-        int moustacheSize;      //[0,30]
-        int curled;              //[0,50]
+        int moustacheSize; // [0,30]
+        int curled; // [0,50]
 
         void drawMoustache(Graphics2D g2d) {
 
-            if (curled<0){
-                moustacheSize=Math.max(3,moustacheSize);
+            if (curled < 0) {
+                moustacheSize = Math.max(3, moustacheSize);
             }
 
             if (hasHair) {
 
-                int moustacheEnd = right-width*(1+moustacheSize)/10;
-                int angleModifier ;
-                angleModifier = -height*curled/10;
+                int moustacheEnd = right - width * (1 + moustacheSize) / 10;
+                int angleModifier;
+                angleModifier = -height * curled / 10;
                 Path2D.Double moust = new Path2D.Double();
-                moust.moveTo(right,top);
-            
-                moust.curveTo(moustacheEnd+(moustacheSize*9/10), top, moustacheEnd+moustacheSize*1/10, top , moustacheEnd, top+angleModifier*2/3);
-                moust.curveTo(moustacheEnd+(moustacheSize*1/10), top+height*2/3, moustacheEnd+(moustacheSize*9/10), top+height/3 , right, top+height/2);
+                moust.moveTo(right, top);
 
-                
+                moust.curveTo(moustacheEnd + (moustacheSize * 9 / 10), top, moustacheEnd + moustacheSize * 1 / 10, top,
+                        moustacheEnd, top + angleModifier * 2 / 3);
+                moust.curveTo(moustacheEnd + (moustacheSize * 1 / 10), top + height * 2 / 3,
+                        moustacheEnd + (moustacheSize * 9 / 10), top + height / 3, right, top + height / 2);
+
                 Shape moust2 = drawMirrored(moust);
                 g2d.draw(moust);
                 g2d.draw(moust2);
@@ -788,8 +694,6 @@ public class Face {
             }
 
         }
-
-        
 
     }
 
@@ -804,10 +708,116 @@ public class Face {
 
         // set the color schemes
         public void setTextures(String skinTexture, String pupilTexture, String hairTexture) {
+
             this.skinTexture = skinTexture;
             this.pupilTexture = pupilTexture;
             this.hairTexture = hairTexture;
         }
+
+    }
+
+    // contains all methods used for the creation of the facial features
+    class RectComputer {
+
+        // calculates coordinates for all facial features
+        void calcAllFeatures() {
+
+            // these two first
+            head.calcHead(); // gets ratios for the rest
+            calcGuidingLines(8); // calculates assisting rectangles
+
+            // the rest
+            eyes.setBoundingBoxParameters();
+            nose.setBoundingBoxParameters();
+            eyebrows.setBoundingBoxParameters();
+            ears.setBoundingBoxParameters();
+            mouth.setBoundingBoxParameters();
+            temples.setBoundingBoxParameters();
+            topOfHead.setBoundingBoxParameters();
+            moustache.setBoundingBoxParameters();
+
+        }
+
+        // divides the face to calculate bounding rectangles for facial features
+        void calcGuidingLines(int numLines) {
+
+            int x1 = (int) halfFace.getX();
+            int y1 = (int) halfFace.getY();
+            int width1 = (int) halfFace.getWidth();
+            int height1 = (int) halfFace.getHeight();
+
+            /* we get the bounding boxes for all facial features */
+            eyes.boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 3 / numLines),
+                    (x1 + width1 * 5 / 6),
+                    (y1 + height1 * 4 / numLines));
+
+            eyebrows.boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 5 / 2 / numLines),
+                    (x1 + width1),
+                    (y1 + height1 * 3 / numLines));
+
+            nose.boundRect = getBoundingBox(x1 + width1 * 4 / 6, (y1 + height1 * 3 / numLines),
+                    (x1 + width1),
+                    (y1 + height1 * 11 / 2 / numLines));
+
+            moustache.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 11 / 2 / numLines),
+                    (x1 + width1),
+                    (y1 + height1 * 13 / 2 / numLines));
+
+            mouth.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 6 / numLines),
+                    symmetricHorizonal(x1 + width1 * 3 / 6),
+                    (y1 + height1 * 7 / numLines));
+
+            chin.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 7 / numLines),
+                    (x1 + width1),
+                    (y1 + height1));
+
+            // the box for the ears is a bit trickier.. we need to calculate the exact X of
+            // the bezier for given Ys
+            int yPos1 = (y1 + height1 * 5 / 2 / numLines);
+            int yPos2 = (y1 + height1 * 5 / numLines);
+            Point bezPoint1 = headPointOnYpos(yPos1);
+            Point bezPoint2 = headPointOnYpos(yPos2);
+            int rightbound = (int) Math.max(bezPoint1.x, bezPoint2.x);
+            ears.boundRect = getBoundingBox(rightbound - width1 * 3 / 6, yPos1, rightbound, yPos2);
+
+            topOfHead.boundRect = getBoundingBox(x1 + width1 * 3 / 2 / 12, (y1),
+                    (x1 + width1),
+                    (y1 + height1 * 5 / 2 / numLines));
+            int yTmpl1 = (y1 + height1 * 4 / numLines);
+            Point temple1 = headPointOnYpos(yTmpl1);
+            temples.boundRect = getBoundingBox(temple1.x, (y1 + height1 * 6 / 5 / numLines),
+                    (x1 + width1 * 3 / 2 / 6),
+                    (y1 + height1 * 3 / numLines));
+
+        }
+
+        // returns the point of the face outline corresponding to height = yPos
+        Point headPointOnYpos(int yPos) {
+
+            Point x = new Point(midWidth, yPos);
+            Point ptA = new Point(midWidth, minHeight);
+            Point ptB = new Point(midWidth, height);
+            Point cp0 = new Point(head.bXL1, head.bY1);
+            Point cp1 = new Point(head.bXL2, head.bY2);
+            LineHandler lh = new LineHandler();
+            return lh.bezierPointAt(x, ptA, ptB, cp0, cp1);
+        }
+
+        // gets ths symmentrical of x on the horizontal axis
+        public int symmetricHorizonal(int x) {
+            return maxwidth - x;
+        }
+
+        // gets the approximate bounding box of a shape
+        public Rectangle getBoundingBox(int leftMostX, int topMostY, int rightMostX, int bottomMostY) {
+            return new Rectangle(leftMostX, topMostY, rightMostX - leftMostX, bottomMostY - topMostY);
+        }
+
+        // references outer class
+        Face outer() {
+            return Face.this;
+        }
+
     }
 
 }
