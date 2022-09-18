@@ -1,10 +1,11 @@
 package facegenerator;
+
 import Toolz.*;
+import Toolz.LineHandler.*;
 import java.awt.*;
 
-
- // contains all methods used for the creation of the facial features
- public class RectComputer {
+// contains all methods used for the creation of the facial features
+public class RectComputer {
 
     // calculates coordinates for all facial features
     public static void calcAllFeatures() {
@@ -19,9 +20,12 @@ import java.awt.*;
         Face.eyebrows.setBoundingBoxParameters();
         Face.ears.setBoundingBoxParameters();
         Face.mouth.setBoundingBoxParameters();
-        Face.temples.setBoundingBoxParameters();
-        Face.topOfHead.setBoundingBoxParameters();
-        Face.moustache.setBoundingBoxParameters();
+
+        Face.haircut.temples.setBoundingBoxParameters();
+        Face.haircut.topOfHead.setBoundingBoxParameters();
+
+        Face.facialHair.moustache.setBoundingBoxParameters();
+        Face.facialHair.chin.setBoundingBoxParameters();
 
     }
 
@@ -42,19 +46,20 @@ import java.awt.*;
                 (x1 + width1),
                 (y1 + height1 * 3 / numLines));
 
-                Face.nose.boundRect = getBoundingBox(x1 + width1 * 4 / 6, (y1 + height1 * 3 / numLines),
+        Face.nose.boundRect = getBoundingBox(x1 + width1 * 4 / 6, (y1 + height1 * 3 / numLines),
                 (x1 + width1),
                 (y1 + height1 * 11 / 2 / numLines));
 
-                Face.moustache.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 11 / 2 / numLines),
-                (x1 + width1),
-                (y1 + height1 * 13 / 2 / numLines));
-
-                Face.mouth.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 6 / numLines),
+        Face.mouth.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 6 / numLines),
                 symmetricHorizonal(x1 + width1 * 3 / 6),
                 (y1 + height1 * 7 / numLines));
 
-                Face.chin.boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 7 / numLines),
+        Face.facialHair.moustache.boundRect = getBoundingBox(x1 + width1 * 3 / 6,
+                (y1 + height1 * 11 / 2 / numLines),
+                (x1 + width1),
+                (y1 + height1 * 13 / 2 / numLines));
+
+        Face.facialHair.chin.boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 6 / numLines),
                 (x1 + width1),
                 (y1 + height1));
 
@@ -67,13 +72,22 @@ import java.awt.*;
         int rightbound = (int) Math.max(bezPoint1.x, bezPoint2.x);
         Face.ears.boundRect = getBoundingBox(rightbound - width1 * 3 / 6, yPos1, rightbound, yPos2);
 
-        Face.topOfHead.boundRect = getBoundingBox(x1 + width1 * 3 / 2 / 12, (y1),
-                (x1 + width1),
-                (y1 + height1 * 5 / 2 / numLines));
-        int yTmpl1 = (y1 + height1 * 4 / numLines);
-        Point temple1 = headPointOnYpos(yTmpl1);
-        Face.temples.boundRect = getBoundingBox(temple1.x, (y1 + height1 * 6 / 5 / numLines),
-                (x1 + width1 * 3 / 2 / 6),
+        // for the top of the head we follow the same
+        int widestTop = y1 + height1 * 5 / 2 / numLines;
+        Point leftPoint = headPointOnYpos(widestTop);
+        int leftLimit = leftPoint.x*9/10;
+        Face.haircut.topOfHead.boundRect = getBoundingBox(leftLimit, (y1),
+                RectComputer.symmetricHorizonal(leftLimit),
+                (widestTop));
+     //   int yTmpl1 = (y1 + height1 * 4 / numLines);
+
+        Point temple1 = headPointOnYpos((y1 + height1 * 6 / 5 / numLines));
+        Point temple2 = headPointOnYpos((y1 + height1 * 3 / numLines));
+   //     int minleftTemple = Math.min(Math.min(temple1.x,temple2.x)-(Face.head.thiccness+Face.head.mod1)/4,yTmpl1);
+        int maxleftTemple = (Math.max(temple1.x,temple2.x));
+
+        Face.haircut.temples.boundRect = getBoundingBox(leftLimit, (y1 + height1 * 6 / 5 / numLines),
+        maxleftTemple,
                 (y1 + height1 * 3 / numLines));
 
     }
@@ -99,5 +113,5 @@ import java.awt.*;
     public static Rectangle getBoundingBox(int leftMostX, int topMostY, int rightMostX, int bottomMostY) {
         return new Rectangle(leftMostX, topMostY, rightMostX - leftMostX, bottomMostY - topMostY);
     }
- 
+
 }

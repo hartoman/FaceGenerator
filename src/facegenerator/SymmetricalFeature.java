@@ -1,5 +1,4 @@
 package facegenerator;
-import Toolz.*;
 import java.awt.*;
 import java.awt.geom.*;
 

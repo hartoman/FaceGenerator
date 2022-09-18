@@ -16,6 +16,9 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.Image;
+
+import Toolz.ImageScaler;
 /**
  *
  * @author chris
@@ -71,6 +74,9 @@ public class FaceFrame extends JFrame {
             setMinimumSize(new Dimension(w/2, h));
             setMaximumSize(new Dimension(w/2, h));
             face = new Face(w,h);
+
+
+           //setBackgroundImage("pir.jpg");
         }
     
         @Override
