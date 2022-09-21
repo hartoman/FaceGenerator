@@ -6,7 +6,7 @@
  * For any comments, bug-reports, and ideas do not hesitate to contact me at:
  * hartoman@gmail.com
  */
-package facegenerator;
+package facegenerator.FrameFiles;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -19,6 +19,7 @@ import javax.swing.*;
 import java.awt.Image;
 
 import Toolz.ImageScaler;
+import facegenerator.Face;
 /**
  *
  * @author chris
@@ -44,29 +45,17 @@ public class FaceFrame extends JFrame {
         grid = new Grid();
         add(grid);
 
-        uipanel = new UiPanel();
+        uipanel = new UiPanel(w,h);
         add(uipanel);
        
     }
 
-//sets up basic dimensions and layout
-    class UiPanel extends JPanel {
 
-        UiPanel(){
-            
-        setSize(w-200, h);
-        setPreferredSize(new Dimension(w/2, h));
-        setMaximumSize(new Dimension(w, h));
-        setLocation(this.getSize().width - w, 20);
-        setBackground(Color.lightGray);
-        }
-        
-    }
 
 // sets up the painting grid
     class Grid extends JPanel {
 
-        private BufferedImage background;
+        private Image background;
         private Face face;
     
         Grid() {
@@ -75,8 +64,8 @@ public class FaceFrame extends JFrame {
             setMaximumSize(new Dimension(w/2, h));
             face = new Face(w,h);
 
-
-           //setBackgroundImage("pir.jpg");
+        //    setBackgroundImage("pir.jpg");
+            
         }
     
         @Override
@@ -103,7 +92,8 @@ public class FaceFrame extends JFrame {
             if (filename != null) {
                 try {
                     URL url = getClass().getClassLoader().getResource(filename);
-                    background = ImageIO.read(url);
+                   background = ImageIO.read(url).getScaledInstance(w, h, Image.SCALE_SMOOTH);
+                //    background = ImageIO.read(url);
                 } catch (Exception ex) {
                     System.out.println("at least one wrong filename");
                     System.exit(1);

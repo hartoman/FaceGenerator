@@ -6,8 +6,8 @@ import java.awt.geom.*;
     
     public abstract class SymmetricalFeature {
 
-        int left, width, height, right, top, bottom, midy;
-        Rectangle boundRect = new Rectangle();
+        protected int left, width, height, right, top, bottom, midy;
+        protected Rectangle boundRect = new Rectangle();
 
         // for every feature,draws its mirrored equivalent on the right
         Shape drawMirrored(Shape leftFeature) {
@@ -40,4 +40,10 @@ import java.awt.geom.*;
             bottom = boundRect.height + boundRect.y; // bottomost y
             midy = (top + bottom) / 2; // middle of height
         }
+    
+        public Rectangle getBoundRect(){
+            return this.boundRect;
+        }
+    
+    
     }

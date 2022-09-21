@@ -16,21 +16,21 @@ public class FacialHair {
 
     void drawFacialHair(Graphics2D g2d){
 
-        moustache.drawMoustache(g2d);
-        chin.drawChinArea(g2d);
+            moustache.drawMoustache(g2d);
+            chin.drawChinArea(g2d);
 
+        
     }
 
 
     class MoustacheArea extends SymmetricalFeature {
 
-        boolean hasHair;
         int moustacheSize; // [0,30]
         int curled; // [0,50]
 
         void drawMoustache(Graphics2D g2d) {
 
-            if (hasHair) {
+            if (moustacheSize>0) {
 
                 if (curled < 0) {
                     moustacheSize = Math.max(3, moustacheSize);
@@ -68,17 +68,33 @@ public class FacialHair {
 
     class ChinArea extends SymmetricalFeature {
 
-        boolean hasHair;
-        int beardSize;
+        int soulpatchHeight;          // [1,6]
+        int soulpatchWidth;
 
         void drawChinArea(Graphics2D g2d){
-            if (hasHair){
 
+            if ((soulpatchWidth>0)||(soulpatchHeight>0)){
+
+                Path2D.Double sp = new Path2D.Double();
+                sp.moveTo(right, midy);
+                int soulLowest = midy+height*(1+soulpatchHeight)/6;
+                int soulLeftest = right-width*soulpatchWidth/6;
+                sp.curveTo(soulLeftest, midy, soulLeftest, soulLowest, right, soulLowest);
+                sp.closePath();
+
+                g2d.setColor(Face.hairColor);
+                g2d.draw(sp);
+                Shape spr = drawMirrored(sp);
+                g2d.draw(spr);
+                g2d.fill(sp);
+                g2d.fill(spr);
+                g2d.setColor(Color.black);
             }
         }
 
-        void setUpChin(int beardSize){
-            this.beardSize=beardSize;
+        void setUpChin(int soulpatchHeight, int soulpatchWidth){
+            this.soulpatchHeight=soulpatchHeight;
+            this.soulpatchWidth=soulpatchWidth;
         }
     }
 

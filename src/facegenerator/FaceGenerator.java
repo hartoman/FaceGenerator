@@ -10,6 +10,8 @@ package facegenerator;
 
 import javax.swing.JFrame;
 
+import facegenerator.FrameFiles.FaceFrame;
+
 /**
  *
  * @author chris

@@ -6,6 +6,9 @@ import java.awt.geom.*;
     // hair shape on the top of the head
    public  abstract class TopOfHead extends SymmetricalFeature {
         Shape topHair;
+
+        
+
         abstract void drawTopOfHead(Graphics2D g2d);
 
     }

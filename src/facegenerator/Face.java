@@ -9,9 +9,9 @@
 package facegenerator;
 
 import Toolz.*;
+
 import java.awt.*;
 import java.awt.geom.*;
-import java.awt.image.BufferedImage;
 
 /**
  *
@@ -53,54 +53,54 @@ public class Face {
         mouth = new Mouth();
         ears = new Ears();
 
-        setHairCut(8);
+        setHairCut(7);
         facialHair = new FacialHair();
 
         /* adjustable parameters */
         // face
-        head.thiccness = 0;// r.randomBetween(0, 50); // thiccness of the face
+        head.thiccness = 50;// r.randomBetween(0, 50); // thiccness of the face
         head.mod1 = 0;// r.randomBetween(0, 50 - head.thiccness); // head shape [0,50]: 0 is sharp, 50
                       // is potatohead
 
-        skinColor = Color.white;
+        skinColor = new Color(255,255,255,0); //Color.white;
         hairColor = Color.black;
 
         // eyes
         eyeballColor = Color.white;
-        eyePupilColor = Color.green;
+        eyePupilColor = Color.darkGray;
         makeupEyeColor = Color.DARK_GRAY;// skinColor; // ==skincolor if no make-up
-        eyes.distortion1 = -5;// r.randomBetween(-10, 10); // width for upper eyeball -- [-10,10]
+        eyes.distortion1 = 0;// r.randomBetween(-10, 10); // width for upper eyeball -- [-10,10]
         eyes.distortion2 = 0;// r.randomBetween(-10, 10); // for lower eyeball -- [-10,10]
         eyes.distortion3 = 40;// r.randomBetween(25, 75); // eyelid openness-- [0,75], 0=closed, 75=wide open
-        eyes.angle = 5;// r.randomBetween(-25, 25); // angle of the eyes 0=straight, 20= inward
+        eyes.angle = 0;// r.randomBetween(-25, 25); // angle of the eyes 0=straight, 20= inward
 
         // nose
-        nose.noseSize =2;// r.randomBetween(1, 8); // -- [1,8] greatness of noseSIze;
+        nose.noseSize =1;// r.randomBetween(1, 8); // -- [1,8] greatness of noseSIze;
 
         // mouth
         lipsColor = Color.red;
-        mouth.lipSize = 10; // r.randomBetween(0,30) // [0,30] ?can also 40, but will be caricature
-        mouth.mouthSize = 5;// r.randomBetween(0, 40); // [0,50] ??40?
+        mouth.lipSize =0; // r.randomBetween(0,30) // [0,30] ?can also 40, but will be caricature
+        mouth.mouthSize = 0;// r.randomBetween(0, 40); // [0,50] ??40?
         mouth.smile = 0;// r.randomBetween(-20, 20); // [-15,15]
         mouth.openness = 0;// r.randomBetween(0,40) // [0,40]
 
         // eyebrows
         eyebrows.eyebrowSize = 0;// r.randomBetween(0,25); // [0,25] min-max
-        eyebrows.anger = 20;// r.randomBetween(-50, 50);//eyes.angle*2; // [-50,50] angle to determine
+        eyebrows.anger = 0;// r.randomBetween(-50, 50);//eyes.angle*2; // [-50,50] angle to determine
                            // expression, 0= neutral
 
-        eyebrows.eyebrowThiccness = 1;// [0,4]
+        eyebrows.eyebrowThiccness = 2;// [0,4]
 
         // ears
         ears.earSize = 0; // r.randomBetween(0,50); // [0,50]
 
         // facial hair
-        facialHair.moustache.hasHair = false;
-        facialHair.moustache.moustacheSize = 0; // [0,30]
-        facialHair.moustache.curled = 0; // [-50,50]
 
-        facialHair.chin.hasHair = true;
-        facialHair.chin.beardSize = 0;
+        facialHair.moustache.moustacheSize = 0; // [0,20]
+        facialHair.moustache.curled = 0; // [-40,40]
+
+        facialHair.chin.soulpatchHeight=0;            // [0,6]
+        facialHair.chin.soulpatchWidth=0;             // 0,6]  
 
         RectComputer.calcAllFeatures();
 
@@ -168,7 +168,7 @@ public class Face {
         // toRect(nose.boundRect, g2d);
         // toRect(eyebrows.boundRect, g2d);
 
-        toRect(haircut.topOfHead.boundRect, g2d);
+        // toRect(haircut.topOfHead.boundRect, g2d);
         // toRect(haircut.temples.boundRect, g2d);
         // toRect(mouth.boundRect, g2d);
         // toRect(ears.boundRect, g2d);
