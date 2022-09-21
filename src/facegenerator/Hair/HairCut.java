@@ -1,7 +1,6 @@
-package facegenerator;
+package facegenerator.Hair;
 
 import java.awt.*;
-import java.awt.geom.*;
 
 public abstract class HairCut {
 
@@ -16,7 +15,7 @@ public abstract class HairCut {
     }
 
     // draws the part of the hair that is on the head
-    void drawHairCut(Graphics2D g2d) {
+    public void drawHairCut(Graphics2D g2d) {
 
         if (temples.hasHair) {
             temples.drawTemples(g2d);
@@ -26,65 +25,20 @@ public abstract class HairCut {
     }
 
     // draws the part of the hair that is on the back (longer hair)
-    void drawBackHair(Graphics2D g2d) {
+    public void drawBackHair(Graphics2D g2d) {
 
         if (backhair.hasHair) {
             backhair.drawHair(g2d);
         }
     }
 
+    public Temples getTemples(){return this.temples;}
+    public TopOfHead getTopOfHead(){return this.topOfHead;}
+    public BackHair getBackHair(){return this.backhair;}
+    public void setTemples(Temples temples){this.temples=temples;}
+    public void setTopOfHead(TopOfHead topOfHead){this.topOfHead=topOfHead;}
+    public void setBackHair(BackHair backhair){this.backhair=backhair;}
     
-    // hair of the temple area -- exists in all hairstyles
-    class Temples extends SymmetricalFeature {
-
-        boolean hasHair;
-
-        void drawTemples(Graphics2D g2d) {
-
-            Path2D.Double temple = new Path2D.Double();
-            temple.moveTo(left * 10 / 10, bottom);
-            temple.curveTo(left * 9 / 10, top + height * 2 / 3, left, top + height / 3, left + width / 2, top);
-            temple.curveTo(left + width / 2, top + height / 10, left + width / 2, top + height / 10,
-                    left + width * 11 / 10, top + height / 10);
-            temple.curveTo(left, bottom * 11 / 10, right, bottom * 11 / 10, left, bottom);
-            temple.closePath();
-
-            Shape temple2 = drawMirrored(temple);
-            g2d.draw(temple);
-            g2d.draw(temple2);
-            g2d.setColor(Face.hairColor);
-            g2d.fill(temple);
-            g2d.fill(temple2);
-            g2d.setColor(Color.black);
-
-        }
-    }
-
-
-    /************************************************************** */
-
-// the hair on the back of the head
-    class BackHair {
-    
-        boolean hasHair;
-        int length;                 // [0,50]
-    
-        void drawHair(Graphics2D g2d){
-    
-            int bHairL = Face.maxwidth/9-Face.maxwidth*length/50/9;
-            int bHairR = RectComputer.symmetricHorizonal(bHairL);
-            int bHairT = Face.minHeight;
-            int bHairB = Face.height+Face.height*length/50;
-            
-            g2d.drawRect(bHairL, bHairT, bHairR-bHairL,bHairB);
-            g2d.setColor(Face.hairColor);
-            g2d.fillArc(bHairL,bHairT,bHairR-bHairL,bHairB, 0, 180);
-            g2d.setColor(Color.black);
-        }
-    
-    }
-
-
 
 }
 

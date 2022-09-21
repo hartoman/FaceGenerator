@@ -13,13 +13,11 @@ public class FacialHair {
         chin=new ChinArea();
     }
 
-
     void drawFacialHair(Graphics2D g2d){
 
             moustache.drawMoustache(g2d);
             chin.drawChinArea(g2d);
-
-        
+     
     }
 
 

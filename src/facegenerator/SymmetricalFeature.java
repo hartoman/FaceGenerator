@@ -10,7 +10,7 @@ import java.awt.geom.*;
         protected Rectangle boundRect = new Rectangle();
 
         // for every feature,draws its mirrored equivalent on the right
-        Shape drawMirrored(Shape leftFeature) {
+        public Shape drawMirrored(Shape leftFeature) {
 
             // set up for right feature
             Shape rightFeature = leftFeature;
@@ -45,5 +45,8 @@ import java.awt.geom.*;
             return this.boundRect;
         }
     
+        public void setBoundRect(Rectangle rect){
+            this.boundRect=rect;
+        }
     
     }

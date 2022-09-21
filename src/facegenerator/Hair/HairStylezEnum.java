@@ -1,4 +1,4 @@
-package facegenerator;
+package facegenerator.Hair;
 
 public enum HairStylezEnum {
 

@@ -22,8 +22,8 @@ public class RectComputer {
         Face.ears.setBoundingBoxParameters();
         Face.mouth.setBoundingBoxParameters();
 
-        Face.haircut.temples.setBoundingBoxParameters();
-        Face.haircut.topOfHead.setBoundingBoxParameters();
+        Face.haircut.getTemples().setBoundingBoxParameters();
+        Face.haircut.getTopOfHead().setBoundingBoxParameters();
 
         Face.facialHair.moustache.setBoundingBoxParameters();
         Face.facialHair.chin.setBoundingBoxParameters();
@@ -77,19 +77,21 @@ public class RectComputer {
         int widestTop = y1 + height1 * 5 / 2 / numLines;
         Point leftPoint = headPointOnYpos(widestTop);
         int leftLimit = leftPoint.x*9/10;
-        Face.haircut.topOfHead.boundRect = getBoundingBox(leftLimit, (y1),
+        Rectangle tmptoprect  = getBoundingBox(leftLimit, (y1),
                 RectComputer.symmetricHorizonal(leftLimit),
                 (widestTop));
-     //   int yTmpl1 = (y1 + height1 * 4 / numLines);
+        Face.haircut.getTopOfHead().setBoundRect(tmptoprect);
 
+   
+        // for the temples
         Point temple1 = headPointOnYpos((y1 + height1 * 6 / 5 / numLines));
         Point temple2 = headPointOnYpos((y1 + height1 * 3 / numLines));
-   //     int minleftTemple = Math.min(Math.min(temple1.x,temple2.x)-(Face.head.thiccness+Face.head.mod1)/4,yTmpl1);
         int maxleftTemple = (Math.max(temple1.x,temple2.x));
-
-        Face.haircut.temples.boundRect = getBoundingBox(leftLimit, (y1 + height1 * 6 / 5 / numLines),
+        Rectangle tmptmplerect = getBoundingBox(leftLimit, (y1 + height1 * 6 / 5 / numLines),
         maxleftTemple,
                 (y1 + height1 * 3 / numLines));
+        Face.haircut.getTemples().setBoundRect(tmptmplerect);
+
 
     }
 

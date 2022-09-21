@@ -1,5 +1,8 @@
-package facegenerator;
+package facegenerator.Hair;
 import java.awt.*;
+
+import facegenerator.Face;
+import facegenerator.RectComputer;
 
 
 public class BackHair {

@@ -9,6 +9,8 @@
 package facegenerator;
 
 import Toolz.*;
+import facegenerator.Hair.HairCut;
+import facegenerator.Hair.HairStylezEnum;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -20,13 +22,11 @@ import java.awt.geom.*;
 
 public class Face {
 
-    static int minHeight, height, maxwidth, midHeight, midWidth;
+    public static int minHeight, height, maxwidth, midHeight, midWidth;
+    public static Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor, hairColor, lipsColor;
+
     static Rectangle halfFace; // marks the area of the left half of the face
-
-    static TextureHandler texture;// = new TextureHandler();
     static Randomizer r = new Randomizer();
-    static Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor, hairColor, lipsColor;
-
     static Head head;
     static Eyes eyes;
     static Nose nose;
@@ -58,7 +58,7 @@ public class Face {
 
         /* adjustable parameters */
         // face
-        head.thiccness = 50;// r.randomBetween(0, 50); // thiccness of the face
+        head.thiccness = 0;// r.randomBetween(0, 50); // thiccness of the face
         head.mod1 = 0;// r.randomBetween(0, 50 - head.thiccness); // head shape [0,50]: 0 is sharp, 50
                       // is potatohead
 
@@ -624,19 +624,6 @@ public class Face {
 
     }
 
-    class TextureHandler {
-        String skinTexture;
-        String pupilTexture;
-        String hairTexture;
 
-        // set the color schemes
-        public void setTextures(String skinTexture, String pupilTexture, String hairTexture) {
-
-            this.skinTexture = skinTexture;
-            this.pupilTexture = pupilTexture;
-            this.hairTexture = hairTexture;
-        }
-
-    }
 
 }

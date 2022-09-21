@@ -1,13 +1,13 @@
-package facegenerator;
+package facegenerator.Hair;
 import java.awt.*;
-import java.awt.geom.*; 
+import java.awt.geom.*;
+
+import facegenerator.Face;
+import facegenerator.SymmetricalFeature; 
 
 
     // hair shape on the top of the head
-   public  abstract class TopOfHead extends SymmetricalFeature {
-        Shape topHair;
-
-        
+   public abstract class TopOfHead extends SymmetricalFeature {
 
         abstract void drawTopOfHead(Graphics2D g2d);
 

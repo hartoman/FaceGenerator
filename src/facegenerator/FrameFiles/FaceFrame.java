@@ -42,6 +42,8 @@ public class FaceFrame extends JFrame {
         setSize(w*2, h + 40);
         setTitle(title);
         
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+
         grid = new Grid();
         add(grid);
 
@@ -60,8 +62,9 @@ public class FaceFrame extends JFrame {
     
         Grid() {
             setSize(w,  h);
-            setMinimumSize(new Dimension(w/2, h));
-            setMaximumSize(new Dimension(w/2, h));
+            setPreferredSize(new Dimension(w, h));
+            setMinimumSize(new Dimension(w, h));
+            setMaximumSize(new Dimension(w, h));
             face = new Face(w,h);
 
         //    setBackgroundImage("pir.jpg");
