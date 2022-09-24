@@ -28,15 +28,16 @@ import FacialFeatures.Face;
 
 public class FaceFrame extends JFrame {
     
-   int w,h,rows,columns,wdOfRow,htOfRow;
-   Grid grid;
-   UiPanel uipanel;
+static int w,h,rows,columns,wdOfRow,htOfRow;
+   static Grid grid;
+   static UiPanel uipanel;
+   static MenuBar menu;
 
     public FaceFrame(String title, int w, int h, int rows, int columns){
-        this.w=w;
-        this.h=h;
-        this.rows=rows;
-        this.columns=columns;
+        FaceFrame.w=w;
+        FaceFrame.h=h;
+        FaceFrame.rows=rows;
+        FaceFrame.columns=columns;
         wdOfRow = w/columns;
         htOfRow = h/rows;
 
@@ -44,6 +45,9 @@ public class FaceFrame extends JFrame {
         setTitle(title);
         
         setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+
+        menu=new MenuBar();
+        setJMenuBar(menu);
 
         grid = new Grid();
         add(grid);
@@ -53,13 +57,21 @@ public class FaceFrame extends JFrame {
        
     }
 
-
+    public static void transparentBackground(boolean transparent){
+        if(transparent){
+        FaceFrame.grid.background=null;
+        FaceFrame.grid.setBackground(new Color(255,255,255,0));
+        }
+        else{
+            FaceFrame.grid.setBackground(new Color(255,255,255,255)); 
+        }
+    }
 
 // sets up the painting grid
     class Grid extends JPanel {
 
-        private Image background;
-        private Face face;
+        Image background;
+        Face face;
     
         Grid() {
             setSize(w,  h);
@@ -139,5 +151,6 @@ public class FaceFrame extends JFrame {
         }
     
     }
+    
     
 }

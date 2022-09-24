@@ -13,10 +13,12 @@ import FacialHair.FacialHair;
 import FunctionalClasses.RectComputer;
 import FunctionalClasses.SymmetricalFeature;
 import FacialHair.*;
+import FrameFiles.*;
 
 import java.awt.*;
 import java.awt.geom.*;
 
+import Emotions.EmotionEnum;
 import Hair.HairCut;
 import Hair.HairStylezEnum;
 
@@ -33,14 +35,14 @@ public class Face {
     private static Rectangle halfFace; // marks the area of the left half of the face
     
     private static Head head;
-    static Eyes eyes;
-    static Nose nose;
-    static Eyebrows eyebrows;
-    static Mouth mouth;
-    static Ears ears;
+    private static Eyes eyes;
+    private static Nose nose;
+    private static Eyebrows eyebrows;
+    private static Mouth mouth;
+    private static Ears ears;
 
-    static HairCut haircut;
-    static FacialHair facialHair;
+    private static HairCut haircut;
+    private static FacialHair facialHair;
 
     // in the constructor all important parameters can be calibrated
     public Face(int w, int h) {
@@ -58,7 +60,7 @@ public class Face {
         mouth = new Mouth();
         ears = new Ears();
 
-        setHairCut(7);
+        setHairCut(2);
         facialHair = new FacialHair();
 
         Randomizer r = new Randomizer();
@@ -69,16 +71,16 @@ public class Face {
         head.mod1 = 0;// r.randomBetween(0, 50 - head.thiccness); // head shape [0,50]: 0 is sharp, 50
                       // is potatohead
 
-        skinColor = new Color(255, 255, 255, 0); // Color.white;
+        skinColor = new Color(255, 255, 255, 255); 
         hairColor = Color.black;
 
         // eyes
         eyeballColor = Color.white;
         eyePupilColor = Color.darkGray;
         makeupEyeColor = Color.DARK_GRAY;// skinColor; // ==skincolor if no make-up
-        eyes.distortion1 = 0;// r.randomBetween(-10, 10); // width for upper eyeball -- [-10,10]
+        eyes.distortion1 = 10;// r.randomBetween(-10, 10); // width for upper eyeball -- [-10,10]
         eyes.distortion2 = 0;// r.randomBetween(-10, 10); // for lower eyeball -- [-10,10]
-        eyes.distortion3 = 40;// r.randomBetween(25, 75); // eyelid openness-- [0,75], 0=closed, 75=wide open
+        eyes.distortion3 = 45;// r.randomBetween(25, 75); // eyelid openness-- [0,75], 0=closed, 75=wide open
         eyes.angle = 0;// r.randomBetween(-25, 25); // angle of the eyes 0=straight, 20= inward
 
         // nose
@@ -107,24 +109,20 @@ public class Face {
         facialHair.moustache().curled(0); // [-40,40]
 
         facialHair.chin().soulpatchHeight(0); // [0,6]
-        facialHair.chin().soulpatchWidth(0); // 0,6]
+        facialHair.chin().soulpatchWidth(0); // [0,6]
 
         RectComputer.calcAllFeatures();
 
     }
-
-
-
-
 
     // puts everything together. newer calls overwrite older, so the order matters
     public void drawFace(Graphics2D g2d) {
 
         // assisting method so that we see what we are doing, while writing the
         // calculations
-        drawGuidingLines(8, g2d);
+      //  drawGuidingLines(8, g2d);
 
-        // on the vack there is the long hair
+      // on the vack there is the long hair
         haircut.drawBackHair(g2d);
 
         // on the face are the main facial features
@@ -140,7 +138,6 @@ public class Face {
         // ears and nose should appear on top of hair
         ears.drawEars(g2d);
         nose.drawNose(g2d);
-
     }
 
     /* convenience methods for drawing the framing lines */
@@ -185,7 +182,7 @@ public class Face {
         // toRect(ears.boundRect, g2d);
 
         // toRect(facialHair.moustache.boundRect, g2d);
-        toRect(facialHair.chin().boundRect(), g2d);
+        // toRect(facialHair.chin().boundRect(), g2d);
 
         // line starting from middle of face and ending on outline at the given height
         // drawBezHeight(height/2,g2d);
@@ -222,10 +219,19 @@ public class Face {
     // sets the current haircut
     void setHairCut(int selection) {
 
-        // TODO limit selection range
         haircut = HairStylezEnum.values()[selection].makeHair();
 
     }
+
+    // TODO MAKE THIS
+/* 
+    void setExpression(EmotionEnum emotion){
+        eyebrows().anger=emotion.;
+        eyes().distortion3
+        mouth().openness
+        mouth().smile
+    }
+*/
 
 
     /************GETTERS AND SETTERS********************/
@@ -264,7 +270,7 @@ public static void midHeight(int midHeight) {Face.midHeight = midHeight;}
 public static void midWidth(int midWidth) {Face.midWidth = midWidth;}
 public static void maxwidth(int tmp) {Face.maxwidth = tmp;}
 public static void halfFace(Rectangle halfFace){Face.halfFace=halfFace;}
-
+public static void skinColor(Color skinColor){Face.skinColor=skinColor;}
 
     
 
