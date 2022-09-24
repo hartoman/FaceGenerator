@@ -1,8 +1,8 @@
-package facegenerator.FrameFiles;
+package FrameFiles;
 
 import javax.swing.*;
 
-import facegenerator.FrameFiles.FaceFrame.Grid;
+import FrameFiles.FaceFrame.Grid;
 
 import java.awt.Dimension;
 import java.awt.Color;

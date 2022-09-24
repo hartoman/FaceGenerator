@@ -6,7 +6,7 @@
  * For any comments, bug-reports, and ideas do not hesitate to contact me at:
  * hartoman@gmail.com
  */
-package facegenerator.FrameFiles;
+package FrameFiles;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -16,10 +16,11 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
 import java.awt.Image;
 
 import Toolz.ImageScaler;
-import facegenerator.Face;
+import FacialFeatures.Face;
 /**
  *
  * @author chris

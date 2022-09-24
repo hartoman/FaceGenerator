@@ -1,4 +1,5 @@
-package facegenerator;
+package FunctionalClasses;
+
 import java.awt.*;
 import java.awt.geom.*;
 
@@ -41,12 +42,17 @@ import java.awt.geom.*;
             midy = (top + bottom) / 2; // middle of height
         }
     
-        public Rectangle getBoundRect(){
+        //getter
+        public Rectangle boundRect(){
             return this.boundRect;
         }
-    
-        public void setBoundRect(Rectangle rect){
+        // setter
+        public void boundRect(Rectangle rect){
             this.boundRect=rect;
         }
     
+
+        
+
+
     }

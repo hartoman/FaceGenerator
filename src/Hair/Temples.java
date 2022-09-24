@@ -1,9 +1,9 @@
-package facegenerator.Hair;
-import facegenerator.Face;
-import facegenerator.RectComputer;
-import facegenerator.SymmetricalFeature;
+package Hair;
 import java.awt.*;
 import java.awt.geom.*;
+
+import FacialFeatures.Face;
+import FunctionalClasses.SymmetricalFeature;
 
       // hair of the temple area -- exists in all hairstyles
       public class Temples extends SymmetricalFeature {
@@ -23,7 +23,7 @@ import java.awt.geom.*;
         Shape temple2 = drawMirrored(temple);
         g2d.draw(temple);
         g2d.draw(temple2);
-        g2d.setColor(Face.hairColor);
+        g2d.setColor(Face.hairColor());
         g2d.fill(temple);
         g2d.fill(temple2);
         g2d.setColor(Color.black);

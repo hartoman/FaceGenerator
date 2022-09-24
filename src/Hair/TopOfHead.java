@@ -1,9 +1,9 @@
-package facegenerator.Hair;
+package Hair;
 import java.awt.*;
 import java.awt.geom.*;
 
-import facegenerator.Face;
-import facegenerator.SymmetricalFeature; 
+import FacialFeatures.Face;
+import FunctionalClasses.SymmetricalFeature; 
 
 
     // hair shape on the top of the head
@@ -31,7 +31,7 @@ import facegenerator.SymmetricalFeature;
         void drawTopOfHead(Graphics2D g2d) {
 
             // high fringe
-            int highWidth = Face.maxwidth - 2 * left;
+            int highWidth = Face.maxwidth() - 2 * left;
             g2d.fillArc(left, top, highWidth, height * 13 / 8, 0, 180);
         }
     }
@@ -55,9 +55,9 @@ import facegenerator.SymmetricalFeature;
             part.curveTo(left + width / 5, bottom, left + width * 2 / 5, bottom, left, height * 13 / 8);
             part.lineTo(left, midy + height / 5);
             part.closePath();
-            g2d.setColor(Face.hairColor);
+            g2d.setColor(Face.hairColor());
 
-            int highWidth = Face.maxwidth - 2 * left;
+            int highWidth = Face.maxwidth() - 2 * left;
             g2d.fillArc(left, top, highWidth, height * 13 / 8, 0, 180);
             g2d.fill(part);
 
@@ -81,7 +81,7 @@ import facegenerator.SymmetricalFeature;
             g2d.draw(part);
             g2d.draw(part2);
 
-            g2d.setColor(Face.hairColor);
+            g2d.setColor(Face.hairColor());
 
             g2d.fillArc(left, top, width, top + height * 10 / 9, 0, 180);
             g2d.fill(part);
@@ -104,7 +104,7 @@ import facegenerator.SymmetricalFeature;
             moh.closePath();
 
             g2d.draw(moh);
-            g2d.setColor(Face.hairColor);
+            g2d.setColor(Face.hairColor());
             g2d.fill(moh);
             g2d.setColor(Color.black);
         }

@@ -1,4 +1,4 @@
-package facegenerator.Hair;
+package Hair;
 
 import java.awt.*;
 
@@ -32,12 +32,14 @@ public abstract class HairCut {
         }
     }
 
-    public Temples getTemples(){return this.temples;}
-    public TopOfHead getTopOfHead(){return this.topOfHead;}
-    public BackHair getBackHair(){return this.backhair;}
-    public void setTemples(Temples temples){this.temples=temples;}
-    public void setTopOfHead(TopOfHead topOfHead){this.topOfHead=topOfHead;}
-    public void setBackHair(BackHair backhair){this.backhair=backhair;}
+    //getters
+    public Temples Temples(){return this.temples;}
+    public TopOfHead TopOfHead(){return this.topOfHead;}
+    public BackHair BackHair(){return this.backhair;}
+    //setters
+    public void Temples(Temples temples){this.temples=temples;}
+    public void TopOfHead(TopOfHead topOfHead){this.topOfHead=topOfHead;}
+    public void BackHair(BackHair backhair){this.backhair=backhair;}
     
 
 }

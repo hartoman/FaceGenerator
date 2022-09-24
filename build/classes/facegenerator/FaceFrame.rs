@@ -1,3 +1,3 @@
-facegenerator.FaceFrame
-facegenerator.Grid
-facegenerator.uiPanelCreator
+FaceFrame
+Grid
+uiPanelCreator
