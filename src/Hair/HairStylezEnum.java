@@ -55,7 +55,26 @@ public enum HairStylezEnum {
         public HairCut makeHair() {
             return new MiaWallace();
         }
+    },  
+    HIGHFRINGELONGHAIR {
+        @Override
+        public HairCut makeHair() {
+            return new HighFringeLongHair();
+        }
+    },
+    PARTSIDELONGHAIR {
+        @Override
+        public HairCut makeHair() {
+            return new PartSideLongHair();
+        }
+    },  //
+    PARTMIDDLELONGHAIR {
+        @Override
+        public HairCut makeHair() {
+            return new PartMiddleLongHair();
+        }
     }
+    
     ;
 
     // returns the hairstyle of each enum

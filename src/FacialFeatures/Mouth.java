@@ -4,11 +4,12 @@ import java.awt.geom.*;
 import FunctionalClasses.*;
 
 
-public     class Mouth extends SymmetricalFeature {
-    int mouthSize;
-    int smile;
-    int openness;
-    int lipSize;
+public  class Mouth extends SymmetricalFeature {
+    
+    private int mouthSize, // [0,40]
+    smile,                  // [-15,15]
+    openness,               // [0,40]
+    lipSize;                // [0,30]
 
     void drawMouth(Graphics2D g2d) {
 
@@ -58,4 +59,42 @@ public     class Mouth extends SymmetricalFeature {
          */
 
     }
+
+    public int mouthSize() {
+        return mouthSize;
+    }
+
+    public void mouthSize(int mouthSize) {
+        this.mouthSize = mouthSize;
+    }
+
+    public int smile() {
+        return smile;
+    }
+
+    public void smile(int smile) {
+        this.smile = smile;
+    }
+
+    public int openness() {
+        return openness;
+    }
+
+    public void openness(int openness) {
+        this.openness = openness;
+    }
+
+    public int lipSize() {
+        return lipSize;
+    }
+
+    public void lipSize(int lipSize) {
+        this.lipSize = lipSize;
+    }
+
+    public void setMouth(int mouthSize,int lipSize){
+        this.mouthSize=mouthSize;
+        this.lipSize=lipSize;
+    }
+    
 }

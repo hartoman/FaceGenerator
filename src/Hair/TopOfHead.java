@@ -32,7 +32,9 @@ import FunctionalClasses.SymmetricalFeature;
 
             // high fringe
             int highWidth = Face.maxwidth() - 2 * left;
-            g2d.fillArc(left, top, highWidth, height * 13 / 8, 0, 180);
+            g2d.setColor(Face.hairColor());
+                    g2d.fillArc(left, top, highWidth, height * 13 / 8, 0, 180);
+            g2d.setColor(Color.black);
         }
     }
 
@@ -40,9 +42,10 @@ import FunctionalClasses.SymmetricalFeature;
     class LowFringeTop extends TopOfHead {
         @Override
         void drawTopOfHead(Graphics2D g2d) {
-
+            g2d.setColor(Face.hairColor());
+            
             g2d.fillArc(left, top, width, top + height * 5 / 3, 0, 180);
-
+            g2d.setColor(Color.black);
         }
     }
 

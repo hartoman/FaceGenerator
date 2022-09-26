@@ -5,7 +5,7 @@ import FunctionalClasses.SymmetricalFeature;
 
 public class Nose extends SymmetricalFeature {
 
-    int noseSize;
+    private int noseSize;
 
     void drawNose(Graphics2D g2d) {
 
@@ -56,4 +56,14 @@ public class Nose extends SymmetricalFeature {
         g2d.setColor(Color.BLACK);
     }
 
+public int noseSize() {
+        return noseSize;
+}
+
+public void noseSize(int noseSize) {
+        this.noseSize = noseSize;
+}
+
+
+    
 }

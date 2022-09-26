@@ -3,12 +3,17 @@ package FrameFiles;
 import javax.swing.*;
 
 import FacialFeatures.Face;
+import Emotions.Emotion;
+import FunctionalClasses.*;
+import Hair.HairStylezEnum;
+
 
 import java.awt.GridLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Color;
-import java.util.Hashtable;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 
 //sets up basic dimensions and layout
 public class UiPanel extends JPanel {
@@ -31,143 +36,272 @@ public class UiPanel extends JPanel {
 
         this.setLayout(new GridLayout(2, 3));
 
-        add(new GeneralHeadPanel());
-        add(new FeaturesPanel());
-        add(new HairPanel());
-        add(new EyesPanel());
-        add(new ExpressionPanel());
-        add(new FacialHairPanel());
+        add(new GeneralHeadPanel("General", Color.green, Color.BLACK, Color.DARK_GRAY));
+        add(new FeaturesPanel("Features", Color.red, Color.BLACK, Color.DARK_GRAY));
+        add(new HairPanel("Hair", Color.BLUE, Color.white, Color.gray));
+        add(new EyesPanel("Eyes", Color.cyan, Color.BLACK, Color.darkGray));
+        add(new ExpressionPanel("Various", Color.BLACK, Color.WHITE, Color.gray));
+        add(new RandomCreationPanel("Random Faces", Color.magenta, Color.BLACK, Color.darkGray));
 
     }
 
+    abstract class Subpanel extends JPanel {
 
-    class GeneralHeadPanel extends JPanel {
-        //
-        GeneralHeadPanel() {
+        Color labelTextColor, sliderTextColor;
+        JLabel titleLabel;
 
-            setBackground(Color.green);
-            Color letterColor = Color.BLACK;
+        public Subpanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
+
+            setBackground(backgroundColor);
+            this.labelTextColor = labelTextColor;
+            this.sliderTextColor = sliderTextColor;
+
+            titleLabel = new JLabel(title);
+            titleLabel.setForeground(labelTextColor);
+
             setLayout(new GridLayout(10, 1));
+            setPreferredSize(new Dimension(w / 6, h / 2));
 
-            JButton skinColorButton = new JButton("Skin Color");
+            createElements();
+            addElements();
+            attachListeners();
+        }
+
+        abstract void createElements();
+
+        abstract void addElements();
+
+        abstract void attachListeners();
+    }
+
+    class GeneralHeadPanel extends Subpanel {
+
+        JButton skinColorButton;
+        JSlider thiccSlider, headShapeSlider;
+        int tmpthicc, tmpshape;
+
+        GeneralHeadPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
+
+            super(title, backgroundColor, labelTextColor, sliderTextColor);
+        }
+
+        @Override
+        public void createElements() {
+
+            tmpthicc = Face.head().thiccness();
+            tmpshape = Face.head().mod1();
+
+            skinColorButton = new JButton("Skin Color");
+            thiccSlider = UiMethods.createSlider("Slick", 0, "Thicc", 40, 0, sliderTextColor,
+                    "Determines thiccness of head");
+            headShapeSlider = UiMethods.createSlider("Conical", 0, "Potato", 40, 0, sliderTextColor,
+                    "Determines shape of head");
+
+        }
+
+        @Override
+        public void addElements() {
+
+            add(titleLabel);
+            add(skinColorButton);
+            add(thiccSlider);
+            add(headShapeSlider);
+
+        }
+
+        @Override
+        public void attachListeners() {
+
+            // skin color chooser button
             skinColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    Color tmpColor = JColorChooser.showDialog(null,"Skin color",new Color(255,215,169,255));
+                    Color tmpColor = JColorChooser.showDialog(null, "Skin color", new Color(255, 215, 169, 255));
                     Face.skinColor(tmpColor);
+                    Face.makeupEyeColor(tmpColor);
                     skinColorButton.setBackground(tmpColor);
-                    FaceFrame.grid.removeAll();
                     FaceFrame.grid.repaint();
                 }
             });
 
-            JSlider thiccSlider = new JSlider(JSlider.HORIZONTAL, 0, 40, 0);
-            UiMethods.setSliderLabels(thiccSlider, "Slick", 0, "Thicc", 40, letterColor);
-            thiccSlider.setToolTipText("Determines thiccness of head");
+            // head thiccness slider
+            thiccSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+                    tmpthicc = thiccSlider.getValue();
+                    Face.head().thiccness(tmpthicc);
+                    Face.head().mod1(tmpshape);
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
 
-            JSlider headShapeSlider = new JSlider(JSlider.HORIZONTAL, 0, 40, 0);
-            UiMethods.setSliderLabels(headShapeSlider, "Conical", 0, "Potato", 40, letterColor);
-            headShapeSlider.setToolTipText("Determines shape of head");
+            // head shape slider
+            headShapeSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+                    tmpshape = headShapeSlider.getValue();
+                    Face.head().thiccness(tmpthicc);
+                    Face.head().mod1(tmpshape);
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
 
-            // create string[] with values of enum
-            String emotions[] = { "ena", "dyo" };
-            // set values of enum to return on selection
-            JComboBox emotionList = new JComboBox(emotions);
-
-            add(new JLabel("General"));
-            add(skinColorButton);
-            add(thiccSlider);
-            add(headShapeSlider);
-            add(new JLabel("Expression"));
-            add(emotionList);
         }
-
     }
 
-    class FeaturesPanel extends JPanel {
+    class FeaturesPanel extends Subpanel {
 
-        FeaturesPanel() {
-            setBackground(Color.red);
-            Color letterColor = Color.BLACK;
-            setLayout(new GridLayout(10, 1));
+        JSlider noseSizeSlider, earSizeSlider, mouthSizeSlider, lipsSizeSlider;
+        JButton lipsColorButton;
+        JLabel noseLabel, earLabel, mouthLabel, lipsLabel;
 
-            JSlider noseSizeSlider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
-            UiMethods.setSliderLabels(noseSizeSlider, "French", 1, "Manatee", 8, letterColor);
-            noseSizeSlider.setToolTipText("Size of nose");
+        FeaturesPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
 
-            JSlider earSizeSlider = new JSlider(JSlider.HORIZONTAL, 0, 50, 0);
-            UiMethods.setSliderLabels(earSizeSlider, "Delicate", 0, "Radar Dish", 50, letterColor);
-            earSizeSlider.setToolTipText("Size of ears");
+            super(title, backgroundColor, labelTextColor, sliderTextColor);
 
-            JSlider mouthSizeSlider = new JSlider(JSlider.HORIZONTAL, 0, 40, 0);
-            UiMethods.setSliderLabels(mouthSizeSlider, "Diet", 0, "Maw", 40, letterColor);
-            mouthSizeSlider.setToolTipText("Size of mouth");
-
-            JSlider lipsSizeSlider = new JSlider(JSlider.HORIZONTAL, 0, 30, 0);
-            UiMethods.setSliderLabels(lipsSizeSlider, "None", 0, "Silicone", 30, letterColor);
-            lipsSizeSlider.setToolTipText("Size of lips");
-
-            JButton lipsColorButton = new JButton("Lips Color");
-
-            add(new JLabel("Features"));
-            add(new JLabel("Nose"));
-            add(noseSizeSlider);
-            add(new JLabel("Ears"));
-            add(earSizeSlider);
-            add(new JLabel("Mouth"));
-            add(mouthSizeSlider);
-            add(new JLabel("Lips"));
-            add(lipsSizeSlider);
-            add(lipsColorButton);
         }
 
-    }
+        @Override
+        public void createElements() {
 
-    class HairPanel extends JPanel {
+            noseSizeSlider = UiMethods.createSlider("French", 1, "Caesar", 8, 1, sliderTextColor, "Size of nose");
+            earSizeSlider = UiMethods.createSlider("Delicate", 0, "Radar", 50, 0, sliderTextColor, "Size of ears");
+            mouthSizeSlider = UiMethods.createSlider("Diet", 0, "Maw", 40, 0, sliderTextColor, "Size of mouth");
+            lipsSizeSlider = UiMethods.createSlider("None", 0, "Silicone", 30, 15, sliderTextColor, "Size of Lips");
 
-        HairPanel() {
-            setBackground(Color.blue);
-            Color letterColor = Color.WHITE;
+            // colors labels
+            noseLabel = new JLabel("Nose");
+            earLabel = new JLabel("Ears");
+            mouthLabel = new JLabel("Mouth");
+            lipsLabel = new JLabel("Lips");
+            UiMethods.setColortoLabels(labelTextColor, noseLabel, earLabel, mouthLabel, lipsLabel);
 
-            JLabel titleLabel = new JLabel("Hair");
-            JLabel facialHairLabel = new JLabel("Facial Hair");
-            JLabel moustacheLabel = new JLabel("Moustache");
-            JLabel chinHairLabel = new JLabel("Chin");
+            lipsColorButton = new JButton("Lips Color");
+        }
 
-            UiMethods.setColortoLabels(letterColor, titleLabel, facialHairLabel, moustacheLabel, chinHairLabel);
-
-            setLayout(new GridLayout(10, 1));
-
-            // create string[] with values of enum
-            String hairstyle[] = { "ena", "dyo" };
-            // set values of enum to return on selection
-            JComboBox hairStyleList = new JComboBox(hairstyle);
-            JButton hairColorButton = new JButton("Hair Color");
-
-            // TODO COMPRESS ALL
-            JSlider moustacheSizeSlider = UiMethods.createSlider("None", 0, "The General", 20, 0, letterColor);// new
-                                                                                                               // JSlider(JSlider.HORIZONTAL,
-                                                                                                               // 0, 20,
-                                                                                                               // 0);
-            // UiMethods.setSliderLabels(moustacheSizeSlider, "None", 0, "The General", 20,
-            // letterColor);
-            moustacheSizeSlider.setToolTipText("Moustache Size");
-
-            JSlider moustacheCurveSlider = new JSlider(JSlider.HORIZONTAL, -40, 40, 0);
-            UiMethods.setSliderLabels(moustacheCurveSlider, "Hogan", -40, "Dali", 40, letterColor);
-            moustacheCurveSlider.setToolTipText("Moustache Curve");
-
-            JSlider chinHairLengthSlider = new JSlider(JSlider.HORIZONTAL, 0, 6, 0);
-            UiMethods.setSliderLabels(chinHairLengthSlider, "None", 0, "Max", 6, letterColor);
-            chinHairLengthSlider.setToolTipText("Chin Hair Length");
-
-            JSlider chinHairWidthSlider = new JSlider(JSlider.HORIZONTAL, 0, 6, 0);
-            UiMethods.setSliderLabels(chinHairWidthSlider, "None", 0, "Max", 6, letterColor);
-            chinHairWidthSlider.setToolTipText("Chin Hair Width");
-
+        @Override
+        public void addElements() {
             add(titleLabel);
-            add(hairStyleList);
+            add(noseLabel);
+            add(noseSizeSlider);
+            add(earLabel);
+            add(earSizeSlider);
+            add(mouthLabel);
+            add(mouthSizeSlider);
+            add(lipsLabel);
+            add(lipsColorButton);
+            add(lipsSizeSlider);
+
+        }
+
+        @Override
+        public void attachListeners() {
+
+            noseSizeSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+
+                    Face.nose().noseSize(noseSizeSlider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            earSizeSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+
+                    Face.ears().earSize(earSizeSlider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            mouthSizeSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+
+                    Face.mouth().mouthSize(mouthSizeSlider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            lipsSizeSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+
+                    Face.mouth().lipSize(lipsSizeSlider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            // lips color button
+            lipsColorButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    Color tmpColor = JColorChooser.showDialog(null, "Lips color", new Color(255, 190, 169, 255));
+                    Face.lipsColor(tmpColor);
+                    lipsColorButton.setBackground(tmpColor);
+                    FaceFrame.grid.removeAll();
+                    FaceFrame.grid.repaint();
+                }
+            });
+        }
+
+    }
+
+    class HairPanel extends Subpanel {
+
+        JLabel hairstyleLabel,  moustacheLabel, chinHairLabel;//facialHairLabel,
+        // JComboBox hairStyleList;
+        JButton hairColorButton;
+        JSlider hairStyleSlider, moustacheSizeSlider, moustacheCurveSlider, chinHairLengthSlider, chinHairWidthSlider, hairLengthSlider;
+
+        HairPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
+
+            super(title, backgroundColor, labelTextColor, sliderTextColor);
+            setMinimumSize(new Dimension(w / 6, h / 2));
+        }
+
+        @Override
+        public void createElements() {
+
+            hairstyleLabel = new JLabel("Hair Style");
+            moustacheLabel = new JLabel("Moustache");
+            chinHairLabel = new JLabel("Chin");
+
+            UiMethods.setColortoLabels(labelTextColor, hairstyleLabel, moustacheLabel, chinHairLabel);
+
+            hairStyleSlider = UiMethods.createSlider("", 0, "", HairStylezEnum.values().length-1, 0, sliderTextColor,
+                    "Chooses Hairstyle");
+
+            hairLengthSlider  = UiMethods.createSlider("Short", 0, "Long", 50, 0, sliderTextColor,
+            "Hair Length");
+
+            hairColorButton = new JButton("Hair Color");
+
+            moustacheSizeSlider = UiMethods.createSlider("None", 0, "General", 20, 0, sliderTextColor,
+                    "Moustache Size");
+
+            moustacheCurveSlider = UiMethods.createSlider("FuManchu", -40, "Dali", 40, 0, sliderTextColor,
+                    "Moustache Curve");
+
+            chinHairLengthSlider = UiMethods.createSlider("None", 0, "Max", 6, 0, sliderTextColor,
+                    "Chin Hair Length");
+
+            chinHairWidthSlider = UiMethods.createSlider("None", 0, "Max", 6, 0, sliderTextColor,
+                    "Chin Hair Width");
+
+        }
+
+        @Override
+        public void addElements() {
+            add(titleLabel);
+            add(hairStyleSlider);
+            add(hairLengthSlider);
             add(hairColorButton);
-            add(facialHairLabel);
             add(moustacheLabel);
             add(moustacheSizeSlider);
             add(moustacheCurveSlider);
@@ -175,76 +309,389 @@ public class UiPanel extends JPanel {
             add(chinHairLengthSlider);
             add(chinHairWidthSlider);
         }
+
+        @Override
+
+        // hair color button
+        public void attachListeners() {
+            hairColorButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    Color tmpColor = JColorChooser.showDialog(null, "Hair color", new Color(0, 17, 16, 0));
+                    Face.hairColor(tmpColor);
+                    hairColorButton.setBackground(tmpColor);
+                    FaceFrame.grid.repaint();
+                }
+            });
+      
+
+        // hair style chooser slider
+        hairStyleSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent event) {
+
+                Face.setHairCut(hairStyleSlider.getValue());
+                RectComputer.calcAllFeatures();
+                FaceFrame.grid.repaint();
+            }
+        });
+        
+        // hair length chooser slider (only works with hairstyles that have backhair)
+        hairLengthSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent event) {
+
+                Face.haircut().BackHair().length(hairLengthSlider.getValue());
+                
+                RectComputer.calcAllFeatures();
+                FaceFrame.grid.repaint();
+            }
+        });
+
+
+        // moustache size slider
+        moustacheSizeSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent event) {
+
+                Face.facialHair().moustache().moustacheSize(moustacheSizeSlider.getValue());
+                RectComputer.calcAllFeatures();
+                FaceFrame.grid.repaint();
+            }
+        });
+
+        // moustache curve slider
+        moustacheCurveSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent event) {
+
+                Face.facialHair().moustache().curled((moustacheCurveSlider.getValue()));
+                RectComputer.calcAllFeatures();
+                FaceFrame.grid.repaint();
+            }
+        });
+
+        // chin hair length slider
+        chinHairLengthSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent event) {
+
+                Face.facialHair().chin().soulpatchHeight(chinHairLengthSlider.getValue());
+                RectComputer.calcAllFeatures();
+                FaceFrame.grid.repaint();
+            }
+        });
+
+        // chin hair width slider
+        chinHairWidthSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent event) {
+
+                Face.facialHair().chin().soulpatchWidth(chinHairWidthSlider.getValue());
+                RectComputer.calcAllFeatures();
+                FaceFrame.grid.repaint();
+            }
+        });
+    }
     }
 
-    class EyesPanel extends JPanel {
+    class EyesPanel extends Subpanel {
 
-        EyesPanel() {
+        JSlider eyeSizeslider, eyeDistlider, eyeAnglSlider, upEyelidSlider, lowerEyelidSlider;
+        JButton irisColorButton, eyeballColorButton, eyeShadowColorButton;
 
-            setBackground(Color.cyan);
-            Color letterColor = Color.BLACK;
+        EyesPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
 
-            setLayout(new GridLayout(10, 1));
+            super(title, backgroundColor, labelTextColor, sliderTextColor);
 
-            JButton irisColorButton = new JButton("Iris Color");
-            JButton eyeballColorButton = new JButton("Eyeball Color");
-            JButton eyeShadowColorButton = new JButton("Eye Shadow Color");
+        }
 
-            JSlider eyeAnglSlider = new JSlider(JSlider.HORIZONTAL, -25, 25, 0);
-            UiMethods.setSliderLabels(eyeAnglSlider, "Crooked", -25, "Asian", 25, letterColor);
-            eyeAnglSlider.setToolTipText("Eye Angle");
+        @Override
+        public void createElements() {
 
-            JSlider upEyelidSlider = new JSlider(JSlider.HORIZONTAL, -10, 10, 0);
-            UiMethods.setSliderLabels(upEyelidSlider, "Insomnia", -10, "Rested", 10, letterColor);
-            upEyelidSlider.setToolTipText("Bagginess of upper eyelid");
+            eyeSizeslider = UiMethods.createSlider("Canada", 10, "Large", 35, 25, sliderTextColor, "Eye Size");
+            eyeDistlider = UiMethods.createSlider("Close", 5, "Far", 15, 10, sliderTextColor, "Eye Size");
 
-            JSlider lowerEyelidSlider = new JSlider(JSlider.HORIZONTAL, -10, 10, 0);
-            UiMethods.setSliderLabels(lowerEyelidSlider, "Insomnia", -10, "Rested", 10, letterColor);
-            lowerEyelidSlider.setToolTipText("Bagginess of lower eyelid");
+            irisColorButton = new JButton("Iris Color");
+            eyeballColorButton = new JButton("Eyeball Color");
+            eyeShadowColorButton = new JButton("Eye Shadow Color");
+            eyeAnglSlider = UiMethods.createSlider("Crooked", -25, "Asian", 25, 0, sliderTextColor, "Eye Angle");
+            upEyelidSlider = UiMethods.createSlider("Punched", -10, "Rested", 10, 0, sliderTextColor,
+                    "Bagginess of upper eyelid");
+            lowerEyelidSlider = UiMethods.createSlider("Insomnia", -10, "Rested", 10, 0, sliderTextColor,
+                    "Bagginess of lower eyelid");
 
-            JSlider eyebrowSizeSlider = new JSlider(JSlider.HORIZONTAL, 0, 25, 0);
-            UiMethods.setSliderLabels(eyebrowSizeSlider, "None", 0, "Bogdan", 25, letterColor);
-            eyebrowSizeSlider.setToolTipText("Eyebrow Size");
+        }
 
-            JSlider eyebrowThiccnessSlider = new JSlider(JSlider.HORIZONTAL, 0, 4, 0);
-            UiMethods.setSliderLabels(eyebrowThiccnessSlider, "None", 0, "Bogdan", 4, letterColor);
-            eyebrowThiccnessSlider.setToolTipText("Eyebrow Thiccness");
-
-            add(new JLabel("Eyes"));
+        @Override
+        public void addElements() {
+            add(titleLabel);
+            add(eyeSizeslider);
+            add(eyeDistlider);
             add(irisColorButton);
             add(eyeballColorButton);
             add(eyeShadowColorButton);
             add(eyeAnglSlider);
             add(upEyelidSlider);
             add(lowerEyelidSlider);
-            add(new JLabel("EyeBrows"));
+
+        }
+
+        @Override
+        public void attachListeners() {
+
+            // eye size slider
+            eyeSizeslider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+    
+                    Face.eyes().size(eyeSizeslider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            // eye distance from middle axis slider
+            eyeDistlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+    
+                    Face.eyes().eyedist(eyeDistlider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            // eye angle slider
+            eyeAnglSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+    
+                    Face.eyes().angle(eyeAnglSlider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            // upper eyelid thiccness slider
+            upEyelidSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+    
+                    Face.eyes().distortion1(upEyelidSlider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            // lower eyelid thiccness slider
+            lowerEyelidSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+    
+                    Face.eyes().distortion2(lowerEyelidSlider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            // iris color chooser button
+            irisColorButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    Color tmpColor = JColorChooser.showDialog(null, "Iris color", Color.DARK_GRAY);
+                    Face.eyePupilColor(tmpColor);
+                    irisColorButton.setBackground(tmpColor);
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            // eyeball color chooser button
+            eyeballColorButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    Color tmpColor = JColorChooser.showDialog(null, "Eyeball color", Color.white);
+                    Face.eyeballColor(tmpColor);
+                    eyeballColorButton.setBackground(tmpColor);
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            // eyeshadow color chooser button
+            eyeShadowColorButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    Color tmpColor = JColorChooser.showDialog(null, "Eye shadow color", new Color(255, 215, 169, 255));
+                    Face.makeupEyeColor(tmpColor);
+                    eyeShadowColorButton.setBackground(tmpColor);
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+
+
+        }
+
+    }
+
+    class RandomCreationPanel extends Subpanel {
+
+        JButton resetButton, RandMaleButton, RandFemaleButton, TotallyRandomButton;
+
+        JComboBox<String> emotionList;
+        JLabel emotionLabel;
+
+        RandomCreationPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
+
+            super(title, backgroundColor, labelTextColor, sliderTextColor);
+
+        }
+
+        @Override
+        public void createElements() {
+            resetButton = new JButton("Reset Face");
+            RandMaleButton = new JButton("Random Guy");
+            RandFemaleButton = new JButton("Random Gal");
+            TotallyRandomButton = new JButton("Totally Random");
+
+            emotionLabel = new JLabel("Emotion");
+            UiMethods.setColortoLabels(labelTextColor, emotionLabel);
+
+ 
+            String[] emotionlist = new String[Emotion.values().length];
+            for (int i=0;i<Emotion.values().length;i++){
+                emotionlist[i]=Emotion.values()[i].toString();
+            }
+            emotionList = new JComboBox<String>(emotionlist);
+
+        }
+
+        @Override
+        public void addElements() {
+            add(titleLabel);
+            add(resetButton);
+            add(new JSeparator());
+            add(RandMaleButton);
+            add(RandFemaleButton);
+            add(TotallyRandomButton);
+            add(new JSeparator());
+            add(emotionLabel);
+            add(emotionList);
+        }
+
+        @Override
+        public void attachListeners() {
+
+            // resets the face
+            resetButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    Face.resetFace();
+                    
+                    FaceFrame.grid.repaint();
+
+                }
+            });
+            // random guy face
+            RandMaleButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    RectComputer.createRandomFace("guy");
+                   
+                    FaceFrame.grid.repaint();
+
+                }
+            });
+            // random gal face
+            RandFemaleButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    RectComputer.createRandomFace("gal");
+                    FaceFrame.grid.repaint();
+
+                }
+            });
+            // totally random face
+            TotallyRandomButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    RectComputer.createRandomFace("default");
+                    FaceFrame.grid.repaint();
+                }
+            });
+            // set emotion
+            emotionList.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+                    Emotion emotions[]=Emotion.values();
+                    Emotion chosenEmot=emotions[0];
+                    String selection = (String)emotionList.getSelectedItem();
+                    for (int i=0;i<emotions.length;i++){
+
+                        if (emotions[i].toString().equals(selection)){
+                            chosenEmot=emotions[i];
+                            Face.setExpression(chosenEmot);
+                            break;
+                        }
+                    }
+                    Face.setExpression(chosenEmot);
+                    FaceFrame.grid.repaint();
+                }
+            });
+        }
+    }
+
+    class ExpressionPanel extends Subpanel {
+
+        JSlider eyebrowSizeSlider, eyebrowThiccnessSlider;
+        JLabel eyebrowLabel;
+
+        ExpressionPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
+
+            super(title, backgroundColor, labelTextColor, sliderTextColor);
+
+        }
+
+        @Override
+        public void createElements() {
+            eyebrowLabel = new JLabel("EyeBrows");
+            UiMethods.setColortoLabels(labelTextColor, eyebrowLabel);
+
+            eyebrowSizeSlider = UiMethods.createSlider("None", 0, "Unibrow", 25, 0, sliderTextColor, "Eyebrow Size");
+            eyebrowThiccnessSlider = UiMethods.createSlider("None", 0, "Bushy", 4, 2, sliderTextColor,
+                    "Eyebrow Thiccness");
+        }
+
+        @Override
+        public void addElements() {
+            add(titleLabel);
+            add(eyebrowLabel);
             add(eyebrowSizeSlider);
             add(eyebrowThiccnessSlider);
         }
 
-    }
+        @Override
+        public void attachListeners() {
 
-    class FacialHairPanel extends JPanel {
+            // eyebrow size slider
+            eyebrowSizeSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+    
+                    Face.eyebrows().eyebrowSize(eyebrowSizeSlider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
 
-        FacialHairPanel() {
+            // eyebrow thiccness slider
+            eyebrowThiccnessSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+    
+                    Face.eyebrows().eyebrowThiccness(eyebrowThiccnessSlider.getValue());
+                    RectComputer.calcAllFeatures();
+                    FaceFrame.grid.repaint();
+                }
+            });
 
-            setBackground(Color.MAGENTA);
-            setLayout(new GridLayout(10, 1));
+
+
+
 
         }
-
     }
-
-    class ExpressionPanel extends JPanel {
-        ExpressionPanel() {
-
-            setBackground(Color.BLACK);
-            JLabel title = new JLabel("Expression");
-            title.setForeground(Color.WHITE);
-            add(title);
-        }
-
-    }
-
 
 }

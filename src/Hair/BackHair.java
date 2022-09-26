@@ -7,8 +7,8 @@ import FunctionalClasses.RectComputer;
 
 public class BackHair {
     
-    boolean hasHair;
-    int length;
+    private boolean hasHair;
+    private int length;
 
     void drawHair(Graphics2D g2d){
 
@@ -17,11 +17,30 @@ public class BackHair {
         int bHairT = Face.minHeight();
         int bHairB = Face.height()+Face.height()*length/50;
         
-        g2d.drawRect(bHairL, bHairT, bHairR-bHairL,bHairB);
-        g2d.setColor(Color.black);
+     //   g2d.drawRect(bHairL, bHairT, bHairR-bHairL,bHairB);
+        g2d.setColor(Face.hairColor());
         g2d.fillArc(bHairL,bHairT,bHairR-bHairL,bHairB, 0, 180);
+        g2d.setColor(Color.black);
         
-
+        
     }
 
+    public boolean hasHair() {
+        return hasHair;
+    }
+
+    public void hasHair(boolean hasHair) {
+        this.hasHair = hasHair;
+    }
+
+    public int length() {
+        return length;
+    }
+
+    public void length(int length) {
+        this.length = length;
+    }
+
+
+    
 }

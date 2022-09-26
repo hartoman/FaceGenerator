@@ -1,6 +1,5 @@
 {
     "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "/home/chris/netbeans-8.2/Libraries/Toolz.jar"
+        "lib/**/*.jar"
     ]
 }

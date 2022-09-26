@@ -7,11 +7,12 @@ import java.util.Hashtable;
 public class UiMethods {
 
     public static JSlider createSlider(String atMin, int minValue, String atMax, int maxValue,int defaultValue,
-    Color fontcolor) {
+    Color fontcolor,String tooltip) {
 
         JSlider slider = new JSlider(JSlider.HORIZONTAL, minValue, maxValue, defaultValue);
         setSliderLabels(slider, atMin, minValue, atMax, maxValue, fontcolor);
-  
+        slider.setToolTipText(tooltip);
+
         return slider;
     }
 

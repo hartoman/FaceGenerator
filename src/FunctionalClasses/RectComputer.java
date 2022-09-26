@@ -1,6 +1,7 @@
 package FunctionalClasses;
-import Toolz.*;
 import FacialFeatures.*;
+import java.util.Random;
+import Hair.HairStylezEnum;
 
 //import Toolz.LineHandler.*;
 import java.awt.*;
@@ -39,9 +40,13 @@ public class RectComputer {
         int height1 = (int) Face.halfFace().getHeight();
 
         /* we get the bounding boxes for all facial features */
-        Face.eyes().boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 3 / numLines),
-                (x1 + width1 * 5 / 6),
-                (y1 + height1 * 4 / numLines));
+        int eyex=x1 + width1 * 2 / 6;
+        int eyey=(y1 + height1 * 3 / numLines);
+        int eyewidth=(x1 + width1 * 5 / 6);
+        int eyeheight=(y1 + height1 * 4 / numLines);
+
+                Face.eyes().boundRect = getBoundingBox(eyex,eyey ,eyewidth,eyeheight);
+                Face.eyes().adjustBoundRect();  // adjusts bounding box for eye size and distance
 
                 Face.eyebrows().boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 5 / 2 / numLines),
                 (x1 + width1),
@@ -117,4 +122,91 @@ public class RectComputer {
         return new Rectangle(leftMostX, topMostY, rightMostX - leftMostX, bottomMostY - topMostY);
     }
 
+public static int randomBetween(int min, int max){
+    Random random=new Random();
+    return random.nextInt(max +1- min) + min;
 }
+
+public static boolean randomBool() {
+    if (randomBetween(0, 10000000) % 2 == 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+public static void createRandomFace(String gender) {
+
+    int moustSize, moustCurl, chinH, chinW, hairNum;
+
+    boolean hasMoust = RectComputer.randomBool();
+    boolean hasBeard = RectComputer.randomBool();
+
+    switch (gender) {
+
+        case "guy":
+            if (hasMoust) {
+                moustSize = RectComputer.randomBetween(0, 20);
+                moustCurl = RectComputer.randomBetween(-40, 40);
+            } else {
+                moustSize = 0;
+                moustCurl = 0;
+            }
+
+            if (hasBeard) {
+                chinH = RectComputer.randomBetween(0, 6);
+                chinW = RectComputer.randomBetween(0, 6);
+
+            } else {
+                chinH = 0;
+                chinW = 0;
+            }
+            hairNum = RectComputer.randomBetween(0, 7);
+            break;
+
+        case "gal":
+            moustSize = 0;
+            moustCurl = 0;
+            chinH = 0;
+            chinW = 0;
+            hairNum = RectComputer.randomBetween(3, (HairStylezEnum.values().length - 1));
+            break;
+
+        default:
+            moustSize = RectComputer.randomBetween(0, 20);
+            moustCurl = RectComputer.randomBetween(-40, 40);
+            chinH = RectComputer.randomBetween(0, 6);
+            chinW = RectComputer.randomBetween(0, 6);
+            hairNum = RectComputer.randomBetween(0, (HairStylezEnum.values().length - 1));
+            break;
+    }
+
+
+    Face.setHairCut(hairNum);
+
+    Face.facialHair().setFacialHair(moustSize, moustCurl, chinH, chinW);
+
+    Face.head().setHead(RectComputer.randomBetween(0, 50), RectComputer.randomBetween(0, 50));
+
+    Face.eyes().setEyes(RectComputer.randomBetween(-10, 10),
+            RectComputer.randomBetween(-10, 10),
+            RectComputer.randomBetween(-25, 25),
+            RectComputer.randomBetween(10, 35),
+            RectComputer.randomBetween(5, 15));
+
+            Face.nose().noseSize(RectComputer.randomBetween(1, 8));
+
+            Face.mouth().setMouth(RectComputer.randomBetween(0, 40),
+            RectComputer.randomBetween(0, 30));
+
+            Face.eyebrows().setEyebrows(RectComputer.randomBetween(0, 25),
+            RectComputer.randomBetween(0, 4));
+
+            Face.ears().earSize(RectComputer.randomBetween(0, 50));
+
+    calcAllFeatures();
+
+}
+
+}
+

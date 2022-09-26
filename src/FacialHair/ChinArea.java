@@ -32,7 +32,7 @@ public class ChinArea extends SymmetricalFeature {
             Path2D.Double sp = new Path2D.Double();
             sp.moveTo(right, midy);
             int soulLowest = midy+height*(1+soulpatchHeight)/6;
-            int soulLeftest = right-width*soulpatchWidth/6;
+            int soulLeftest = right-width*soulpatchWidth/6-10;
             sp.curveTo(soulLeftest, midy, soulLeftest, soulLowest, right, soulLowest);
             sp.closePath();
 

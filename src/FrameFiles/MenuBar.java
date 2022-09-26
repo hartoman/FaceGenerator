@@ -125,17 +125,6 @@ class GroupedMapFunctions {
         return jarDir;
     }
 
-    // sets the global font size for the application
-    private void setUIFont(javax.swing.plaf.FontUIResource f) {
-        java.util.Enumeration keys = UIManager.getDefaults().keys();
-        while (keys.hasMoreElements()) {
-            Object key = keys.nextElement();
-            Object value = UIManager.get(key);
-            if (value instanceof javax.swing.plaf.FontUIResource) {
-                UIManager.put(key, f);
-            }
-        }
-    }
 
     // exports map as jpg picture
     private void ToJpg(String filename) {

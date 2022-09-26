@@ -6,19 +6,15 @@ import FunctionalClasses.SymmetricalFeature;
 
 public class Eyes extends SymmetricalFeature {
     // the further from 0, the wider the eye becomes
-    int distortion1, // for upper eyeball -- [-10,10]
+    private int distortion1, // for upper eyeball -- [-10,10]
             distortion2, // for lower eyeball -- [-10,10]
             distortion3; // eyelid openness-- [0,75], 0=closed, 75=wide open
 
-    int angle; // angle of the shape of the eyes
-    int distance; // how far apart are the eyes
+    private int angle; // angle of the shape of the eyes
+    private int size;                   // [10,35]
+    private int eyedist;               // [5,15]
 
     void drawEyes(Graphics2D g2d) {
-
-        // TODO Move this away from here, it causes problems because it is constantly
-        // recalculated
-        // left = left + distance;
-        // right = right + distance;
 
         drawEyeball(g2d);
         drawPupil(g2d);
@@ -128,4 +124,83 @@ public class Eyes extends SymmetricalFeature {
         g2d.setColor(Color.BLACK);
     }
 
+
+    // readjusts bounding rectangle based on eyeSize, 
+    public void adjustBoundRect(){
+        int modsize = size+70;
+        int negDist = -(eyedist-10);
+        
+        Rectangle modRect = new Rectangle(boundRect().x+boundRect().width*negDist/100,
+        boundRect().y,
+        boundRect().width*modsize/100,
+        boundRect().height*modsize/100
+        );
+        boundRect(modRect);
+        setBoundingBoxParameters();
+    }
+
+
+    // sets all eye parameters at once
+    public void setEyes(int distortion1,int distortion2,int angle,int size,int eyedist){
+        this.distortion1=distortion1;
+        this.distortion2=distortion2;
+        this.angle=angle;
+        this.size=size;
+        this.eyedist=eyedist;
+    }
+
+
+public int angle() {
+        return angle;
+}
+
+public void angle(int angle) {
+        this.angle = angle;
+}
+
+public  int size() {
+        return size;
+}
+
+public  void size(int size) {
+        this.size = size;
+}
+
+public  int eyedist() {
+        return eyedist;
+}
+
+public  void eyedist(int eyedist) {
+        this.eyedist = eyedist;
+}
+
+public int distortion1() {
+        return distortion1;
+}
+
+public void distortion1(int distortion1) {
+        this.distortion1 = distortion1;
+}
+
+public int distortion2() {
+        return distortion2;
+}
+
+public void distortion2(int distortion2) {
+        this.distortion2 = distortion2;
+}
+
+public int distortion3() {
+        return distortion3;
+}
+
+public void distortion3(int distortion3) {
+        this.distortion3 = distortion3;
+}
+
+
+
+
+
+    
 }

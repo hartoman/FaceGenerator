@@ -27,7 +27,7 @@ public abstract class HairCut {
     // draws the part of the hair that is on the back (longer hair)
     public void drawBackHair(Graphics2D g2d) {
 
-        if (backhair.hasHair) {
+        if (backhair.hasHair()) {
             backhair.drawHair(g2d);
         }
     }
@@ -51,6 +51,8 @@ public abstract class HairCut {
 
 /* ******************************* VARIOUS HAIRSTYLES ***************************** */
 
+// length: [0,50]
+
 // old males
 class Bald extends HairCut {
 
@@ -58,7 +60,7 @@ class Bald extends HairCut {
 
         temples.hasHair = true;
         topOfHead = new BaldTop();
-        backhair.hasHair=false;
+        backhair.hasHair(false);
     }
 }
 
@@ -69,8 +71,8 @@ class BaldLongHair extends HairCut {
 
         temples.hasHair = true;
         topOfHead = new BaldTop();
-        backhair.hasHair=true;
-        backhair.length=45;
+        backhair.hasHair(true);
+        backhair.length(0);
     }
 }
 
@@ -82,7 +84,7 @@ class SkinHead extends HairCut {
         super();
         temples.hasHair = false;
         topOfHead = new BaldTop();
-        backhair.hasHair= false;
+        backhair.hasHair(false);
     }
 
 }
@@ -93,7 +95,7 @@ class Mohawk extends HairCut {
     Mohawk() {
         temples.hasHair = false;
         topOfHead = new MohawkTop();
-        backhair.hasHair= false;
+        backhair.hasHair(false);
     }
 
 }
@@ -104,7 +106,7 @@ class PartMiddle extends HairCut {
     PartMiddle() {
         temples.hasHair = true;
         topOfHead = new PartMiddleTop();
-        backhair.hasHair= false;
+        backhair.hasHair(false) ;
     }
 }
 
@@ -114,7 +116,7 @@ class PartSide extends HairCut {
     PartSide() {
         temples.hasHair = true;
         topOfHead = new PartSideTop();
-        backhair.hasHair= false;
+        backhair.hasHair(false) ;
     }
 }
 
@@ -124,7 +126,7 @@ class LowFringe extends HairCut {
     LowFringe() {
         temples.hasHair = true;
         topOfHead = new LowFringeTop();
-        backhair.hasHair= false;
+        backhair.hasHair(false);
     }
 }
 
@@ -134,7 +136,7 @@ class HighFringe extends HairCut {
     HighFringe() {
         temples.hasHair = true;
         topOfHead = new HighFringeTop();
-        backhair.hasHair= false;
+        backhair.hasHair(false);
     }
 }
 
@@ -143,7 +145,38 @@ class MiaWallace extends HairCut{
     MiaWallace(){
         temples.hasHair = true;
         topOfHead = new LowFringeTop();
-        backhair.hasHair= true;
-        backhair.length=40;
+        backhair.hasHair(true);
+        backhair.length(0);
     }
+}
+
+class PartSideLongHair extends HairCut{
+
+    PartSideLongHair(){
+        temples.hasHair = true;
+        topOfHead = new PartSideTop();
+        backhair.hasHair(true) ;
+        backhair.length(0);
+    }
+}
+
+class PartMiddleLongHair extends HairCut{
+
+    PartMiddleLongHair(){
+        temples.hasHair = true;
+        topOfHead = new PartMiddleTop();
+        backhair.hasHair(true) ;
+        backhair.length(0);
+    }
+}
+
+class HighFringeLongHair extends HairCut{
+    HighFringeLongHair(){
+        temples.hasHair = true;
+        topOfHead = new HighFringeTop();
+        backhair.hasHair(true) ;
+        backhair.length(0);
+
+    }
+
 }

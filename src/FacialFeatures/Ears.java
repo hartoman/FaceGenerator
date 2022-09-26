@@ -5,7 +5,7 @@ import FunctionalClasses.SymmetricalFeature;
 
 public class Ears extends SymmetricalFeature {
 
-    int earSize;
+    private int earSize;
 
     void drawEars(Graphics2D g2d) {
 
@@ -14,19 +14,12 @@ public class Ears extends SymmetricalFeature {
         int bh1x = right;// earMidpoint+width/2;//+width*2/3;
         int bh1y = top;
         int bh2x = left;// +width/5;
-        int bh2y = top;
 
         int bh3x = bh2x + width * 2 / 3;
         int bh3y = bottom;
         int bh4x = left + width;
         int bh4y = bottom + height / 3;
 
-        /*
-         * Path2D.Double bh1line = new Path2D.Double();
-         * bh1line.moveTo(bh3x, bh3y);
-         * bh1line.lineTo(bh4x, bh4y);
-         * g2d.draw(bh1line);
-         */
 
         Path2D.Double ear = new Path2D.Double();
         ear.moveTo(right, top + height / 3);
@@ -63,5 +56,16 @@ public class Ears extends SymmetricalFeature {
         g2d.fill(earPore2);
 
     }
+
+    public int earSize() {
+        return earSize;
+    }
+
+    public void earSize(int earSize) {
+        this.earSize = earSize;
+    }
+
+
+
 
 }

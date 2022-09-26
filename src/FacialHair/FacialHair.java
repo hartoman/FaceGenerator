@@ -39,6 +39,15 @@ public class FacialHair {
     }
 
 
+    public void setFacialHair(int moustacheSize,int curled,int soulpatchHeight,int soulpatchWidth){
+
+        this.moustache().moustacheSize(moustacheSize);
+        this.moustache().curled(curled);
+        this.chin().soulpatchHeight(soulpatchHeight);
+        this.chin().soulpatchWidth(soulpatchWidth);
+
+        
+    }
 
 }
 

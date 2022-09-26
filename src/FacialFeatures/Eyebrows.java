@@ -5,10 +5,10 @@ import FunctionalClasses.SymmetricalFeature;
 
 public     class Eyebrows extends SymmetricalFeature {
 
-    int eyebrowSize;
-    int anger;
-    int eyebrowThiccness;
-    int angerpointL, angerpointR, widthEB;
+    private int eyebrowSize;    //  [0,25]
+    private int anger;          //  []
+    private int eyebrowThiccness;   //  [0,4]
+    private int angerpointL, angerpointR, widthEB;
     // beginX always on left, beginY based on anger
 
     void drawEyebrows(Graphics2D g2d) {
@@ -41,4 +41,40 @@ public     class Eyebrows extends SymmetricalFeature {
         g2d.setColor(Color.black);
     }
 
+
+
+    public int eyebrowSize() {
+        return eyebrowSize;
+    }
+
+    public void eyebrowSize(int eyebrowSize) {
+        this.eyebrowSize = eyebrowSize;
+    }
+
+    public int anger() {
+        return anger;
+    }
+
+    public void anger(int anger) {
+        this.anger = anger;
+    }
+
+    public int eyebrowThiccness() {
+        return eyebrowThiccness;
+    }
+
+    public void eyebrowThiccness(int eyebrowThiccness) {
+        this.eyebrowThiccness = eyebrowThiccness;
+    }
+
+
+    public void setEyebrows(int eyebrowSize,int eyebrowThiccness){
+        this.eyebrowSize=eyebrowSize;
+        this.eyebrowThiccness=eyebrowThiccness;
+
+    }
+
+
+
+    
 }
