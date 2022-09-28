@@ -67,13 +67,26 @@ public enum HairStylezEnum {
         public HairCut makeHair() {
             return new PartSideLongHair();
         }
-    },  //
+    },  
     PARTMIDDLELONGHAIR {
         @Override
         public HairCut makeHair() {
             return new PartMiddleLongHair();
         }
+    },  
+    HIGHTEMPLEHAIRCUT {
+        @Override
+        public HairCut makeHair() {
+            return new HightTempleHairCut();
+        }
+    },  
+    HIGHTEMPLELONGHAIR {
+        @Override
+        public HairCut makeHair() {
+            return new HightTempleLongHair();
+        }
     }
+    
     
     ;
 

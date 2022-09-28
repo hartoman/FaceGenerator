@@ -86,7 +86,7 @@ import FunctionalClasses.SymmetricalFeature;
 
             g2d.setColor(Face.hairColor());
 
-            g2d.fillArc(left, top, width, top + height * 10 / 9, 0, 180);
+            g2d.fillArc(left, top, width, top + height * 11 / 9, 0, 180);
             g2d.fill(part);
             g2d.fill(part2);
 
@@ -112,4 +112,22 @@ import FunctionalClasses.SymmetricalFeature;
             g2d.setColor(Color.black);
         }
 
+    }
+
+
+    class HighTemples extends TopOfHead{
+
+        @Override
+        void drawTopOfHead(Graphics2D g2d) {
+            
+            g2d.setColor(Face.hairColor());
+            g2d.fillArc(left, top, width, top + height * 5 / 3, 0, 180);
+
+            g2d.setColor(Face.skinColor());
+            g2d.fillArc(left, midy+height/8, width/2, midy+height/4, 0, 180);
+            g2d.fillArc(left+width/2, midy+height/8, width/2, midy+height/4, 0, 180);
+
+            g2d.setColor(Color.black);
+
+        }
     }

@@ -29,12 +29,16 @@ public class UiPanel extends JPanel {
     }
 
     public void initPanel() {
+        //
         setSize(w, h);
 
+        //
         setMaximumSize(new Dimension(w, h));
         setBackground(Color.lightGray);
 
-        this.setLayout(new GridLayout(2, 3));
+        this.setLayout(new GridLayout(2, 3,10,10));
+        //
+        setPreferredSize(new Dimension(w , h ));
 
         add(new GeneralHeadPanel("General", Color.green, Color.BLACK, Color.DARK_GRAY));
         add(new FeaturesPanel("Features", Color.red, Color.BLACK, Color.DARK_GRAY));
@@ -96,7 +100,8 @@ public class UiPanel extends JPanel {
                     "Determines thiccness of head");
             headShapeSlider = UiMethods.createSlider("Conical", 0, "Potato", 40, 0, sliderTextColor,
                     "Determines shape of head");
-
+            
+            System.out.println(javax.swing.UIManager.getDefaults().getFont("Label.font"));
         }
 
         @Override
@@ -619,7 +624,6 @@ public class UiPanel extends JPanel {
                     Emotion chosenEmot=emotions[0];
                     String selection = (String)emotionList.getSelectedItem();
                     for (int i=0;i<emotions.length;i++){
-
                         if (emotions[i].toString().equals(selection)){
                             chosenEmot=emotions[i];
                             Face.setExpression(chosenEmot);

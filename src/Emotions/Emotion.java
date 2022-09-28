@@ -12,6 +12,7 @@ public enum Emotion {
     APOLOGETIC("Apologetic",-50,45,15,0),
     VICIOUS("Vicious", 50, 45, 15, 40),
     CYNICAL("Cynical", 50, 35, 3, 0),
+    DETERMINED("Determined", 50, 50, 0, 0),
     SAD("Sad", -50, 45, -15, 0),
     HORROR("Horror", -50, 75, -15, 40),
     RAGE("Rage", 50, 55, -15, 0),

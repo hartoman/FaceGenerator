@@ -8,6 +8,7 @@ public class Ears extends SymmetricalFeature {
     private int earSize;
 
     void drawEars(Graphics2D g2d) {
+        if(earSize>0){
 
         int earMidpoint = ((left + width / 2) - width * earSize / 100);
 
@@ -54,7 +55,7 @@ public class Ears extends SymmetricalFeature {
         g2d.draw(earPore2);
         g2d.fill(earPore);
         g2d.fill(earPore2);
-
+        }
     }
 
     public int earSize() {

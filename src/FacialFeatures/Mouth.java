@@ -13,6 +13,7 @@ public  class Mouth extends SymmetricalFeature {
 
     void drawMouth(Graphics2D g2d) {
 
+      
         int midx = (left + width / 2);
         int mouthpointUL1 = midx - width / 5 - mouthSize - 0;
         int mouthpointUR1 = midx + width / 5 + mouthSize + 0;
@@ -57,7 +58,7 @@ public  class Mouth extends SymmetricalFeature {
          * 
          * g2d.setColor(Color.black);
          */
-
+    
     }
 
     public int mouthSize() {

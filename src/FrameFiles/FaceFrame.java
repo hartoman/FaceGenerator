@@ -7,6 +7,7 @@
  * hartoman@gmail.com
  */
 package FrameFiles;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -17,49 +18,58 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.Image;
 import FacialFeatures.Face;
+import java.awt.Font;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
+
 /**
  *
  * @author chris
  */
 
 public class FaceFrame extends JFrame {
-    
-static int w,h,rows,columns,wdOfRow,htOfRow;
-   static Grid grid;
-   static UiPanel uipanel;
-   static MenuBar menu;
 
-    public FaceFrame(String title, int w, int h, int rows, int columns){
-        FaceFrame.w=w;
-        FaceFrame.h=h;
-        FaceFrame.rows=rows;
-        FaceFrame.columns=columns;
-        wdOfRow = w/columns;
-        htOfRow = h/rows;
+    static int w, h, rows, columns, wdOfRow, htOfRow;
+    static Grid grid;
+    static UiPanel uipanel;
+    static MenuBar menu;
 
-        setSize(w*2, h + 40);
+    public FaceFrame(String title, int w, int h, int rows, int columns) {
+
+        FaceFrame.w = w;
+        FaceFrame.h = h;
+        FaceFrame.rows = rows;
+        FaceFrame.columns = columns;
+        wdOfRow = w / columns;
+        htOfRow = h / rows;
+
+        setSize(w * 2, h);
         setTitle(title);
-        
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 
-        menu=new MenuBar();
+        //sets icon
+        ImageIcon image = new ImageIcon(FaceFrame.class.getResource("/icon.jpg"));
+        this.setIconImage(image.getImage());
+
+        setLayout(new GridLayout(1, 2));
+
+        menu = new MenuBar();
         setJMenuBar(menu);
 
         grid = new Grid();
         add(grid);
 
-        uipanel = new UiPanel(w,h);
+        uipanel = new UiPanel(w, h);
         add(uipanel);
-       
+
     }
 
-    public static void transparentBackground(boolean transparent){
-        if(transparent){
-        FaceFrame.grid.background=null;
-        FaceFrame.grid.setBackground(new Color(255,255,255,0));
-        }
-        else{
-            FaceFrame.grid.setBackground(new Color(255,255,255,255)); 
+    public static void transparentBackground(boolean transparent) {
+        if (transparent) {
+            FaceFrame.grid.background = null;
+            FaceFrame.grid.setBackground(new Color(255, 255, 255, 0));
+        } else {
+            FaceFrame.grid.setBackground(new Color(255, 255, 255, 255));
         }
     }
 
@@ -68,44 +78,42 @@ static int w,h,rows,columns,wdOfRow,htOfRow;
 
         Image background;
         Face face;
-    
+
         Grid() {
-            setSize(w,  h);
+            setSize(w, h);
             setPreferredSize(new Dimension(w, h));
             setMinimumSize(new Dimension(w, h));
             setMaximumSize(new Dimension(w, h));
-            face = new Face(w,h);
+            face = new Face(w, h);
 
-        //    setBackgroundImage("pir.jpg");
-            
+            //    setBackgroundImage("pir.jpg");
         }
-    
+
         @Override
         public void paintComponent(Graphics g) {
-    
+
             super.paintComponent(g);
-    
+
             // draws background image
             g.drawImage(background, 0, 0, null);
-            
+
             //paints the gridlines
             //paintGridlines(g);
-
             // paints the face
             paintFace(g);
-            
+
             g.dispose();
-            
+
         }
-    
+
         // sets the background image
         public void setBackgroundImage(String filename) {
-    
+
             if (filename != null) {
                 try {
                     URL url = getClass().getClassLoader().getResource(filename);
-                   background = ImageIO.read(url).getScaledInstance(w, h, Image.SCALE_SMOOTH);
-                //    background = ImageIO.read(url);
+                    background = ImageIO.read(url).getScaledInstance(w, h, Image.SCALE_SMOOTH);
+                    //    background = ImageIO.read(url);
                 } catch (Exception ex) {
                     System.out.println("at least one wrong filename");
                     System.exit(1);
@@ -113,40 +121,66 @@ static int w,h,rows,columns,wdOfRow,htOfRow;
             }
             removeAll();
         }
-        
+
         // convenience method, draws a grid
-        void paintGridlines(Graphics g){
-                    // draws gridlines
+        void paintGridlines(Graphics g) {
+            // draws gridlines
             int k;
             w = getSize().width;
             h = getSize().height;
-    
+
             for (k = 0; k < rows; k++) {
                 g.drawLine(0, k * htOfRow, w, k * htOfRow);
             }
-    
+
             for (k = 0; k < columns; k++) {
                 g.drawLine(k * wdOfRow, 0, k * wdOfRow, h);
             }
         }
-    
+
         // core rendering method
-        void paintFace(Graphics g){
-            
+        void paintFace(Graphics g) {
+
             // transforms Graphics to Graphics2D 
-            Graphics2D g2d =(Graphics2D)g;
+            Graphics2D g2d = (Graphics2D) g;
 
             // ...which can have anti-aliasing, to smoothen lines and edges
             RenderingHints rh = new RenderingHints(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-                g2d.setRenderingHints(rh);
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setRenderingHints(rh);
 
             // and draw the face
             face.drawFace(g2d);
         }
-    
+
     }
-    
-    
+
+
+    // gets a given percentage of the screen height
+    public static int getScreenHeightPercentage(int percentage) {
+        GraphicsDevice size = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int height = (int) size.getDisplayMode().getHeight() * percentage / 100;
+        return height;
+    }
+
+        // sets the global font for the application
+    public static void adaptUIFont() {
+        
+      //  javax.swing.plaf.FontUIResource f = new Font();
+        java.util.Enumeration keys = UIManager.getDefaults().keys();
+        
+        // adjusts the font size based on screen height in pixels
+        int height = getScreenHeightPercentage(100);
+        int adjFontSize = (height / 64) + 1;
+        
+        // assigns the adjusted font size to all elements
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value instanceof javax.swing.plaf.FontUIResource) {
+                UIManager.put(key, new javax.swing.plaf.FontUIResource("Dialog", Font.BOLD, adjFontSize));
+            }
+        }
+    }
 }

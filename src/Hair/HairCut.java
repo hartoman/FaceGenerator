@@ -17,10 +17,12 @@ public abstract class HairCut {
     // draws the part of the hair that is on the head
     public void drawHairCut(Graphics2D g2d) {
 
+        topOfHead.drawTopOfHead(g2d);
+        // templs above top of head
         if (temples.hasHair) {
             temples.drawTemples(g2d);
         }
-        topOfHead.drawTopOfHead(g2d);
+       
 
     }
 
@@ -179,4 +181,27 @@ class HighFringeLongHair extends HairCut{
 
     }
 
+
+
+
+}
+
+class HightTempleHairCut extends HairCut{
+
+    HightTempleHairCut(){
+        temples.hasHair = true;
+        topOfHead = new HighTemples();
+        backhair.hasHair(false) ;
+        backhair.length(0);
+    }
+}
+
+class HightTempleLongHair extends HairCut{
+
+    HightTempleLongHair(){
+        temples.hasHair = true;
+        topOfHead = new HighTemples();
+        backhair.hasHair(true) ;
+        backhair.length(0);
+    }
 }

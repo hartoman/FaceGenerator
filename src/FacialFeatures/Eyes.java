@@ -128,11 +128,11 @@ public class Eyes extends SymmetricalFeature {
     // readjusts bounding rectangle based on eyeSize, 
     public void adjustBoundRect(){
         int modsize = size+70;
-        int negDist = -(eyedist-10);
+        int negDist = -(eyedist+10);
         
         Rectangle modRect = new Rectangle(boundRect().x+boundRect().width*negDist/100,
         boundRect().y,
-        boundRect().width*modsize/100,
+        boundRect().width*(modsize)/100,
         boundRect().height*modsize/100
         );
         boundRect(modRect);

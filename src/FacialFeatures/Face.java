@@ -78,7 +78,7 @@ public class Face {
         // on the face are the main facial features
         head.drawHead(g2d);
         eyes.drawEyes(g2d);
-        eyebrows.drawEyebrows(g2d);
+        
         mouth.drawMouth(g2d);
 
         // draw the rest of hair
@@ -89,6 +89,8 @@ public class Face {
         facialHair.drawFacialHair(g2d);
         // nose above facial hair
         nose.drawNose(g2d);
+        // eyebrows above nose
+        eyebrows.drawEyebrows(g2d);
     }
 
     /* convenience methods for drawing the framing lines */
