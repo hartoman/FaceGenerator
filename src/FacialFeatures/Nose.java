@@ -7,7 +7,9 @@ public class Nose extends SymmetricalFeature {
 
     private int noseSize;
 
-    void drawNose(Graphics2D g2d) {
+    
+
+    void drawNose(Graphics2D g2d,Color skinColor) {
 
         int bridgeBeginy = top;
         int bh1y = top + height * 1 / 5;
@@ -42,7 +44,7 @@ public class Nose extends SymmetricalFeature {
 
         // so that it gets drawn OVER the moustache
         g2d.draw(nose);
-        g2d.setColor(Face.skinColor());
+        g2d.setColor(skinColor);
         nose.lineTo(right, top);
         nose.closePath();
         g2d.setColor(Color.black);
@@ -50,7 +52,7 @@ public class Nose extends SymmetricalFeature {
         Shape nose2 = drawMirrored(nose);
         g2d.draw(nose2);
 
-        g2d.setColor(Face.skinColor());
+        g2d.setColor(skinColor);
         g2d.fill(nose);
         g2d.fill(nose2);
         g2d.setColor(Color.BLACK);

@@ -1,36 +1,41 @@
 package Hair;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public abstract class HairCut {
+
+public abstract class HairCut implements Serializable {
 
     TopOfHead topOfHead;
     Temples temples;
     BackHair backhair;
+ //   Color hairColor;
 
     // creates the haircut out of two parts: hair on the head, and hair in the back
     HairCut() {
         temples = new Temples();
         backhair = new BackHair();
+
     }
 
     // draws the part of the hair that is on the head
-    public void drawHairCut(Graphics2D g2d) {
+    public void drawHairCut(Graphics2D g2d,Color hairColor,Color skinColor) {
 
-        topOfHead.drawTopOfHead(g2d);
+        
         // templs above top of head
         if (temples.hasHair) {
-            temples.drawTemples(g2d);
+            temples.drawTemples(g2d,hairColor);
         }
-       
+        topOfHead.hairColor(hairColor,skinColor);
 
+        topOfHead.drawTopOfHead(g2d);
     }
 
     // draws the part of the hair that is on the back (longer hair)
-    public void drawBackHair(Graphics2D g2d) {
+    public void drawBackHair(Graphics2D g2d,Color hairColor) {
 
         if (backhair.hasHair()) {
-            backhair.drawHair(g2d);
+            backhair.drawHair(g2d,hairColor);
         }
     }
 
@@ -189,7 +194,7 @@ class HighFringeLongHair extends HairCut{
 class HightTempleHairCut extends HairCut{
 
     HightTempleHairCut(){
-        temples.hasHair = true;
+        temples.hasHair = false;
         topOfHead = new HighTemples();
         backhair.hasHair(false) ;
         backhair.length(0);
@@ -199,7 +204,7 @@ class HightTempleHairCut extends HairCut{
 class HightTempleLongHair extends HairCut{
 
     HightTempleLongHair(){
-        temples.hasHair = true;
+        temples.hasHair = false;
         topOfHead = new HighTemples();
         backhair.hasHair(true) ;
         backhair.length(0);

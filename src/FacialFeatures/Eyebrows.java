@@ -10,8 +10,9 @@ public     class Eyebrows extends SymmetricalFeature {
     private int eyebrowThiccness;   //  [0,4]
     private int angerpointL, angerpointR, widthEB;
     // beginX always on left, beginY based on anger
+    
 
-    void drawEyebrows(Graphics2D g2d) {
+    void drawEyebrows(Graphics2D g2d,Color ...colors) {
 
         angerpointL = midy + height * (-anger) / 100;
         angerpointR = midy + height * (+anger) / 100;
@@ -35,7 +36,7 @@ public     class Eyebrows extends SymmetricalFeature {
 
         g2d.draw(eyebrow);
         g2d.draw(eyebrow2);
-        g2d.setColor(Face.hairColor());
+        g2d.setColor(colors[0]);
         g2d.fill(eyebrow2);
         g2d.fill(eyebrow);
         g2d.setColor(Color.black);

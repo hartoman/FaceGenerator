@@ -9,8 +9,15 @@ import FunctionalClasses.SymmetricalFeature;
     // hair shape on the top of the head
    public abstract class TopOfHead extends SymmetricalFeature {
 
+    Color hairColor;
+    Color skinColor;
+
         abstract void drawTopOfHead(Graphics2D g2d);
 
+        public void hairColor(Color hairColor,Color skinColor){
+            this.hairColor=hairColor;
+            this.skinColor=skinColor;
+        }
     }
 
 
@@ -32,8 +39,8 @@ import FunctionalClasses.SymmetricalFeature;
 
             // high fringe
             int highWidth = Face.maxwidth() - 2 * left;
-            g2d.setColor(Face.hairColor());
-                    g2d.fillArc(left, top, highWidth, height * 13 / 8, 0, 180);
+            g2d.setColor(hairColor);
+            g2d.fillArc(left, top, highWidth, height * 13 / 8, 0, 180);
             g2d.setColor(Color.black);
         }
     }
@@ -42,7 +49,7 @@ import FunctionalClasses.SymmetricalFeature;
     class LowFringeTop extends TopOfHead {
         @Override
         void drawTopOfHead(Graphics2D g2d) {
-            g2d.setColor(Face.hairColor());
+            g2d.setColor(hairColor);
             
             g2d.fillArc(left, top, width, top + height * 5 / 3, 0, 180);
             g2d.setColor(Color.black);
@@ -58,7 +65,7 @@ import FunctionalClasses.SymmetricalFeature;
             part.curveTo(left + width / 5, bottom, left + width * 2 / 5, bottom, left, height * 13 / 8);
             part.lineTo(left, midy + height / 5);
             part.closePath();
-            g2d.setColor(Face.hairColor());
+            g2d.setColor(hairColor);
 
             int highWidth = Face.maxwidth() - 2 * left;
             g2d.fillArc(left, top, highWidth, height * 13 / 8, 0, 180);
@@ -84,7 +91,7 @@ import FunctionalClasses.SymmetricalFeature;
             g2d.draw(part);
             g2d.draw(part2);
 
-            g2d.setColor(Face.hairColor());
+            g2d.setColor(hairColor);
 
             g2d.fillArc(left, top, width, top + height * 11 / 9, 0, 180);
             g2d.fill(part);
@@ -107,7 +114,7 @@ import FunctionalClasses.SymmetricalFeature;
             moh.closePath();
 
             g2d.draw(moh);
-            g2d.setColor(Face.hairColor());
+            g2d.setColor(hairColor);
             g2d.fill(moh);
             g2d.setColor(Color.black);
         }
@@ -120,10 +127,11 @@ import FunctionalClasses.SymmetricalFeature;
         @Override
         void drawTopOfHead(Graphics2D g2d) {
             
-            g2d.setColor(Face.hairColor());
-            g2d.fillArc(left, top, width, top + height * 5 / 3, 0, 180);
+            g2d.setColor(hairColor);
+            g2d.fillArc(left, top, width, top + height * 6 / 3, 0, 180);
+            
 
-            g2d.setColor(Face.skinColor());
+            g2d.setColor(skinColor);
             g2d.fillArc(left, midy+height/8, width/2, midy+height/4, 0, 180);
             g2d.fillArc(left+width/2, midy+height/8, width/2, midy+height/4, 0, 180);
 

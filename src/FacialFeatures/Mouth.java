@@ -11,7 +11,8 @@ public  class Mouth extends SymmetricalFeature {
     openness,               // [0,40]
     lipSize;                // [0,30]
 
-    void drawMouth(Graphics2D g2d) {
+    
+    void drawMouth(Graphics2D g2d,Color lipscColor) {
 
       
         int midx = (left + width / 2);
@@ -38,7 +39,7 @@ public  class Mouth extends SymmetricalFeature {
         mouth.curveTo(bh2X, bh2Y, bh1X, bh2Y, mouthpointUL1, mouthULY);
         mouth.closePath();
 
-        g2d.setColor(Face.lipsColor());
+        g2d.setColor(lipscColor);
         g2d.draw(lips);
         g2d.fill(lips);
         g2d.setColor(Color.black);

@@ -13,16 +13,17 @@ public class Eyes extends SymmetricalFeature {
     private int angle; // angle of the shape of the eyes
     private int size;                   // [10,35]
     private int eyedist;               // [5,15]
+    
 
-    void drawEyes(Graphics2D g2d) {
+    void drawEyes(Graphics2D g2d,Color ... colors) {
 
-        drawEyeball(g2d);
-        drawPupil(g2d);
-        drawEyelid(g2d);
+        drawEyeball(g2d,colors[0]);
+        drawPupil(g2d,colors[1]);
+        drawEyelid(g2d,colors[2]);
 
     }
 
-    void drawEyeball(Graphics2D g2d) {
+    void drawEyeball(Graphics2D g2d,Color eyeballcolor) {
 
         int left1 = left;
         int right1 = (left + width);
@@ -43,14 +44,14 @@ public class Eyes extends SymmetricalFeature {
         // paint eyeball
         g2d.draw(eye);
         g2d.draw(eye2);
-        g2d.setColor(Face.eyeballColor());
+        g2d.setColor(eyeballcolor);
         g2d.fill(eye);
         g2d.fill(eye2);
 
         g2d.setColor(Color.black);
     }
 
-    void drawPupil(Graphics2D g2d) {
+    void drawPupil(Graphics2D g2d,Color irisColor) {
 
         Ellipse2D.Double iris = new Ellipse2D.Double();
         Ellipse2D.Double pupil = new Ellipse2D.Double();
@@ -63,7 +64,7 @@ public class Eyes extends SymmetricalFeature {
 
         g2d.draw(iris);
         g2d.draw(iris2);
-        g2d.setColor(Face.eyePupilColor());
+        g2d.setColor(irisColor);
         g2d.fill(iris);
         g2d.fill(iris2);
         g2d.setColor(Color.black);
@@ -76,7 +77,7 @@ public class Eyes extends SymmetricalFeature {
 
     }
 
-    void drawEyelid(Graphics2D g2d) {
+    void drawEyelid(Graphics2D g2d,Color eyelidcolor) {
 
         int left1 = left;
         int right1 = (left + width);
@@ -116,7 +117,7 @@ public class Eyes extends SymmetricalFeature {
         g2d.draw(eyelidBOT2);
 
         // can add eyeshadow
-        g2d.setColor(Face.makeupEyeColor());
+        g2d.setColor(eyelidcolor);
         g2d.fill(eyelidUP);
         g2d.fill(eyelidBOT);
         g2d.fill(eyelidUP2);
@@ -128,7 +129,7 @@ public class Eyes extends SymmetricalFeature {
     // readjusts bounding rectangle based on eyeSize, 
     public void adjustBoundRect(){
         int modsize = size+70;
-        int negDist = -(eyedist+10);
+        int negDist = -(eyedist-10);
         
         Rectangle modRect = new Rectangle(boundRect().x+boundRect().width*negDist/100,
         boundRect().y,

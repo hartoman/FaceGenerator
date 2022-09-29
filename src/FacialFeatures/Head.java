@@ -2,11 +2,11 @@ package FacialFeatures;
 import FunctionalClasses.*;
 import java.awt.*;
 import java.awt.geom.*;
-
+import java.io.Serializable;
 
 // defines the main features-outline of the head.
 // The rest of the features are drawn on basis of these
-public class Head{
+public class Head implements Serializable{
 
    private int thiccness; // larger number == fatter, values range [0-50]
    private int mod1;// ,mod2,mod4,mod3;
@@ -14,12 +14,12 @@ public class Head{
    private int bXL1, bXR1, bY1; // bezier handle 1 (ear-eye axis) -- x for L, R and Y is the same
    private int bXL2, bXR2, bY2; // bezier handle 2 (nose-mouth axis) -- x for L, R and Y is the same
 
+   
     // calculates head size
-    public void calcHead() {
+    public void calcHead(Face face) {
 
         int mod2 = 5; // [0,10]
         int mod4 = 115; // [110,120]
-    //    int mod3 = 50 - (thiccness + mod1) / 2;
         int mod3 = 50 - (thiccness + mod1);// / 2;
 
         bXL1 = Face.midWidth() * mod1 / 120;
@@ -33,12 +33,12 @@ public class Head{
         bXR2 = RectComputer.symmetricHorizonal(bXL2);
 
         // sets the rectangle boundary of the left half of the face
-        Face.halfFace( RectComputer.getBoundingBox(Math.max(bXL1, bXL2), Face.minHeight(), Face.midWidth(), Face.height()));
+        face.halfFace( RectComputer.getBoundingBox(Math.max(bXL1, bXL2), Face.minHeight(), Face.midWidth(), Face.height()));
 
     }
 
     // draws the overall head shape
-    public void drawHead(Graphics2D g2d) {
+    public void drawHead(Graphics2D g2d,Color skincColor) {
 
         Path2D.Double head = new Path2D.Double();
 
@@ -58,7 +58,7 @@ public class Head{
         head.closePath();
 
         g2d.draw(head);
-        g2d.setColor(Face.skinColor());
+        g2d.setColor(skincColor);
         g2d.fill(head); // with skin color
 
     }

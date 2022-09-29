@@ -35,6 +35,7 @@ public class FaceFrame extends JFrame {
     static UiPanel uipanel;
     static MenuBar menu;
 
+
     public FaceFrame(String title, int w, int h, int rows, int columns) {
 
         FaceFrame.w = w;
@@ -47,7 +48,7 @@ public class FaceFrame extends JFrame {
         setSize(w * 2, h);
         setTitle(title);
 
-        //sets icon
+        // sets icon
         ImageIcon image = new ImageIcon(FaceFrame.class.getResource("/icon.jpg"));
         this.setIconImage(image.getImage());
 
@@ -56,12 +57,21 @@ public class FaceFrame extends JFrame {
         menu = new MenuBar();
         setJMenuBar(menu);
 
-        grid = new Grid();
-        add(grid);
-
         uipanel = new UiPanel(w, h);
-        add(uipanel);
+        grid = new Grid(uipanel.getFace());
 
+        add(grid);
+        add(uipanel);
+        
+
+    }
+
+    public static int w() {
+        return FaceFrame.w;
+    }
+
+    public static int h() {
+        return FaceFrame.h;
     }
 
     public static void transparentBackground(boolean transparent) {
@@ -73,20 +83,20 @@ public class FaceFrame extends JFrame {
         }
     }
 
-// sets up the painting grid
+    // sets up the painting grid
     class Grid extends JPanel {
 
         Image background;
         Face face;
 
-        Grid() {
+        Grid(Face face) {
             setSize(w, h);
             setPreferredSize(new Dimension(w, h));
             setMinimumSize(new Dimension(w, h));
             setMaximumSize(new Dimension(w, h));
-            face = new Face(w, h);
+            this.face = face;
 
-            //    setBackgroundImage("pir.jpg");
+            // setBackgroundImage("pir.jpg");
         }
 
         @Override
@@ -97,8 +107,8 @@ public class FaceFrame extends JFrame {
             // draws background image
             g.drawImage(background, 0, 0, null);
 
-            //paints the gridlines
-            //paintGridlines(g);
+            // paints the gridlines
+            // paintGridlines(g);
             // paints the face
             paintFace(g);
 
@@ -113,7 +123,7 @@ public class FaceFrame extends JFrame {
                 try {
                     URL url = getClass().getClassLoader().getResource(filename);
                     background = ImageIO.read(url).getScaledInstance(w, h, Image.SCALE_SMOOTH);
-                    //    background = ImageIO.read(url);
+                    // background = ImageIO.read(url);
                 } catch (Exception ex) {
                     System.out.println("at least one wrong filename");
                     System.exit(1);
@@ -123,7 +133,7 @@ public class FaceFrame extends JFrame {
         }
 
         // convenience method, draws a grid
-        void paintGridlines(Graphics g) {
+        public void paintGridlines(Graphics g) {
             // draws gridlines
             int k;
             w = getSize().width;
@@ -139,9 +149,9 @@ public class FaceFrame extends JFrame {
         }
 
         // core rendering method
-        void paintFace(Graphics g) {
+        public void paintFace(Graphics g) {
 
-            // transforms Graphics to Graphics2D 
+            // transforms Graphics to Graphics2D
             Graphics2D g2d = (Graphics2D) g;
 
             // ...which can have anti-aliasing, to smoothen lines and edges
@@ -154,8 +164,16 @@ public class FaceFrame extends JFrame {
             face.drawFace(g2d);
         }
 
-    }
+        public Face getFace() {
+            return face;
+        }
 
+        public void setFace(Face face) {
+            this.face = face;
+            repaint();
+        }
+
+    }
 
     // gets a given percentage of the screen height
     public static int getScreenHeightPercentage(int percentage) {
@@ -164,16 +182,16 @@ public class FaceFrame extends JFrame {
         return height;
     }
 
-        // sets the global font for the application
+    // sets the global font for the application
     public static void adaptUIFont() {
-        
-      //  javax.swing.plaf.FontUIResource f = new Font();
+
+        // javax.swing.plaf.FontUIResource f = new Font();
         java.util.Enumeration keys = UIManager.getDefaults().keys();
-        
+
         // adjusts the font size based on screen height in pixels
         int height = getScreenHeightPercentage(100);
         int adjFontSize = (height / 64) + 1;
-        
+
         // assigns the adjusted font size to all elements
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();

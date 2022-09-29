@@ -9,7 +9,7 @@ public class MoustacheArea extends SymmetricalFeature {
     private int moustacheSize; // [0,30]
     private int curled; // [0,50]
 
-    public void drawMoustache(Graphics2D g2d) {
+    public void drawMoustache(Graphics2D g2d,Color hairColor) {
 
         if (moustacheSize>0) {
 
@@ -31,7 +31,7 @@ public class MoustacheArea extends SymmetricalFeature {
             Shape moust2 = drawMirrored(moust);
             g2d.draw(moust);
             g2d.draw(moust2);
-            g2d.setColor(Face.hairColor());
+            g2d.setColor(hairColor);
             g2d.fill(moust);
             g2d.fill(moust2);
             g2d.setColor(Color.black);

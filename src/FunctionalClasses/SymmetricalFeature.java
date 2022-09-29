@@ -2,13 +2,15 @@ package FunctionalClasses;
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.io.Serializable;
 
     // for everything on the head we draw the left one, and the right one is mirrored symmetrically
     
-    public abstract class SymmetricalFeature {
+    public abstract class SymmetricalFeature implements Serializable{
 
         protected int left, width, height, right, top, bottom, midy;
         protected Rectangle boundRect = new Rectangle();
+        protected Color colors[];
 
         // for every feature,draws its mirrored equivalent on the right
         public Shape drawMirrored(Shape leftFeature) {
@@ -42,6 +44,9 @@ import java.awt.geom.*;
             midy = (top + bottom) / 2; // middle of height
         }
     
+
+
+
         //getter
         public Rectangle boundRect(){
             return this.boundRect;

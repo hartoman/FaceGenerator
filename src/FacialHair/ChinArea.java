@@ -25,7 +25,7 @@ public class ChinArea extends SymmetricalFeature {
         this.soulpatchWidth = soulpatchWidth;
     }
 
-    void drawChinArea(Graphics2D g2d){
+    void drawChinArea(Graphics2D g2d,Color hairColor){
 
         if ((soulpatchWidth>0)||(soulpatchHeight>0)){
 
@@ -36,7 +36,7 @@ public class ChinArea extends SymmetricalFeature {
             sp.curveTo(soulLeftest, midy, soulLeftest, soulLowest, right, soulLowest);
             sp.closePath();
 
-            g2d.setColor(Face.hairColor());
+            g2d.setColor(hairColor);
             g2d.draw(sp);
             Shape spr = drawMirrored(sp);
             g2d.draw(spr);

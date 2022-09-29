@@ -6,8 +6,9 @@ import FunctionalClasses.SymmetricalFeature;
 public class Ears extends SymmetricalFeature {
 
     private int earSize;
+    
 
-    void drawEars(Graphics2D g2d) {
+    void drawEars(Graphics2D g2d,Color skinColor) {
         if(earSize>0){
 
         int earMidpoint = ((left + width / 2) - width * earSize / 100);
@@ -31,7 +32,7 @@ public class Ears extends SymmetricalFeature {
         Shape ear2 = drawMirrored(ear);
         g2d.draw(ear);
         g2d.draw(ear2);
-        g2d.setColor(Face.skinColor());
+        g2d.setColor(skinColor);
         g2d.fill(ear);
         g2d.fill(ear2);
         g2d.setColor(Color.black);

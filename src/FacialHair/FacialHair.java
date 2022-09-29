@@ -1,11 +1,12 @@
 package FacialHair;
 import java.awt.*;
+import java.io.Serializable;
 
 
-public class FacialHair {
+public class FacialHair implements Serializable {
 
-    private static MoustacheArea moustache;
-    private static ChinArea chin;
+    private   MoustacheArea moustache;
+    private   ChinArea chin;
 
     public FacialHair(){
 
@@ -13,10 +14,10 @@ public class FacialHair {
         chin=new ChinArea();
     }
 
-    public void drawFacialHair(Graphics2D g2d){
+    public void drawFacialHair(Graphics2D g2d,Color hairColor){
 
-            moustache.drawMoustache(g2d);
-            chin.drawChinArea(g2d);
+            moustache.drawMoustache(g2d,hairColor);
+            chin.drawChinArea(g2d,hairColor);
      
     }
 
@@ -27,7 +28,7 @@ public class FacialHair {
     }
 
     public void moustache(MoustacheArea moustache) {
-        FacialHair.moustache = moustache;
+        this.moustache = moustache;
     }
 
     public ChinArea chin() {
@@ -35,7 +36,7 @@ public class FacialHair {
     }
 
     public void chin(ChinArea chin) {
-        FacialHair.chin = chin;
+        this.chin = chin;
     }
 
 

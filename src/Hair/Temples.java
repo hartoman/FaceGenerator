@@ -10,7 +10,7 @@ import FunctionalClasses.SymmetricalFeature;
 
     boolean hasHair;
 
-    void drawTemples(Graphics2D g2d) {
+    void drawTemples(Graphics2D g2d,Color hairColor) {
 
         Path2D.Double temple = new Path2D.Double();
         temple.moveTo(left * 10 / 10, bottom);
@@ -23,7 +23,7 @@ import FunctionalClasses.SymmetricalFeature;
         Shape temple2 = drawMirrored(temple);
         g2d.draw(temple);
         g2d.draw(temple2);
-        g2d.setColor(Face.hairColor());
+        g2d.setColor(hairColor);
         g2d.fill(temple);
         g2d.fill(temple2);
         g2d.setColor(Color.black);

@@ -15,6 +15,7 @@ import FunctionalClasses.RectComputer;
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.io.Serializable;
 
 import Emotions.Emotion;
 import Hair.HairCut;
@@ -25,22 +26,22 @@ import Hair.HairStylezEnum;
  * @author chris
  */
 
-public class Face {
+public class Face implements Serializable{
 
     private static int minHeight, height, maxwidth, midHeight, midWidth;
-    private static Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor, hairColor, lipsColor;
+    private Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor, hairColor, lipsColor;
 
-    private static Rectangle halfFace; // marks the area of the left half of the face
+    private Rectangle halfFace; // marks the area of the left half of the face
 
-    private static Head head;
-    private static Eyes eyes;
-    private static Nose nose;
-    private static Eyebrows eyebrows;
-    private static Mouth mouth;
-    private static Ears ears;
+    private Head head;
+    private Eyes eyes;
+    private Nose nose;
+    private Eyebrows eyebrows;
+    private Mouth mouth;
+    private Ears ears;
 
-    private static HairCut haircut;
-    private static FacialHair facialHair;
+    private HairCut haircut;
+    private FacialHair facialHair;
 
     // in the constructor all important parameters can be calibrated
     public Face(int w, int h) {
@@ -73,24 +74,24 @@ public class Face {
         // drawGuidingLines(8, g2d);
 
         // on the vack there is the long hair
-        haircut.drawBackHair(g2d);
+        haircut.drawBackHair(g2d,hairColor);
 
         // on the face are the main facial features
-        head.drawHead(g2d);
-        eyes.drawEyes(g2d);
+        head.drawHead(g2d,skinColor);
+        eyes.drawEyes(g2d,eyeballColor,eyePupilColor,makeupEyeColor);
         
-        mouth.drawMouth(g2d);
+        mouth.drawMouth(g2d,lipsColor);
 
         // draw the rest of hair
-        haircut.drawHairCut(g2d);
+        haircut.drawHairCut(g2d,hairColor,skinColor);
         // ears above hair
-        ears.drawEars(g2d);
+        ears.drawEars(g2d,skinColor);
         // facial hair above ears
-        facialHair.drawFacialHair(g2d);
+        facialHair.drawFacialHair(g2d,hairColor);
         // nose above facial hair
-        nose.drawNose(g2d);
+        nose.drawNose(g2d,skinColor);
         // eyebrows above nose
-        eyebrows.drawEyebrows(g2d);
+        eyebrows.drawEyebrows(g2d,hairColor);
     }
 
     /* convenience methods for drawing the framing lines */
@@ -160,7 +161,15 @@ public class Face {
     public void drawBezHeight(int yPos1, Graphics2D g2d) {
 
         Path2D.Double bezheight1 = new Path2D.Double();
-        Point bezPoint1 = RectComputer.headPointOnYpos(yPos1);
+
+        int bezhandles[] = new int[4];
+        bezhandles[0]=head().bXL1();
+        bezhandles[1]=head().bY1();
+        bezhandles[2]=head().bXL2();
+        bezhandles[3]=head().bY2();
+
+        Point bezPoint1 = RectComputer.headPointOnYpos(yPos1,bezhandles);
+        
 
         bezheight1.moveTo(maxwidth - midWidth, yPos1);
         bezheight1.lineTo(bezPoint1.x, yPos1);
@@ -170,14 +179,14 @@ public class Face {
     }
 
     // sets the current haircut
-    public static void setHairCut(int selection) {
+    public   void setHairCut(int selection) {
 
         haircut = HairStylezEnum.values()[selection].makeHair();
 
     }
 
     // resets all parameters of the face
-    public static void resetFace() {
+    public   void resetFace() {
 
         resetColors();
         /* adjustable parameters */
@@ -223,11 +232,11 @@ public class Face {
         setExpression(Emotion.POKERFACE);
         //setExpression(0, 45, 0, 0);
 
-        RectComputer.calcAllFeatures();
+        RectComputer.calcAllFeatures(this);
     }
 
     // resets all colors to default
-    public static void resetColors() {
+    public   void resetColors() {
 
         eyePupilColor = Color.darkGray;
         eyeballColor = Color.white;
@@ -238,7 +247,7 @@ public class Face {
     }
 
     // sets the facial expression
-    public static void setExpression(Emotion emotion) {
+    public   void setExpression(Emotion emotion) {
         eyebrows().anger(emotion.anger()); // curvature: [-50,50]
         eyes().distortion3(emotion.eyeOpenness()); // eye openness: [0,75]
         mouth().openness(emotion.mouthOpenness()); // openness: [0,40]
@@ -276,63 +285,63 @@ public class Face {
         return midWidth;
     }
 
-    public static Rectangle halfFace() {
+    public   Rectangle halfFace() {
         return halfFace;
     }
 
-    public static Color hairColor() {
+    public   Color hairColor() {
         return hairColor;
     }
 
-    public static Color skinColor() {
+    public   Color skinColor() {
         return skinColor;
     }
 
-    public static Color eyeballColor() {
+    public   Color eyeballColor() {
         return eyeballColor;
     }
 
-    public static Color eyePupilColor() {
+    public   Color eyePupilColor() {
         return eyePupilColor;
     }
 
-    public static Color makeupEyeColor() {
+    public   Color makeupEyeColor() {
         return makeupEyeColor;
     }
 
-    public static Color lipsColor() {
+    public   Color lipsColor() {
         return lipsColor;
     }
 
-    public static Head head() {
+    public   Head head() {
         return head;
     }
 
-    public static Eyes eyes() {
+    public   Eyes eyes() {
         return eyes;
     }
 
-    public static FacialHair facialHair() {
+    public   FacialHair facialHair() {
         return facialHair;
     }
 
-    public static HairCut haircut() {
+    public   HairCut haircut() {
         return haircut;
     }
 
-    public static Eyebrows eyebrows() {
+    public   Eyebrows eyebrows() {
         return eyebrows;
     }
 
-    public static Nose nose() {
+    public  Nose nose() {
         return nose;
     }
 
-    public static Mouth mouth() {
+    public   Mouth mouth() {
         return mouth;
     }
 
-    public static Ears ears() {
+    public   Ears ears() {
         return ears;
     }
 
@@ -358,32 +367,32 @@ public class Face {
         Face.maxwidth = tmp;
     }
 
-    public static void halfFace(Rectangle halfFace) {
-        Face.halfFace = halfFace;
+    public   void halfFace(Rectangle halfFace) {
+        this.halfFace = halfFace;
     }
 
-    public static void skinColor(Color skinColor) {
-        Face.skinColor = skinColor;
+    public   void skinColor(Color skinColor) {
+        this.skinColor = skinColor;
     }
 
-    public static void lipsColor(Color lipsColor) {
-        Face.lipsColor = lipsColor;
+    public   void lipsColor(Color lipsColor) {
+        this.lipsColor = lipsColor;
     }
 
-    public static void hairColor(Color hairColor) {
-        Face.hairColor = hairColor;
+    public   void hairColor(Color hairColor) {
+        this.hairColor = hairColor;
     }
 
-    public static void makeupEyeColor(Color makeupEyeColor) {
-        Face.makeupEyeColor = makeupEyeColor;
+    public   void makeupEyeColor(Color makeupEyeColor) {
+        this.makeupEyeColor = makeupEyeColor;
     }
 
-    public static void eyePupilColor(Color eyePupilColor) {
-        Face.eyePupilColor = eyePupilColor;
+    public   void eyePupilColor(Color eyePupilColor) {
+        this.eyePupilColor = eyePupilColor;
     }
 
-    public static void eyeballColor(Color eyeballColor) {
-        Face.eyeballColor = eyeballColor;
+    public   void eyeballColor(Color eyeballColor) {
+        this.eyeballColor = eyeballColor;
     }
 
 }
