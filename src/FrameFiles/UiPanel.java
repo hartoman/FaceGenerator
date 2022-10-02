@@ -7,13 +7,11 @@ import Emotions.Emotion;
 import FunctionalClasses.*;
 import Hair.HairStylezEnum;
 
-
 import java.awt.GridLayout;
 import java.awt.Dimension;
 import java.awt.Color;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 
 //sets up basic dimensions and layout
 public class UiPanel extends JPanel {
@@ -24,23 +22,20 @@ public class UiPanel extends JPanel {
     public UiPanel(int w, int h) {
         this.w = w;
         this.h = h;
-        this.face=new Face(w,h);
+        this.face = new Face(w, h);
 
         initPanel();
 
     }
 
-    
     public Face getFace() {
         return face;
     }
-
 
     public void setFace(Face face) {
         this.face = face;
         FaceFrame.grid.setFace(face);
     }
-
 
     public void initPanel() {
         //
@@ -50,15 +45,15 @@ public class UiPanel extends JPanel {
         setMaximumSize(new Dimension(w, h));
         setBackground(Color.lightGray);
 
-        this.setLayout(new GridLayout(2, 3,10,10));
+        this.setLayout(new GridLayout(2, 3, 10, 10));
         //
-        setPreferredSize(new Dimension(w , h ));
+        setPreferredSize(new Dimension(w, h));
 
         add(new GeneralHeadPanel("General", Color.green, Color.BLACK, Color.DARK_GRAY));
         add(new FeaturesPanel("Features", Color.red, Color.BLACK, Color.DARK_GRAY));
         add(new HairPanel("Hair", Color.BLUE, Color.white, Color.gray));
         add(new EyesPanel("Eyes", Color.cyan, Color.BLACK, Color.darkGray));
-        add(new ExpressionPanel("Various", Color.BLACK, Color.WHITE, Color.gray));
+        add(new FacialHairPanel("Facial Hair", Color.BLACK, Color.WHITE, Color.gray));
         add(new RandomCreationPanel("Random Faces", Color.magenta, Color.BLACK, Color.darkGray));
 
     }
@@ -106,15 +101,15 @@ public class UiPanel extends JPanel {
         @Override
         public void createElements() {
 
-            tmpthicc = face.geHead().getThiccness();
-            tmpshape = face.geHead().getHeadShape();
+            tmpthicc = face.getHead().getThiccness();
+            tmpshape = face.getHead().getHeadShape();
 
             skinColorButton = new JButton("Skin Color");
             thiccSlider = UiMethods.createSlider("Slick", 0, "Thicc", 40, 0, sliderTextColor,
                     "Determines thiccness of head");
             headShapeSlider = UiMethods.createSlider("Conical", 0, "Potato", 40, 0, sliderTextColor,
                     "Determines shape of head");
-            
+
             System.out.println(javax.swing.UIManager.getDefaults().getFont("Label.font"));
         }
 
@@ -147,8 +142,8 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
                     tmpthicc = thiccSlider.getValue();
-                    face.geHead().setThiccness(tmpthicc);
-                    face.geHead().setHeadShape(tmpshape);
+                    face.getHead().setThiccness(tmpthicc);
+                    face.getHead().setHeadShape(tmpshape);
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -159,8 +154,8 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
                     tmpshape = headShapeSlider.getValue();
-                    face.geHead().setThiccness(tmpthicc);
-                    face.geHead().setHeadShape(tmpshape);
+                    face.getHead().setThiccness(tmpthicc);
+                    face.getHead().setHeadShape(tmpshape);
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -273,10 +268,10 @@ public class UiPanel extends JPanel {
 
     class HairPanel extends Subpanel {
 
-        JLabel hairstyleLabel,  moustacheLabel, chinHairLabel;//facialHairLabel,
-        // JComboBox hairStyleList;
+        JLabel eyebrowLabel, hairstyleLabel;
+
         JButton hairColorButton;
-        JSlider hairStyleSlider, moustacheSizeSlider, moustacheCurveSlider, chinHairLengthSlider, chinHairWidthSlider, hairLengthSlider;
+        JSlider eyebrowSizeSlider, eyebrowThiccnessSlider, hairStyleSlider, hairLengthSlider;
 
         HairPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
 
@@ -288,30 +283,21 @@ public class UiPanel extends JPanel {
         public void createElements() {
 
             hairstyleLabel = new JLabel("Hair Style");
-            moustacheLabel = new JLabel("Moustache");
-            chinHairLabel = new JLabel("Chin");
+            eyebrowLabel = new JLabel("EyeBrows");
 
-            UiMethods.setColortoLabels(labelTextColor, hairstyleLabel, moustacheLabel, chinHairLabel);
+            UiMethods.setColortoLabels(labelTextColor, hairstyleLabel, eyebrowLabel);
 
-            hairStyleSlider = UiMethods.createSlider("", 0, "", HairStylezEnum.values().length-1, 0, sliderTextColor,
+            hairStyleSlider = UiMethods.createSlider("", 0, "", HairStylezEnum.values().length - 1, 2, sliderTextColor,
                     "Chooses Hairstyle");
-
-            hairLengthSlider  = UiMethods.createSlider("Short", 0, "Long", 50, 0, sliderTextColor,
-            "Hair Length");
 
             hairColorButton = new JButton("Hair Color");
 
-            moustacheSizeSlider = UiMethods.createSlider("None", 0, "General", 20, 0, sliderTextColor,
-                    "Moustache Size");
+            hairLengthSlider = UiMethods.createSlider("Short", 0, "Long", 50, 0, sliderTextColor,
+                    "Hair Length");
 
-            moustacheCurveSlider = UiMethods.createSlider("FuManchu", -40, "Dali", 40, 0, sliderTextColor,
-                    "Moustache Curve");
-
-            chinHairLengthSlider = UiMethods.createSlider("None", 0, "Max", 6, 0, sliderTextColor,
-                    "Chin Hair Length");
-
-            chinHairWidthSlider = UiMethods.createSlider("None", 0, "Max", 6, 0, sliderTextColor,
-                    "Chin Hair Width");
+            eyebrowSizeSlider = UiMethods.createSlider("None", 0, "Unibrow", 25, 0, sliderTextColor, "Eyebrow Size");
+            eyebrowThiccnessSlider = UiMethods.createSlider("None", 0, "Bushy", 4, 2, sliderTextColor,
+                    "Eyebrow Thiccness");
 
         }
 
@@ -321,12 +307,10 @@ public class UiPanel extends JPanel {
             add(hairStyleSlider);
             add(hairLengthSlider);
             add(hairColorButton);
-            add(moustacheLabel);
-            add(moustacheSizeSlider);
-            add(moustacheCurveSlider);
-            add(chinHairLabel);
-            add(chinHairLengthSlider);
-            add(chinHairWidthSlider);
+            add(eyebrowLabel);
+            add(eyebrowSizeSlider);
+            add(eyebrowThiccnessSlider);
+
         }
 
         @Override
@@ -341,76 +325,52 @@ public class UiPanel extends JPanel {
                     FaceFrame.grid.repaint();
                 }
             });
-      
 
-        // hair style chooser slider
-        hairStyleSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent event) {
+            // hair style chooser slider
+            hairStyleSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
 
-                face.setHairCut(hairStyleSlider.getValue());
-                RectComputer.calcAllFeatures(face);
-                FaceFrame.grid.repaint();
-            }
-        });
-        
-        // hair length chooser slider (only works with hairstyles that have backhair)
-        hairLengthSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent event) {
+                    face.setHairCut(hairStyleSlider.getValue());
+                    RectComputer.calcAllFeatures(face);
+                    FaceFrame.grid.repaint();
+                }
+            });
 
-                face.getHaircut().getBackHair().setLength(hairLengthSlider.getValue());
-                
-                RectComputer.calcAllFeatures(face);
-                FaceFrame.grid.repaint();
-            }
-        });
+            // hair length chooser slider (only works with hairstyles that have backhair)
+            hairLengthSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
 
+                    face.getHaircut().getBackHair().setLength(hairLengthSlider.getValue());
 
-        // moustache size slider
-        moustacheSizeSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent event) {
+                    RectComputer.calcAllFeatures(face);
+                    FaceFrame.grid.repaint();
+                }
+            });
 
-                face.getFacialHair().getMoustache().setMoustacheSize(moustacheSizeSlider.getValue());
-                RectComputer.calcAllFeatures(face);
-                FaceFrame.grid.repaint();
-            }
-        });
+            // eyebrow size slider
+            eyebrowSizeSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
 
-        // moustache curve slider
-        moustacheCurveSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent event) {
+                    face.getEyebrows().setEyebrowSize(eyebrowSizeSlider.getValue());
+                    RectComputer.calcAllFeatures(face);
+                    FaceFrame.grid.repaint();
+                }
+            });
 
-                face.getFacialHair().getMoustache().setCurled((moustacheCurveSlider.getValue()));
-                RectComputer.calcAllFeatures(face);
-                FaceFrame.grid.repaint();
-            }
-        });
+            // eyebrow thiccness slider
+            eyebrowThiccnessSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
 
-        // chin hair length slider
-        chinHairLengthSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent event) {
-
-                face.getFacialHair().getChinArea().setSoulpatchHeight(chinHairLengthSlider.getValue());
-                RectComputer.calcAllFeatures(face);
-                FaceFrame.grid.repaint();
-            }
-        });
-
-        // chin hair width slider
-        chinHairWidthSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent event) {
-
-                face.getFacialHair().getChinArea().setSoulpatchWidth(chinHairWidthSlider.getValue());
-                RectComputer.calcAllFeatures(face);
-                FaceFrame.grid.repaint();
-            }
-        });
-    }
+                    face.getEyebrows().setEyebrowThiccness(eyebrowThiccnessSlider.getValue());
+                    RectComputer.calcAllFeatures(face);
+                    FaceFrame.grid.repaint();
+                }
+            });
+        }
     }
 
     class EyesPanel extends Subpanel {
@@ -427,7 +387,7 @@ public class UiPanel extends JPanel {
         @Override
         public void createElements() {
 
-            eyeSizeslider = UiMethods.createSlider("Canada", 10, "Large", 35, 25, sliderTextColor, "Eye Size");
+            eyeSizeslider = UiMethods.createSlider("Beady", 10, "Large", 35, 25, sliderTextColor, "Eye Size");
             eyeDistlider = UiMethods.createSlider("Close", 5, "Far", 15, 10, sliderTextColor, "Eye Size");
 
             irisColorButton = new JButton("Iris Color");
@@ -462,7 +422,7 @@ public class UiPanel extends JPanel {
             eyeSizeslider.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent event) {
-    
+
                     face.getEyes().setSize(eyeSizeslider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
@@ -473,7 +433,7 @@ public class UiPanel extends JPanel {
             eyeDistlider.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent event) {
-    
+
                     face.getEyes().setEyedist(eyeDistlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
@@ -484,7 +444,7 @@ public class UiPanel extends JPanel {
             eyeAnglSlider.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent event) {
-    
+
                     face.getEyes().setAngle(eyeAnglSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
@@ -495,7 +455,7 @@ public class UiPanel extends JPanel {
             upEyelidSlider.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent event) {
-    
+
                     face.getEyes().setDistortion1(upEyelidSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
@@ -506,7 +466,7 @@ public class UiPanel extends JPanel {
             lowerEyelidSlider.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent event) {
-    
+
                     face.getEyes().setDistortion2(lowerEyelidSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
@@ -543,8 +503,6 @@ public class UiPanel extends JPanel {
                 }
             });
 
-
-
         }
 
     }
@@ -572,10 +530,9 @@ public class UiPanel extends JPanel {
             emotionLabel = new JLabel("Emotion");
             UiMethods.setColortoLabels(labelTextColor, emotionLabel);
 
- 
             String[] emotionlist = new String[Emotion.values().length];
-            for (int i=0;i<Emotion.values().length;i++){
-                emotionlist[i]=Emotion.values()[i].toString();
+            for (int i = 0; i < Emotion.values().length; i++) {
+                emotionlist[i] = Emotion.values()[i].toString();
             }
             emotionList = new JComboBox<String>(emotionlist);
 
@@ -601,7 +558,7 @@ public class UiPanel extends JPanel {
             resetButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     face.resetFace();
-                    
+
                     FaceFrame.grid.repaint();
 
                 }
@@ -619,7 +576,7 @@ public class UiPanel extends JPanel {
             // random gal face
             RandFemaleButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    face =RectComputer.createRandomFace("gal");
+                    face = RectComputer.createRandomFace("gal");
                     FaceFrame.grid.setFace(face);
                     FaceFrame.grid.repaint();
 
@@ -628,7 +585,7 @@ public class UiPanel extends JPanel {
             // totally random face
             TotallyRandomButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    face =RectComputer.createRandomFace("default");
+                    face = RectComputer.createRandomFace("default");
                     FaceFrame.grid.setFace(face);
                     FaceFrame.grid.repaint();
                 }
@@ -637,12 +594,12 @@ public class UiPanel extends JPanel {
             emotionList.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
 
-                    Emotion emotions[]=Emotion.values();
-                    Emotion chosenEmot=emotions[0];
-                    String selection = (String)emotionList.getSelectedItem();
-                    for (int i=0;i<emotions.length;i++){
-                        if (emotions[i].toString().equals(selection)){
-                            chosenEmot=emotions[i];
+                    Emotion emotions[] = Emotion.values();
+                    Emotion chosenEmot = emotions[0];
+                    String selection = (String) emotionList.getSelectedItem();
+                    for (int i = 0; i < emotions.length; i++) {
+                        if (emotions[i].toString().equals(selection)) {
+                            chosenEmot = emotions[i];
                             face.setExpression(chosenEmot);
                             break;
                         }
@@ -654,12 +611,14 @@ public class UiPanel extends JPanel {
         }
     }
 
-    class ExpressionPanel extends Subpanel {
+    class FacialHairPanel extends Subpanel {
 
-        JSlider eyebrowSizeSlider, eyebrowThiccnessSlider;
-        JLabel eyebrowLabel;
+        JSlider moustacheSizeSlider, moustacheCurveSlider,
+                chinHairLengthSlider, chinHairWidthSlider,
+                beardLengthSlider,beardWidthSlider;
+        JLabel moustacheLabel, chinHairLabel,beardLabel;
 
-        ExpressionPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
+        FacialHairPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
 
             super(title, backgroundColor, labelTextColor, sliderTextColor);
 
@@ -667,50 +626,116 @@ public class UiPanel extends JPanel {
 
         @Override
         public void createElements() {
-            eyebrowLabel = new JLabel("EyeBrows");
-            UiMethods.setColortoLabels(labelTextColor, eyebrowLabel);
 
-            eyebrowSizeSlider = UiMethods.createSlider("None", 0, "Unibrow", 25, 0, sliderTextColor, "Eyebrow Size");
-            eyebrowThiccnessSlider = UiMethods.createSlider("None", 0, "Bushy", 4, 2, sliderTextColor,
-                    "Eyebrow Thiccness");
+            moustacheLabel = new JLabel("Moustache");
+            chinHairLabel = new JLabel("Chin");
+            beardLabel = new JLabel("Beard");
+
+            UiMethods.setColortoLabels(labelTextColor, moustacheLabel, chinHairLabel,beardLabel);
+
+            moustacheSizeSlider = UiMethods.createSlider("None", 0, "General", 20, 0, sliderTextColor,
+                    "Moustache Size");
+
+            moustacheCurveSlider = UiMethods.createSlider("FuManchu", -40, "Dali", 40, 0, sliderTextColor,
+                    "Moustache Curve");
+
+            chinHairLengthSlider = UiMethods.createSlider("None", 0, "Long", 6, 0, sliderTextColor,
+                    "Chin Hair Length");
+
+            chinHairWidthSlider = UiMethods.createSlider("None", 0, "Wide", 6, 0, sliderTextColor,
+                    "Chin Hair Width");
+
+            beardLengthSlider= UiMethods.createSlider("None", 0, "Long", 5, 0, sliderTextColor,
+            "Beard Length");
+      
+            
+            beardWidthSlider= UiMethods.createSlider("None", 0, "Fuzzy", 10, 0, sliderTextColor,
+            "Beard Fuzziness");
+
+
         }
 
         @Override
         public void addElements() {
             add(titleLabel);
-            add(eyebrowLabel);
-            add(eyebrowSizeSlider);
-            add(eyebrowThiccnessSlider);
+            add(moustacheLabel);
+            add(moustacheSizeSlider);
+            add(moustacheCurveSlider);
+            add(chinHairLabel);
+            add(chinHairLengthSlider);
+            add(chinHairWidthSlider);
+            add(beardLabel);
+            add(beardLengthSlider);
+            add(beardWidthSlider);
+
         }
 
         @Override
         public void attachListeners() {
 
-            // eyebrow size slider
-            eyebrowSizeSlider.addChangeListener(new ChangeListener() {
+            // moustache size slider
+            moustacheSizeSlider.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent event) {
-    
-                    face.getEyebrows().setEyebrowSize(eyebrowSizeSlider.getValue());
+
+                    face.getFacialHair().getMoustache().setMoustacheSize(moustacheSizeSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
 
-            // eyebrow thiccness slider
-            eyebrowThiccnessSlider.addChangeListener(new ChangeListener() {
+            // moustache curve slider
+            moustacheCurveSlider.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent event) {
-    
-                    face.getEyebrows().setEyebrowThiccness(eyebrowThiccnessSlider.getValue());
+
+                    face.getFacialHair().getMoustache().setCurled((moustacheCurveSlider.getValue()));
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
 
+            // chin hair length slider
+            chinHairLengthSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
 
+                    face.getFacialHair().getChinArea().setSoulpatchHeight(chinHairLengthSlider.getValue());
+                    RectComputer.calcAllFeatures(face);
+                    FaceFrame.grid.repaint();
+                }
+            });
 
+            // chin hair width slider
+            chinHairWidthSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
 
+                    face.getFacialHair().getChinArea().setSoulpatchWidth(chinHairWidthSlider.getValue());
+                    RectComputer.calcAllFeatures(face);
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            beardLengthSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+
+                    face.getFacialHair().getCheeks().setBeardLength((beardLengthSlider.getValue()));
+                    RectComputer.calcAllFeatures(face);
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            beardWidthSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+
+                    face.getFacialHair().getCheeks().setBeardWidth((beardWidthSlider.getValue()));
+                    RectComputer.calcAllFeatures(face);
+                    FaceFrame.grid.repaint();
+                }
+            });
 
         }
     }

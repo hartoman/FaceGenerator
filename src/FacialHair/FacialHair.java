@@ -32,8 +32,8 @@ public class FacialHair implements Serializable {
         this.getMoustache().setCurled(curled);
         this.getChinArea().setSoulpatchHeight(soulpatchHeight);
         this.getChinArea().setSoulpatchWidth(soulpatchWidth);
-        this.getCheeks().beardLength(beardLength);
-        this.getCheeks().beardWidth(beardWidth);
+        this.getCheeks().setBeardLength(beardLength);
+        this.getCheeks().setBeardWidth(beardWidth);
 
     }
 

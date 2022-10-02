@@ -14,7 +14,7 @@ public class RectComputer {
     public static void calcAllFeatures(Face face) {
 
         // these two first
-        face.geHead().calcHead(face); // gets ratios for the rest
+        face.getHead().calcHead(face); // gets ratios for the rest
         calcGuidingLines(8, face); // calculates assisting rectangles
 
         // the rest
@@ -36,11 +36,7 @@ public class RectComputer {
     // divides the face to calculate bounding rectangles for facial features
     public static void calcGuidingLines(int numLines, Face face) {
 
-        int bezHandles[] = new int[4];
-        bezHandles[0] = face.geHead().bXL1();
-        bezHandles[1] = face.geHead().bY1();
-        bezHandles[2] = face.geHead().bXL2();
-        bezHandles[3] = face.geHead().bY2();
+        int bezHandles[] = face.getHead().getBezhandles();
 
         int x1 = (int) face.getHalfFace().getX();
         int y1 = (int) face.getHalfFace().getY();
@@ -81,9 +77,7 @@ public class RectComputer {
                 (x1 + width1),
                 (y1 + height1));
 
-        // TODO facial hair - cheeks        
-
-
+  
         // ears  (we need to calculate the exact X of the bezier for given Ys)
         int earsLeftY = (y1 + height1 * 5 / 2 / numLines);
         int earsRightY = (y1 + height1 * 5 / numLines);
@@ -182,8 +176,8 @@ public class RectComputer {
                     chinH = RectComputer.randomBetween(0, 6);
                     chinW = RectComputer.randomBetween(0, 6);
                     //TODO DEFINE MAXNUMBERS
-                    beardL = RectComputer.randomBetween(0, 6);
-                    beardW = RectComputer.randomBetween(0, 6);
+                    beardL = RectComputer.randomBetween(0, 5);
+                    beardW = RectComputer.randomBetween(0, 10);
 
                 } else {
                     chinH = 0;
@@ -210,8 +204,8 @@ public class RectComputer {
                 chinH = RectComputer.randomBetween(0, 6);
                 chinW = RectComputer.randomBetween(0, 6);
                 //TODO DEFINE MAXNUMBERS 2
-                beardL = RectComputer.randomBetween(0, 6);
-                beardW = RectComputer.randomBetween(0, 6);
+                beardL = RectComputer.randomBetween(0, 5);
+                beardW = RectComputer.randomBetween(0, 10);
                 hairNum = RectComputer.randomBetween(0, (HairStylezEnum.values().length - 1));
                 break;
         }
@@ -220,7 +214,7 @@ public class RectComputer {
 
         face.getFacialHair().setFacialHair(moustSize, moustCurl, chinH, chinW,beardL,beardW);
 
-        face.geHead().setHead(RectComputer.randomBetween(0, 50), RectComputer.randomBetween(0, 50));
+        face.getHead().setHead(RectComputer.randomBetween(0, 50), RectComputer.randomBetween(0, 50));
 
         face.getEyes().setEyes(RectComputer.randomBetween(-10, 10),
                 RectComputer.randomBetween(-10, 10),

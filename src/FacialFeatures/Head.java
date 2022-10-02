@@ -69,19 +69,19 @@ public class Head implements Serializable{
     }
 
     //getters
-    public int bXL1() {
+    public int getBXL1() {
         return bXL1;
     }
 
-    public int bY1() {
+    public int getBY1() {
         return bY1;
     }
 
-    public int bXL2() {
+    public int getBXL2() {
         return bXL2;
     }
 
-    public int bY2() {
+    public int getBY2() {
         return bY2;
     }
 
@@ -97,6 +97,17 @@ public class Head implements Serializable{
         return headShape;
     }
     
+    public int[] getBezhandles(){
+
+        int bezHandles[] = new int[4];
+        bezHandles[0] = bXL1;
+        bezHandles[1] = bY1;
+        bezHandles[2] = bXL2;
+        bezHandles[3] = bY2;
+
+        return bezHandles;
+    }
+
     //setters
 
     public void setThiccness(int thiccness) {
