@@ -2,7 +2,7 @@ package FacialHair;
 import FunctionalClasses.*;
 import java.awt.*;
 import java.awt.geom.*;
-import FacialFeatures.Face;
+
 
 public class MoustacheArea extends SymmetricalFeature {
 
@@ -45,19 +45,19 @@ public class MoustacheArea extends SymmetricalFeature {
         this.curled=curled;
     }
 
-    public int moustacheSize() {
+    public int getMoustacheSize() {
         return moustacheSize;
     }
 
-    public void moustacheSize(int moustacheSize) {
+    public void setMoustacheSize(int moustacheSize) {
         this.moustacheSize = moustacheSize;
     }
 
-    public int curled() {
+    public int getCurled() {
         return curled;
     }
 
-    public void curled(int curled) {
+    public void setCurled(int curled) {
         this.curled = curled;
     }
 

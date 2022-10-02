@@ -44,27 +44,27 @@ public     class Eyebrows extends SymmetricalFeature {
 
 
 
-    public int eyebrowSize() {
+    public int getEyebrowSize() {
         return eyebrowSize;
     }
 
-    public void eyebrowSize(int eyebrowSize) {
+    public void setEyebrowSize(int eyebrowSize) {
         this.eyebrowSize = eyebrowSize;
     }
 
-    public int anger() {
+    public int getAnger() {
         return anger;
     }
 
-    public void anger(int anger) {
+    public void setAnger(int anger) {
         this.anger = anger;
     }
 
-    public int eyebrowThiccness() {
+    public int getEyebrowThiccness() {
         return eyebrowThiccness;
     }
 
-    public void eyebrowThiccness(int eyebrowThiccness) {
+    public void setEyebrowThiccness(int eyebrowThiccness) {
         this.eyebrowThiccness = eyebrowThiccness;
     }
 

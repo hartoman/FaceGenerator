@@ -1,8 +1,5 @@
 
-import javax.swing.UIManager;
-
 import javax.swing.JFrame;
-import java.awt.*;
 import FrameFiles.FaceFrame;
 
 /**

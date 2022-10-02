@@ -2,28 +2,13 @@ package FacialHair;
 import FunctionalClasses.*;
 import java.awt.*;
 import java.awt.geom.*;
-import FacialFeatures.Face;
+
 
 public class ChinArea extends SymmetricalFeature {
 
     private int soulpatchHeight;          // [1,6]
     private int soulpatchWidth;
 
-    public int soulpatchHeight() {
-        return soulpatchHeight;
-    }
-
-    public void soulpatchHeight(int soulpatchHeight) {
-        this.soulpatchHeight = soulpatchHeight;
-    }
-
-    public int soulpatchWidth() {
-        return soulpatchWidth;
-    }
-
-    public void soulpatchWidth(int soulpatchWidth) {
-        this.soulpatchWidth = soulpatchWidth;
-    }
 
     void drawChinArea(Graphics2D g2d,Color hairColor){
 
@@ -49,6 +34,24 @@ public class ChinArea extends SymmetricalFeature {
     void setUpChin(int soulpatchHeight, int soulpatchWidth){
         this.soulpatchHeight=soulpatchHeight;
         this.soulpatchWidth=soulpatchWidth;
+    }
+
+
+
+    public int getSoulpatchHeight() {
+        return soulpatchHeight;
+    }
+
+    public void setSoulpatchHeight(int soulpatchHeight) {
+        this.soulpatchHeight = soulpatchHeight;
+    }
+
+    public int getSoulpatchWidth() {
+        return soulpatchWidth;
+    }
+
+    public void setSoulpatchWidth(int soulpatchWidth) {
+        this.soulpatchWidth = soulpatchWidth;
     }
 }
 

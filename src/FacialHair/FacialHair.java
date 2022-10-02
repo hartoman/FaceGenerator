@@ -1,55 +1,64 @@
 package FacialHair;
+
 import java.awt.*;
 import java.io.Serializable;
 
-
 public class FacialHair implements Serializable {
 
-    private   MoustacheArea moustache;
-    private   ChinArea chin;
+    private MoustacheArea moustache;
+    private ChinArea chin;
+    private Cheeks cheeks;
 
-    public FacialHair(){
+    public FacialHair() {
 
         moustache = new MoustacheArea();
-        chin=new ChinArea();
+        chin = new ChinArea();
+        cheeks= new Cheeks();
     }
 
-    public void drawFacialHair(Graphics2D g2d,Color hairColor){
+    public void drawFacialHair(Graphics2D g2d, Color hairColor) {
 
-            moustache.drawMoustache(g2d,hairColor);
-            chin.drawChinArea(g2d,hairColor);
-     
+        moustache.drawMoustache(g2d, hairColor);
+        chin.drawChinArea(g2d, hairColor);
+        cheeks.drawBeardArea(g2d, hairColor);
+
     }
 
-    
+    public void setFacialHair(int moustacheSize, int curled,
+            int soulpatchHeight, int soulpatchWidth,
+            int beardLength, int beardWidth) {
 
-    public MoustacheArea moustache() {
+        this.getMoustache().setMoustacheSize(moustacheSize);
+        this.getMoustache().setCurled(curled);
+        this.getChinArea().setSoulpatchHeight(soulpatchHeight);
+        this.getChinArea().setSoulpatchWidth(soulpatchWidth);
+        this.getCheeks().beardLength(beardLength);
+        this.getCheeks().beardWidth(beardWidth);
+
+    }
+
+    public Cheeks getCheeks() {
+        return cheeks;
+    }
+
+    public void setCheeks(Cheeks cheeks) {
+        this.cheeks = cheeks;
+    }
+
+    public MoustacheArea getMoustache() {
         return moustache;
     }
 
-    public void moustache(MoustacheArea moustache) {
+    public void setMoustache(MoustacheArea moustache) {
         this.moustache = moustache;
     }
 
-    public ChinArea chin() {
+    public ChinArea getChinArea() {
         return chin;
     }
 
-    public void chin(ChinArea chin) {
+    public void setChinArea(ChinArea chin) {
         this.chin = chin;
     }
 
-
-    public void setFacialHair(int moustacheSize,int curled,int soulpatchHeight,int soulpatchWidth){
-
-        this.moustache().moustacheSize(moustacheSize);
-        this.moustache().curled(curled);
-        this.chin().soulpatchHeight(soulpatchHeight);
-        this.chin().soulpatchWidth(soulpatchWidth);
-
-        
-    }
-
 }
-
-

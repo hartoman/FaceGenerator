@@ -9,12 +9,11 @@ import FunctionalClasses.SymmetricalFeature;
     // hair shape on the top of the head
    public abstract class TopOfHead extends SymmetricalFeature {
 
-    Color hairColor;
-    Color skinColor;
+    protected Color hairColor, skinColor;
 
         abstract void drawTopOfHead(Graphics2D g2d);
 
-        public void hairColor(Color hairColor,Color skinColor){
+        public void setHaircutColors(Color hairColor,Color skinColor){
             this.hairColor=hairColor;
             this.skinColor=skinColor;
         }
@@ -38,7 +37,7 @@ import FunctionalClasses.SymmetricalFeature;
         void drawTopOfHead(Graphics2D g2d) {
 
             // high fringe
-            int highWidth = Face.maxwidth() - 2 * left;
+            int highWidth = Face.getMaxwidth() - 2 * left;
             g2d.setColor(hairColor);
             g2d.fillArc(left, top, highWidth, height * 13 / 8, 0, 180);
             g2d.setColor(Color.black);
@@ -67,7 +66,7 @@ import FunctionalClasses.SymmetricalFeature;
             part.closePath();
             g2d.setColor(hairColor);
 
-            int highWidth = Face.maxwidth() - 2 * left;
+            int highWidth = Face.getMaxwidth() - 2 * left;
             g2d.fillArc(left, top, highWidth, height * 13 / 8, 0, 180);
             g2d.fill(part);
 

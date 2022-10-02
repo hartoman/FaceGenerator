@@ -41,19 +41,19 @@ public enum Emotion {
         return this.name;
     }
 
-    public int anger() {
+    public int getAnger() {
         return anger;
     }
 
-    public int eyeOpenness() {
+    public int getEyeOpenness() {
         return eyeOpenness;
     }
 
-    public int smile() {
+    public int getSmile() {
         return smile;
     }
 
-    public int mouthOpenness() {
+    public int getMouthOpenness() {
         return mouthOpenness;
     }
 

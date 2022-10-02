@@ -11,10 +11,10 @@ import java.io.*;
 public class MenuBar extends JMenuBar {
 
     JMenuItem m00, m01, m10, m11, m12, m21, m22;
-    GroupedMapFunctions gmf;
+    GroupedMenuBarFunctions gmf;
 
     MenuBar() {
-        gmf = new GroupedMapFunctions();
+        gmf = new GroupedMenuBarFunctions();
         addMenuButtons();
         addMenuListeners();
     }
@@ -107,17 +107,25 @@ public class MenuBar extends JMenuBar {
                         "Save image as png (transparent background)", JOptionPane.INFORMATION_MESSAGE);
                 String fullpath = gmf.getCurrentDirectoryPath() + filename;
                 if ((filename != null) && (!filename.isEmpty())) {
+                    Face tmp = null;
+                    tmp = gmf.deSerialFace(fullpath);
 
-                    System.out.println("deserialized");
+                    if ((tmp != null)) {
+                        FaceFrame.uipanel.setFace(tmp);
+                        System.out.println("deserialized");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "File does not exist, or wrong file name",
+                                "Error Loading Serialized File", JOptionPane.ERROR_MESSAGE);
+                    }
 
-                    FaceFrame.uipanel.setFace(gmf.deSerialFace(fullpath));
-                                    
                 }
 
             }
         });
 
         ////////////////////// column 2 ////////////////////////
+
+        // TODO: UPDATE
         m21.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JOptionPane.showMessageDialog(null, "Map Parameters: \n"
@@ -152,7 +160,7 @@ public class MenuBar extends JMenuBar {
     }
 
     // all of the export-import methods
-    class GroupedMapFunctions {
+    class GroupedMenuBarFunctions {
 
         // returns the folder name of the current directory where the jar runs from
         public String getCurrentDirectoryPath() {
@@ -231,13 +239,14 @@ public class MenuBar extends JMenuBar {
                 fileIn.close();
 
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+
+                System.out.println("File not Found  or Wrong File Name");
+
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
+
                 e.printStackTrace();
             }
 

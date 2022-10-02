@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Head implements Serializable{
 
    private int thiccness; // larger number == fatter, values range [0-50]
-   private int mod1;// ,mod2,mod4,mod3;
+   private int headShape;// ,mod2,mod4,mod3;
 
    private int bXL1, bXR1, bY1; // bezier handle 1 (ear-eye axis) -- x for L, R and Y is the same
    private int bXL2, bXR2, bY2; // bezier handle 2 (nose-mouth axis) -- x for L, R and Y is the same
@@ -20,20 +20,20 @@ public class Head implements Serializable{
 
         int mod2 = 5; // [0,10]
         int mod4 = 115; // [110,120]
-        int mod3 = 50 - (thiccness + mod1);// / 2;
+        int mod3 = 50 - (thiccness + headShape);// / 2;
 
-        bXL1 = Face.midWidth() * mod1 / 120;
-        bY1 = (Face.minHeight() + ((Face.height() * mod2) / 120));
+        bXL1 = Face.getMidWidth() * headShape / 120;
+        bY1 = (Face.getMinHeight() + ((Face.getHeight() * mod2) / 120));
 
-        bXL2 = Face.midWidth() * mod3 / 120;
-        bY2 = (Face.height() - (Face.minHeight() * mod4) / 120);
+        bXL2 = Face.getMidWidth() * mod3 / 120;
+        bY2 = (Face.getHeight() - (Face.getMinHeight() * mod4) / 120);
 
         // calculates the other half of the head
         bXR1 = RectComputer.symmetricHorizonal(bXL1);
         bXR2 = RectComputer.symmetricHorizonal(bXL2);
 
         // sets the rectangle boundary of the left half of the face
-        face.halfFace( RectComputer.getBoundingBox(Math.max(bXL1, bXL2), Face.minHeight(), Face.midWidth(), Face.height()));
+        face.setHalfFace( RectComputer.getBoundingBox(Math.max(bXL1, bXL2), Face.getMinHeight(), Face.getMidWidth(), Face.getHeight()));
 
     }
 
@@ -43,16 +43,16 @@ public class Head implements Serializable{
         Path2D.Double head = new Path2D.Double();
 
         // draws face:
-        head.moveTo(Face.midWidth(), Face.minHeight());
+        head.moveTo(Face.getMidWidth(), Face.getMinHeight());
         // left side
         head.curveTo(bXL1, bY1,
                 bXL2, bY2,
-                Face.midWidth(), Face.height());
+                Face.getMidWidth(), Face.getHeight());
 
         // right side
         head.curveTo(bXR2, bY2,
                 bXR1, bY1,
-                Face.midWidth(), Face.minHeight());
+                Face.getMidWidth(), Face.getMinHeight());
 
         // finish off head
         head.closePath();
@@ -65,7 +65,7 @@ public class Head implements Serializable{
 
     public void setHead(int thiccness,int mod1){
         this.thiccness=thiccness;
-        this.mod1=mod1;
+        this.headShape=mod1;
     }
 
     //getters
@@ -89,22 +89,22 @@ public class Head implements Serializable{
 
     //more getters
 
-    public int thiccness() {
+    public int getThiccness() {
         return thiccness;
     }
 
-    public int mod1() {
-        return mod1;
+    public int getHeadShape() {
+        return headShape;
     }
     
     //setters
 
-    public void thiccness(int thiccness) {
+    public void setThiccness(int thiccness) {
         this.thiccness = thiccness;
     }
 
-    public void mod1(int mod1) {
-        this.mod1 = mod1;
+    public void setHeadShape(int headShape) {
+        this.headShape = headShape;
     }
     
 }

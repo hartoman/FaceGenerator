@@ -1,14 +1,12 @@
 package Hair;
 import java.awt.*;
 import java.awt.geom.*;
-
-import FacialFeatures.Face;
 import FunctionalClasses.SymmetricalFeature;
 
       // hair of the temple area -- exists in all hairstyles
       public class Temples extends SymmetricalFeature {
 
-    boolean hasHair;
+    private boolean hasHair;
 
     void drawTemples(Graphics2D g2d,Color hairColor) {
 
@@ -29,4 +27,15 @@ import FunctionalClasses.SymmetricalFeature;
         g2d.setColor(Color.black);
 
     }
+
+    public boolean getHasHair() {
+        return hasHair;
+    }
+
+    public void setHasHair(boolean hasHair) {
+        this.hasHair = hasHair;
+    }
+
+
+    
 }

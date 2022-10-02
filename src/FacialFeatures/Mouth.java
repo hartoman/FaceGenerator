@@ -62,35 +62,35 @@ public  class Mouth extends SymmetricalFeature {
     
     }
 
-    public int mouthSize() {
+    public int getMouthSize() {
         return mouthSize;
     }
 
-    public void mouthSize(int mouthSize) {
+    public void setMouthSize(int mouthSize) {
         this.mouthSize = mouthSize;
     }
 
-    public int smile() {
+    public int getSmile() {
         return smile;
     }
 
-    public void smile(int smile) {
+    public void setSmile(int smile) {
         this.smile = smile;
     }
 
-    public int openness() {
+    public int getOpenness() {
         return openness;
     }
 
-    public void openness(int openness) {
+    public void setOpenness(int openness) {
         this.openness = openness;
     }
 
-    public int lipSize() {
+    public int getLipSize() {
         return lipSize;
     }
 
-    public void lipSize(int lipSize) {
+    public void setLipSize(int lipSize) {
         this.lipSize = lipSize;
     }
 

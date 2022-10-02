@@ -48,11 +48,11 @@ import java.io.Serializable;
 
 
         //getter
-        public Rectangle boundRect(){
+        public Rectangle getBoundRect(){
             return this.boundRect;
         }
         // setter
-        public void boundRect(Rectangle rect){
+        public void setBoundRect(Rectangle rect){
             this.boundRect=rect;
         }
     

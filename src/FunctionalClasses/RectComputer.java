@@ -1,10 +1,8 @@
 package FunctionalClasses;
 import FacialFeatures.Face;
-import FacialFeatures.*;
 import FrameFiles.FaceFrame;
 import java.util.Random;
 import Hair.HairStylezEnum;
-import java.io.*;
 
 //import Toolz.LineHandler.*;
 import java.awt.*;
@@ -16,21 +14,22 @@ public class RectComputer {
     public static void calcAllFeatures(Face face) {
 
         // these two first
-        face.head().calcHead(face); // gets ratios for the rest
+        face.geHead().calcHead(face); // gets ratios for the rest
         calcGuidingLines(8, face); // calculates assisting rectangles
 
         // the rest
-        face.eyes().setBoundingBoxParameters();
-        face.nose().setBoundingBoxParameters();
-        face.eyebrows().setBoundingBoxParameters();
-        face.ears().setBoundingBoxParameters();
-        face.mouth().setBoundingBoxParameters();
+        face.getEyes().setBoundingBoxParameters();
+        face.getNose().setBoundingBoxParameters();
+        face.getEyebrows().setBoundingBoxParameters();
+        face.getEars().setBoundingBoxParameters();
+        face.getMouth().setBoundingBoxParameters();
 
-        face.haircut().Temples().setBoundingBoxParameters();
-        face.haircut().TopOfHead().setBoundingBoxParameters();
+        face.getHaircut().getTemples().setBoundingBoxParameters();
+        face.getHaircut().getTopOfHead().setBoundingBoxParameters();
 
-        face.facialHair().moustache().setBoundingBoxParameters();
-        face.facialHair().chin().setBoundingBoxParameters();
+        face.getFacialHair().getMoustache().setBoundingBoxParameters();
+        face.getFacialHair().getChinArea().setBoundingBoxParameters();
+        face.getFacialHair().getCheeks().setBoundingBoxParameters();
 
     }
 
@@ -38,81 +37,98 @@ public class RectComputer {
     public static void calcGuidingLines(int numLines, Face face) {
 
         int bezHandles[] = new int[4];
-        bezHandles[0] = face.head().bXL1();
-        bezHandles[1] = face.head().bY1();
-        bezHandles[2] = face.head().bXL2();
-        bezHandles[3] = face.head().bY2();
+        bezHandles[0] = face.geHead().bXL1();
+        bezHandles[1] = face.geHead().bY1();
+        bezHandles[2] = face.geHead().bXL2();
+        bezHandles[3] = face.geHead().bY2();
 
-        int x1 = (int) face.halfFace().getX();
-        int y1 = (int) face.halfFace().getY();
-        int width1 = (int) face.halfFace().getWidth();
-        int height1 = (int) face.halfFace().getHeight();
+        int x1 = (int) face.getHalfFace().getX();
+        int y1 = (int) face.getHalfFace().getY();
+        int width1 = (int) face.getHalfFace().getWidth();
+        int height1 = (int) face.getHalfFace().getHeight();
 
         /* we get the bounding boxes for all facial features */
         int eyex = x1 + width1 * 2 / 6;
         int eyey = (y1 + height1 * 3 / numLines);
         int eyewidth = (x1 + width1 * 5 / 6);
         int eyeheight = (y1 + height1 * 4 / numLines);
+        
+        // eyes
+        face.getEyes().boundRect = getBoundingBox(eyex, eyey, eyewidth, eyeheight);
+        face.getEyes().adjustBoundRect(); // adjusts bounding box for eye size and distance
 
-        face.eyes().boundRect = getBoundingBox(eyex, eyey, eyewidth, eyeheight);
-        face.eyes().adjustBoundRect(); // adjusts bounding box for eye size and distance
-
-        face.eyebrows().boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 5 / 2 / numLines),
+        // eyebrows
+        face.getEyebrows().boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 5 / 2 / numLines),
                 (x1 + width1),
                 (y1 + height1 * 3 / numLines));
-
-        face.nose().boundRect = getBoundingBox(x1 + width1 * 4 / 6, (y1 + height1 * 3 / numLines),
+        // nose
+        face.getNose().boundRect = getBoundingBox(x1 + width1 * 4 / 6, (y1 + height1 * 3 / numLines),
                 (x1 + width1),
                 (y1 + height1 * 11 / 2 / numLines));
-
-        face.mouth().boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 6 / numLines),
+        //mouth
+        face.getMouth().boundRect = getBoundingBox(x1 + width1 * 3 / 6, (y1 + height1 * 6 / numLines),
                 symmetricHorizonal(x1 + width1 * 3 / 6),
                 (y1 + height1 * 7 / numLines));
 
-        face.facialHair().moustache().boundRect = getBoundingBox(x1 + width1 * 3 / 6,
+        // facial hair - moustache
+        face.getFacialHair().getMoustache().boundRect = getBoundingBox(x1 + width1 * 3 / 6,
                 (y1 + height1 * 11 / 2 / numLines),
                 (x1 + width1),
                 (y1 + height1 * 13 / 2 / numLines));
 
-        face.facialHair().chin().boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 6 / numLines),
+        // facial hair - chin
+        face.getFacialHair().getChinArea().boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 6 / numLines),
                 (x1 + width1),
                 (y1 + height1));
 
-        // the box for the ears is a bit trickier.. we need to calculate the exact X of
-        // the bezier for given Ys
-        int yPos1 = (y1 + height1 * 5 / 2 / numLines);
-        int yPos2 = (y1 + height1 * 5 / numLines);
-        Point bezPoint1 = headPointOnYpos(yPos1, bezHandles);
-        Point bezPoint2 = headPointOnYpos(yPos2, bezHandles);
-        int rightbound = (int) Math.max(bezPoint1.x, bezPoint2.x);
-        face.ears().boundRect = getBoundingBox(rightbound - width1 * 3 / 6, yPos1, rightbound, yPos2);
+        // TODO facial hair - cheeks        
 
-        // for the top of the head we follow the same
-        int widestTop = y1 + height1 * 5 / 2 / numLines;
-        Point leftPoint = headPointOnYpos(widestTop, bezHandles);
-        int leftLimit = leftPoint.x * 9 / 10;
-        Rectangle tmptoprect = getBoundingBox(leftLimit, (y1),
-                RectComputer.symmetricHorizonal(leftLimit),
-                (widestTop));
-        face.haircut().TopOfHead().boundRect(tmptoprect);
 
-        // for the temples
-        Point temple1 = headPointOnYpos((y1 + height1 * 6 / 5 / numLines), bezHandles);
-        Point temple2 = headPointOnYpos((y1 + height1 * 3 / numLines), bezHandles);
-        int maxleftTemple = (Math.max(temple1.x, temple2.x));
-        Rectangle tmptmplerect = getBoundingBox(leftLimit, (y1 + height1 * 6 / 5 / numLines),
+        // ears  (we need to calculate the exact X of the bezier for given Ys)
+        int earsLeftY = (y1 + height1 * 5 / 2 / numLines);
+        int earsRightY = (y1 + height1 * 5 / numLines);
+        Point bezPoint1 = headPointOnYpos(earsLeftY, bezHandles);
+        Point bezPoint2 = headPointOnYpos(earsRightY, bezHandles);
+        int earsRightX = (int) Math.max(bezPoint1.x, bezPoint2.x);
+        face.getEars().boundRect = getBoundingBox(earsRightX - width1 * 3 / 6, earsLeftY, earsRightX, earsRightY);
+
+        // for the top of the head  (same)
+        int topOfHeadLeftY = y1 + height1 * 5 / 2 / numLines;
+        Point leftPoint = headPointOnYpos(topOfHeadLeftY, bezHandles);
+        int topOfHeadLeftX = leftPoint.x * 9 / 10;
+        Rectangle tmptoprect = getBoundingBox(topOfHeadLeftX, (y1),
+                RectComputer.symmetricHorizonal(topOfHeadLeftX),
+                (topOfHeadLeftY));
+        face.getHaircut().getTopOfHead().setBoundRect(tmptoprect);
+
+        // temples
+        Point templeProbableRightY1 = headPointOnYpos((y1 + height1 * 6 / 5 / numLines), bezHandles);
+        Point templeProbableRightY2 = headPointOnYpos((y1 + height1 * 3 / numLines), bezHandles);
+        int maxleftTemple = (Math.max(templeProbableRightY1.x, templeProbableRightY2.x));
+        Rectangle tmptmplerect = getBoundingBox(topOfHeadLeftX, (y1 + height1 * 6 / 5 / numLines),
                 maxleftTemple,
                 (y1 + height1 * 3 / numLines));
-        face.haircut().Temples().boundRect(tmptmplerect);
+        face.getHaircut().getTemples().setBoundRect(tmptmplerect);
+
+        // cheeks
+        int cheeksLefty=(y1 + height1 * 4 / numLines);
+        int cheeksLeftX=earsRightX;
+
+       // int brY=y1 + height1 * 60/61;
+        int cheeksRightY=y1 + height1;// * 59/61;
+        int cheeksRightX=x1 + width1 * 4 / 6;
+        
+        Rectangle tmpbeard = getBoundingBox(cheeksLeftX, cheeksLefty, cheeksRightX, cheeksRightY);
+        face.getFacialHair().getCheeks().setBoundRect(tmpbeard);
 
     }
 
     // returns the point of the face outline corresponding to height = yPos
     public static Point headPointOnYpos(int yPos, int[] bezHandles) {
 
-        Point x = new Point(Face.midWidth(), yPos);
-        Point ptA = new Point(Face.midWidth(), Face.minHeight());
-        Point ptB = new Point(Face.midWidth(), Face.height());
+        Point x = new Point(Face.getMidWidth(), yPos);
+        Point ptA = new Point(Face.getMidWidth(), Face.getMinHeight());
+        Point ptB = new Point(Face.getMidWidth(), Face.getHeight());
         Point cp0 = new Point(bezHandles[0], bezHandles[1]);
         Point cp1 = new Point(bezHandles[2], bezHandles[3]);
         LineHandler lh = new LineHandler();
@@ -121,7 +137,7 @@ public class RectComputer {
 
     // gets ths symmentrical of x on the horizontal axis
     public static int symmetricHorizonal(int x) {
-        return Face.maxwidth() - x;
+        return Face.getMaxwidth() - x;
     }
 
     // gets the approximate bounding box of a shape
@@ -144,7 +160,7 @@ public class RectComputer {
 
     public static Face createRandomFace(String gender) {
 
-        int moustSize, moustCurl, chinH, chinW, hairNum;
+        int moustSize, moustCurl, chinH, chinW, beardL, beardW,hairNum;
 
         boolean hasMoust = RectComputer.randomBool();
         boolean hasBeard = RectComputer.randomBool();
@@ -165,10 +181,15 @@ public class RectComputer {
                 if (hasBeard) {
                     chinH = RectComputer.randomBetween(0, 6);
                     chinW = RectComputer.randomBetween(0, 6);
+                    //TODO DEFINE MAXNUMBERS
+                    beardL = RectComputer.randomBetween(0, 6);
+                    beardW = RectComputer.randomBetween(0, 6);
 
                 } else {
                     chinH = 0;
                     chinW = 0;
+                    beardL = 0;
+                    beardW = 0;
                 }
                 hairNum = RectComputer.randomBetween(0, 7);
                 break;
@@ -178,6 +199,8 @@ public class RectComputer {
                 moustCurl = 0;
                 chinH = 0;
                 chinW = 0;
+                beardL = 0;
+                beardW = 0;
                 hairNum = RectComputer.randomBetween(3, (HairStylezEnum.values().length - 1));
                 break;
 
@@ -186,31 +209,34 @@ public class RectComputer {
                 moustCurl = RectComputer.randomBetween(-40, 40);
                 chinH = RectComputer.randomBetween(0, 6);
                 chinW = RectComputer.randomBetween(0, 6);
+                //TODO DEFINE MAXNUMBERS 2
+                beardL = RectComputer.randomBetween(0, 6);
+                beardW = RectComputer.randomBetween(0, 6);
                 hairNum = RectComputer.randomBetween(0, (HairStylezEnum.values().length - 1));
                 break;
         }
 
         face.setHairCut(hairNum);
 
-        face.facialHair().setFacialHair(moustSize, moustCurl, chinH, chinW);
+        face.getFacialHair().setFacialHair(moustSize, moustCurl, chinH, chinW,beardL,beardW);
 
-        face.head().setHead(RectComputer.randomBetween(0, 50), RectComputer.randomBetween(0, 50));
+        face.geHead().setHead(RectComputer.randomBetween(0, 50), RectComputer.randomBetween(0, 50));
 
-        face.eyes().setEyes(RectComputer.randomBetween(-10, 10),
+        face.getEyes().setEyes(RectComputer.randomBetween(-10, 10),
                 RectComputer.randomBetween(-10, 10),
                 RectComputer.randomBetween(-25, 25),
                 RectComputer.randomBetween(10, 35),
                 RectComputer.randomBetween(5, 15));
 
-        face.nose().noseSize(RectComputer.randomBetween(1, 8));
+        face.getNose().setNoseSize(RectComputer.randomBetween(1, 8));
 
-        face.mouth().setMouth(RectComputer.randomBetween(0, 40),
+        face.getMouth().setMouth(RectComputer.randomBetween(0, 40),
                 RectComputer.randomBetween(0, 30));
 
-        face.eyebrows().setEyebrows(RectComputer.randomBetween(0, 25),
+        face.getEyebrows().setEyebrows(RectComputer.randomBetween(0, 25),
                 RectComputer.randomBetween(0, 4));
 
-        face.ears().earSize(RectComputer.randomBetween(0, 50));
+        face.getEars().setEarSize(RectComputer.randomBetween(0, 50));
 
         calcAllFeatures(face);
 

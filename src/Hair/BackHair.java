@@ -14,10 +14,10 @@ public class BackHair implements Serializable{
 
     void drawHair(Graphics2D g2d,Color hairColor){
 
-        int bHairL = Face.maxwidth()/9-Face.maxwidth()*length/50/9;
+        int bHairL = Face.getMaxwidth()/9-Face.getMaxwidth()*length/50/9;
         int bHairR = RectComputer.symmetricHorizonal(bHairL);
-        int bHairT = Face.minHeight();
-        int bHairB = Face.height()+Face.height()*length/50;
+        int bHairT = Face.getMinHeight();
+        int bHairB = Face.getHeight()+Face.getHeight()*length/50;
         g2d.setColor(hairColor);
         g2d.fillArc(bHairL,bHairT,bHairR-bHairL,bHairB, 0, 180);
         g2d.setColor(Color.black);
@@ -25,19 +25,19 @@ public class BackHair implements Serializable{
         
     }
 
-    public boolean hasHair() {
+    public boolean getHasHair() {
         return hasHair;
     }
 
-    public void hasHair(boolean hasHair) {
+    public void setHasHair(boolean hasHair) {
         this.hasHair = hasHair;
     }
 
-    public int length() {
+    public int getLength() {
         return length;
     }
 
-    public void length(int length) {
+    public void setLength(int length) {
         this.length = length;
     }
 

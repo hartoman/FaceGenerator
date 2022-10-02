@@ -6,13 +6,13 @@ import FunctionalClasses.SymmetricalFeature;
 
 public class Eyes extends SymmetricalFeature {
     // the further from 0, the wider the eye becomes
-    private int distortion1, // for upper eyeball -- [-10,10]
-            distortion2, // for lower eyeball -- [-10,10]
-            distortion3; // eyelid openness-- [0,75], 0=closed, 75=wide open
+    private int upperEyelidSize, // for upper eyeball -- [-10,10]
+            lowerEyelidSize, // for lower eyeball -- [-10,10]
+            eyeOpenness; // eyelid openness-- [0,75], 0=closed, 75=wide open
 
-    private int angle; // angle of the shape of the eyes
-    private int size;                   // [10,35]
-    private int eyedist;               // [5,15]
+    private int eyeAngle; // angle of the shape of the eyes
+    private int eyeSize;                   // [10,35]
+    private int eyeDist;               // [5,15]
     
 
     void drawEyes(Graphics2D g2d,Color ... colors) {
@@ -31,12 +31,12 @@ public class Eyes extends SymmetricalFeature {
         int bhu2 = left + (width * 2 / 3);
 
         Path2D.Double eye = new Path2D.Double();
-        eye.moveTo(left1, midy - angle);
-        eye.curveTo(bhu1, top + distortion1, bhu2, top + distortion1,
-                right1, midy + angle);
-        eye.curveTo(bhu2, bottom + distortion2, bhu1,
-                bottom + distortion2,
-                left1, midy - angle);
+        eye.moveTo(left1, midy - eyeAngle);
+        eye.curveTo(bhu1, top + upperEyelidSize, bhu2, top + upperEyelidSize,
+                right1, midy + eyeAngle);
+        eye.curveTo(bhu2, bottom + lowerEyelidSize, bhu1,
+                bottom + lowerEyelidSize,
+                left1, midy - eyeAngle);
         eye.closePath();
 
         Shape eye2 = drawMirrored(eye);
@@ -86,25 +86,25 @@ public class Eyes extends SymmetricalFeature {
 
         // draw upper eyelid
         Path2D.Double eyelidUP = new Path2D.Double();
-        eyelidUP.moveTo(left1, midy - angle);
-        eyelidUP.curveTo(bhu1, top + distortion1, bhu2, top + distortion1,
+        eyelidUP.moveTo(left1, midy - eyeAngle);
+        eyelidUP.curveTo(bhu1, top + upperEyelidSize, bhu2, top + upperEyelidSize,
                 right1,
-                midy + angle);
-        eyelidUP.curveTo(bhu2, bottom - distortion3, bhu1,
-                bottom - distortion3,
+                midy + eyeAngle);
+        eyelidUP.curveTo(bhu2, bottom - eyeOpenness, bhu1,
+                bottom - eyeOpenness,
                 left1,
-                midy - angle);
+                midy - eyeAngle);
         eyelidUP.closePath();
 
         // draw bottom eyelid
         Path2D.Double eyelidBOT = new Path2D.Double();
-        eyelidBOT.moveTo(right1, midy + angle);
-        eyelidBOT.curveTo(bhu2, bottom + distortion2, bhu1,
-                bottom + distortion2,
+        eyelidBOT.moveTo(right1, midy + eyeAngle);
+        eyelidBOT.curveTo(bhu2, bottom + lowerEyelidSize, bhu1,
+                bottom + lowerEyelidSize,
                 left1,
-                midy - angle);
-        eyelidBOT.curveTo(bhu1, bottom + distortion3 / 10, bhu2,
-                bottom + distortion3 / 10, right1, midy + angle);
+                midy - eyeAngle);
+        eyelidBOT.curveTo(bhu1, bottom + eyeOpenness / 10, bhu2,
+                bottom + eyeOpenness / 10, right1, midy + eyeAngle);
         eyelidBOT.closePath();
 
         Shape eyelidUP2 = drawMirrored(eyelidUP);
@@ -128,75 +128,75 @@ public class Eyes extends SymmetricalFeature {
 
     // readjusts bounding rectangle based on eyeSize, 
     public void adjustBoundRect(){
-        int modsize = size+70;
-        int negDist = -(eyedist-10);
+        int modsize = eyeSize+70;
+        int negDist = -(eyeDist-10);
         
-        Rectangle modRect = new Rectangle(boundRect().x+boundRect().width*negDist/100,
-        boundRect().y,
-        boundRect().width*(modsize)/100,
-        boundRect().height*modsize/100
+        Rectangle modRect = new Rectangle(getBoundRect().x+getBoundRect().width*negDist/100,
+        getBoundRect().y,
+        getBoundRect().width*(modsize)/100,
+        getBoundRect().height*modsize/100
         );
-        boundRect(modRect);
+        setBoundRect(modRect);
         setBoundingBoxParameters();
     }
 
 
     // sets all eye parameters at once
     public void setEyes(int distortion1,int distortion2,int angle,int size,int eyedist){
-        this.distortion1=distortion1;
-        this.distortion2=distortion2;
-        this.angle=angle;
-        this.size=size;
-        this.eyedist=eyedist;
+        this.upperEyelidSize=distortion1;
+        this.lowerEyelidSize=distortion2;
+        this.eyeAngle=angle;
+        this.eyeSize=size;
+        this.eyeDist=eyedist;
     }
 
 
-public int angle() {
-        return angle;
+public int getAngle() {
+        return eyeAngle;
 }
 
-public void angle(int angle) {
-        this.angle = angle;
+public void setAngle(int angle) {
+        this.eyeAngle = angle;
 }
 
-public  int size() {
-        return size;
+public  int getSize() {
+        return eyeSize;
 }
 
-public  void size(int size) {
-        this.size = size;
+public  void setSize(int size) {
+        this.eyeSize = size;
 }
 
-public  int eyedist() {
-        return eyedist;
+public  int getEyedist() {
+        return eyeDist;
 }
 
-public  void eyedist(int eyedist) {
-        this.eyedist = eyedist;
+public  void setEyedist(int eyedist) {
+        this.eyeDist = eyedist;
 }
 
-public int distortion1() {
-        return distortion1;
+public int getDistortion1() {
+        return upperEyelidSize;
 }
 
-public void distortion1(int distortion1) {
-        this.distortion1 = distortion1;
+public void setDistortion1(int distortion1) {
+        this.upperEyelidSize = distortion1;
 }
 
-public int distortion2() {
-        return distortion2;
+public int getDistortion2() {
+        return lowerEyelidSize;
 }
 
-public void distortion2(int distortion2) {
-        this.distortion2 = distortion2;
+public void setDistortion2(int distortion2) {
+        this.lowerEyelidSize = distortion2;
 }
 
-public int distortion3() {
-        return distortion3;
+public int getDistortion3() {
+        return eyeOpenness;
 }
 
-public void distortion3(int distortion3) {
-        this.distortion3 = distortion3;
+public void setDistortion3(int distortion3) {
+        this.eyeOpenness = distortion3;
 }
 
 

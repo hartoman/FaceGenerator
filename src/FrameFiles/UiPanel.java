@@ -3,7 +3,6 @@ package FrameFiles;
 import javax.swing.*;
 
 import FacialFeatures.Face;
-import FrameFiles.FaceFrame.Grid;
 import Emotions.Emotion;
 import FunctionalClasses.*;
 import Hair.HairStylezEnum;
@@ -26,9 +25,6 @@ public class UiPanel extends JPanel {
         this.w = w;
         this.h = h;
         this.face=new Face(w,h);
-     //  after serialization finishes remove face from FaceFrame this.face= new Face(w,h);
-        
-
 
         initPanel();
 
@@ -110,8 +106,8 @@ public class UiPanel extends JPanel {
         @Override
         public void createElements() {
 
-            tmpthicc = face.head().thiccness();
-            tmpshape = face.head().mod1();
+            tmpthicc = face.geHead().getThiccness();
+            tmpshape = face.geHead().getHeadShape();
 
             skinColorButton = new JButton("Skin Color");
             thiccSlider = UiMethods.createSlider("Slick", 0, "Thicc", 40, 0, sliderTextColor,
@@ -139,8 +135,8 @@ public class UiPanel extends JPanel {
             skinColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Skin color", new Color(255, 215, 169, 255));
-                    face.skinColor(tmpColor);
-                    face.makeupEyeColor(tmpColor);
+                    face.setSkinColor(tmpColor);
+                    face.setMakeupEyeColor(tmpColor);
                     skinColorButton.setBackground(tmpColor);
                     FaceFrame.grid.repaint();
                 }
@@ -151,8 +147,8 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
                     tmpthicc = thiccSlider.getValue();
-                    face.head().thiccness(tmpthicc);
-                    face.head().mod1(tmpshape);
+                    face.geHead().setThiccness(tmpthicc);
+                    face.geHead().setHeadShape(tmpshape);
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -163,8 +159,8 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
                     tmpshape = headShapeSlider.getValue();
-                    face.head().thiccness(tmpthicc);
-                    face.head().mod1(tmpshape);
+                    face.geHead().setThiccness(tmpthicc);
+                    face.geHead().setHeadShape(tmpshape);
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -189,7 +185,7 @@ public class UiPanel extends JPanel {
         public void createElements() {
 
             noseSizeSlider = UiMethods.createSlider("French", 1, "Caesar", 8, 1, sliderTextColor, "Size of nose");
-            earSizeSlider = UiMethods.createSlider("Delicate", 0, "Radar", 50, 0, sliderTextColor, "Size of ears");
+            earSizeSlider = UiMethods.createSlider("Delicate", 0, "Radar", 50, 1, sliderTextColor, "Size of ears");
             mouthSizeSlider = UiMethods.createSlider("Diet", 0, "Maw", 40, 0, sliderTextColor, "Size of mouth");
             lipsSizeSlider = UiMethods.createSlider("None", 0, "Silicone", 30, 15, sliderTextColor, "Size of Lips");
 
@@ -225,7 +221,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
 
-                    face.nose().noseSize(noseSizeSlider.getValue());
+                    face.getNose().setNoseSize(noseSizeSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -235,7 +231,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
 
-                    face.ears().earSize(earSizeSlider.getValue());
+                    face.getEars().setEarSize(earSizeSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -245,7 +241,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
 
-                    face.mouth().mouthSize(mouthSizeSlider.getValue());
+                    face.getMouth().setMouthSize(mouthSizeSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -255,7 +251,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
 
-                    face.mouth().lipSize(lipsSizeSlider.getValue());
+                    face.getMouth().setLipSize(lipsSizeSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -265,7 +261,7 @@ public class UiPanel extends JPanel {
             lipsColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Lips color", new Color(255, 190, 169, 255));
-                    face.lipsColor(tmpColor);
+                    face.setLipsColor(tmpColor);
                     lipsColorButton.setBackground(tmpColor);
                     FaceFrame.grid.removeAll();
                     FaceFrame.grid.repaint();
@@ -340,7 +336,7 @@ public class UiPanel extends JPanel {
             hairColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Hair color", new Color(0, 17, 16, 0));
-                    face.hairColor(tmpColor);
+                    face.setHairColor(tmpColor);
                     hairColorButton.setBackground(tmpColor);
                     FaceFrame.grid.repaint();
                 }
@@ -363,7 +359,7 @@ public class UiPanel extends JPanel {
             @Override
             public void stateChanged(ChangeEvent event) {
 
-                face.haircut().BackHair().length(hairLengthSlider.getValue());
+                face.getHaircut().getBackHair().setLength(hairLengthSlider.getValue());
                 
                 RectComputer.calcAllFeatures(face);
                 FaceFrame.grid.repaint();
@@ -376,7 +372,7 @@ public class UiPanel extends JPanel {
             @Override
             public void stateChanged(ChangeEvent event) {
 
-                face.facialHair().moustache().moustacheSize(moustacheSizeSlider.getValue());
+                face.getFacialHair().getMoustache().setMoustacheSize(moustacheSizeSlider.getValue());
                 RectComputer.calcAllFeatures(face);
                 FaceFrame.grid.repaint();
             }
@@ -387,7 +383,7 @@ public class UiPanel extends JPanel {
             @Override
             public void stateChanged(ChangeEvent event) {
 
-                face.facialHair().moustache().curled((moustacheCurveSlider.getValue()));
+                face.getFacialHair().getMoustache().setCurled((moustacheCurveSlider.getValue()));
                 RectComputer.calcAllFeatures(face);
                 FaceFrame.grid.repaint();
             }
@@ -398,7 +394,7 @@ public class UiPanel extends JPanel {
             @Override
             public void stateChanged(ChangeEvent event) {
 
-                face.facialHair().chin().soulpatchHeight(chinHairLengthSlider.getValue());
+                face.getFacialHair().getChinArea().setSoulpatchHeight(chinHairLengthSlider.getValue());
                 RectComputer.calcAllFeatures(face);
                 FaceFrame.grid.repaint();
             }
@@ -409,7 +405,7 @@ public class UiPanel extends JPanel {
             @Override
             public void stateChanged(ChangeEvent event) {
 
-                face.facialHair().chin().soulpatchWidth(chinHairWidthSlider.getValue());
+                face.getFacialHair().getChinArea().setSoulpatchWidth(chinHairWidthSlider.getValue());
                 RectComputer.calcAllFeatures(face);
                 FaceFrame.grid.repaint();
             }
@@ -467,7 +463,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
     
-                    face.eyes().size(eyeSizeslider.getValue());
+                    face.getEyes().setSize(eyeSizeslider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -478,7 +474,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
     
-                    face.eyes().eyedist(eyeDistlider.getValue());
+                    face.getEyes().setEyedist(eyeDistlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -489,7 +485,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
     
-                    face.eyes().angle(eyeAnglSlider.getValue());
+                    face.getEyes().setAngle(eyeAnglSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -500,7 +496,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
     
-                    face.eyes().distortion1(upEyelidSlider.getValue());
+                    face.getEyes().setDistortion1(upEyelidSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -511,7 +507,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
     
-                    face.eyes().distortion2(lowerEyelidSlider.getValue());
+                    face.getEyes().setDistortion2(lowerEyelidSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -521,7 +517,7 @@ public class UiPanel extends JPanel {
             irisColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Iris color", Color.DARK_GRAY);
-                    face.eyePupilColor(tmpColor);
+                    face.setEyePupilColor(tmpColor);
                     irisColorButton.setBackground(tmpColor);
                     FaceFrame.grid.repaint();
                 }
@@ -531,7 +527,7 @@ public class UiPanel extends JPanel {
             eyeballColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Eyeball color", Color.white);
-                    face.eyeballColor(tmpColor);
+                    face.setEyeballColor(tmpColor);
                     eyeballColorButton.setBackground(tmpColor);
                     FaceFrame.grid.repaint();
                 }
@@ -541,7 +537,7 @@ public class UiPanel extends JPanel {
             eyeShadowColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Eye shadow color", new Color(255, 215, 169, 255));
-                    face.makeupEyeColor(tmpColor);
+                    face.setMakeupEyeColor(tmpColor);
                     eyeShadowColorButton.setBackground(tmpColor);
                     FaceFrame.grid.repaint();
                 }
@@ -695,7 +691,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
     
-                    face.eyebrows().eyebrowSize(eyebrowSizeSlider.getValue());
+                    face.getEyebrows().setEyebrowSize(eyebrowSizeSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
@@ -706,7 +702,7 @@ public class UiPanel extends JPanel {
                 @Override
                 public void stateChanged(ChangeEvent event) {
     
-                    face.eyebrows().eyebrowThiccness(eyebrowThiccnessSlider.getValue());
+                    face.getEyebrows().setEyebrowThiccness(eyebrowThiccnessSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }

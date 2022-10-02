@@ -58,11 +58,11 @@ public class Nose extends SymmetricalFeature {
         g2d.setColor(Color.BLACK);
     }
 
-public int noseSize() {
+public int getNoseSize() {
         return noseSize;
 }
 
-public void noseSize(int noseSize) {
+public void setNoseSize(int noseSize) {
         this.noseSize = noseSize;
 }
 

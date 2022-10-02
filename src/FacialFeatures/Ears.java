@@ -59,11 +59,11 @@ public class Ears extends SymmetricalFeature {
         }
     }
 
-    public int earSize() {
+    public int getEarSize() {
         return earSize;
     }
 
-    public void earSize(int earSize) {
+    public void setEarSize(int earSize) {
         this.earSize = earSize;
     }
 
