@@ -16,8 +16,8 @@ import javax.swing.event.ChangeListener;
 //sets up basic dimensions and layout
 public class UiPanel extends JPanel {
 
-    int w, h;
-    Face face;
+    private int w, h;
+    private Face face;
 
     public UiPanel(int w, int h) {
         this.w = w;

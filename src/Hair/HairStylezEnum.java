@@ -44,12 +44,18 @@ public enum HairStylezEnum {
             return new PartSide();
         }
     },
+    HIGHTEMPLEHAIRCUT {
+        @Override
+        public HairCut makeHair() {
+            return new HightTempleHairCut();
+        }
+    },  
     MOHAWK {
         @Override
         public HairCut makeHair() {
             return new Mohawk();
         }
-    },  //
+    },  
     MIAWALLACE {
         @Override
         public HairCut makeHair() {
@@ -74,20 +80,13 @@ public enum HairStylezEnum {
             return new PartMiddleLongHair();
         }
     },  
-    HIGHTEMPLEHAIRCUT {
-        @Override
-        public HairCut makeHair() {
-            return new HightTempleHairCut();
-        }
-    },  
     HIGHTEMPLELONGHAIR {
         @Override
         public HairCut makeHair() {
             return new HightTempleLongHair();
         }
     }
-    
-    
+   
     ;
 
     // returns the hairstyle of each enum

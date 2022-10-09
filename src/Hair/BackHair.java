@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class BackHair implements Serializable{
     
     private boolean hasHair;
-    private int length;
+    private int length;     //  [0,50]
 
     void drawHair(Graphics2D g2d,Color hairColor){
 

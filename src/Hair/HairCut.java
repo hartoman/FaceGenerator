@@ -6,10 +6,9 @@ import java.io.Serializable;
 
 public abstract class HairCut implements Serializable {
 
-    TopOfHead topOfHead;
-    Temples temples;
-    BackHair backhair;
- //   Color hairColor;
+    protected TopOfHead topOfHead;
+    protected Temples temples;
+    protected BackHair backhair;
 
     // creates the haircut out of two parts: hair on the head, and hair in the back
     HairCut() {

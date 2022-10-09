@@ -17,7 +17,7 @@ public enum Emotion {
     HORROR("Horror", -50, 75, -15, 40),
     RAGE("Rage", 50, 55, -15, 0),
     TICKED_OFF("Annoyed", 50, 35, -5, 0),
-    INTOX_HAPPY("Intoxicated", 0, 25, 15, 20),
+    INTOX_HAPPY("Intoxicated", 0, 35, 15, 20),
     INTOX_STONED(" 'Meditating' ", 0, 25, 15, 0),
 
     ;

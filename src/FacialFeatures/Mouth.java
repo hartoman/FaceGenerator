@@ -16,8 +16,8 @@ public  class Mouth extends SymmetricalFeature {
 
       
         int midx = (left + width / 2);
-        int mouthpointUL1 = midx - width / 5 - mouthSize - 0;
-        int mouthpointUR1 = midx + width / 5 + mouthSize + 0;
+        int mouthpointUL1 = midx - width / 5 - mouthSize;
+        int mouthpointUR1 = midx + width / 5 + mouthSize;
         int mouthULY = midy - ((height * smile) / 100);
         int mouthLLY = midy + (height * smile / 100);
         int bh1X = left + (width * 2 / 5);
@@ -44,21 +44,21 @@ public  class Mouth extends SymmetricalFeature {
         g2d.fill(lips);
         g2d.setColor(Color.black);
         g2d.draw(mouth);
+      //  g2d.setColor(Color.white);
         g2d.fill(mouth);
+      //  g2d.setColor(Color.red);
 
-        // TODO: teeth
-        /*
-         * g2d.setColor(Color.white);
-         * Path2D.Double teeth1 = new Path2D.Double();
-         * teeth1.moveTo(mouthpointUL1, mouthULY);
-         * teeth1.curveTo(bh1X, bh1Y, bh2X, bh1Y, mouthpointUR1, mouthULY);
-         * teeth1.curveTo(bh1X, bh1Y, bh2X, bh1Y, mouthpointUL1, mouthULY);
-         * teeth1.closePath();
-         * g2d.draw(teeth1);
-         * g2d.fill(teeth1);
-         * 
-         * g2d.setColor(Color.black);
-         */
+        //TODO FIX THE Ys
+
+    //    int mouthsize = mouthpointUR1-mouthpointUL1;
+    //    g2d.drawLine(mouthpointUL1+mouthsize/4, bh1Y, mouthpointUL1+mouthsize/4, bh1Y);
+   //     g2d.drawLine(mouthpointUL1+mouthsize/2, bh1Y, mouthpointUL1+mouthsize/2, bh2Y);
+   //     g2d.drawLine(mouthpointUL1+mouthsize*3/4, bh1Y, mouthpointUL1+mouthsize*3/4, bh2Y);
+   
+   g2d.setColor(Color.black);
+   
+        
+
     
     }
 

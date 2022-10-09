@@ -61,6 +61,11 @@ public class Head implements Serializable{
         g2d.setColor(skincColor);
         g2d.fill(head); // with skin color
 
+   //     g2d.setColor(Color.red);
+   //     g2d.drawLine(bXL1,bY1,bXR1,bY1);
+
+        g2d.setColor(Color.black);
+
     }
 
     public void setHead(int thiccness,int mod1){

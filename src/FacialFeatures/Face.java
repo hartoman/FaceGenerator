@@ -28,8 +28,9 @@ public class Face implements Serializable {
 
     private static int minHeight, height, maxwidth, midHeight, midWidth;
     private Color makeupEyeColor, eyePupilColor, eyeballColor, skinColor, hairColor, lipsColor;
-
     private Rectangle halfFace; // marks the area of the left half of the face
+
+    private int age;
 
     private Head head;
     private Eyes eyes;
@@ -42,7 +43,6 @@ public class Face implements Serializable {
 
     // in the constructor all important parameters can be calibrated
     public Face(int w, int h) {
-
 
         minHeight = 50;
         height = h - 50;
@@ -67,7 +67,6 @@ public class Face implements Serializable {
     // puts everything together. newer calls overwrite older, so the order matters
     public void drawFace(Graphics2D g2d) {
 
-
         // on the vack there is the long hair
         haircut.drawBackHair(g2d, hairColor);
 
@@ -88,7 +87,7 @@ public class Face implements Serializable {
         // eyebrows above nose
         eyebrows.drawEyebrows(g2d, hairColor);
 
-     //   DrawingMethods.drawGuidingLines(8, g2d,this);
+         DrawingMethods.drawGuidingLines(8, g2d,this);
     }
 
     // resets all parameters of the face
@@ -136,7 +135,10 @@ public class Face implements Serializable {
         setHairCut(2);
 
         setExpression(Emotion.POKERFACE);
-        // setExpression(0, 45, 0, 0);
+        // alt: setExpression(0, 45, 0, 0);
+
+        // TODO unify setAge
+        facialHair.getCheeks().setAge(4);       //[0,4]
 
         RectComputer.calcAllFeatures(this);
     }
@@ -146,7 +148,17 @@ public class Face implements Serializable {
 
         eyePupilColor = Color.darkGray;
         eyeballColor = Color.white;
-        skinColor = new Color(255, 255, 255, 255);
+        skinColor = Color.white;
+
+        // for different tones we adjust the last value: [0.2, 1]
+     //   skinColor = Color.getHSBColor(0.08914729f, 0.3372549f, 0.2f);
+        // to find out the right values:
+        // skinColor = new Color(255, 215, 169, 255);
+        // float[] values = Color.RGBtoHSB(255, 215, 169, null);
+        // for (float f : values) {
+        // System.out.println(f);
+        // }
+
         makeupEyeColor = Color.DARK_GRAY;
         hairColor = Color.black;
         lipsColor = Color.lightGray;// Color.red;;
@@ -167,8 +179,6 @@ public class Face implements Serializable {
         getMouth().setSmile(emotion.getSmile()); // smile: [-15,15] //TODO TRY -20,20
 
     }
-
-
 
     /************ GETTERS AND SETTERS ********************/
 

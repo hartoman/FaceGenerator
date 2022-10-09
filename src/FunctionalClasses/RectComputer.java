@@ -159,7 +159,32 @@ public class RectComputer {
         boolean hasMoust = RectComputer.randomBool();
         boolean hasBeard = RectComputer.randomBool();
 
+
         Face face= new Face(FaceFrame.w(),FaceFrame.h());
+
+        // for different tones we adjust the last value: [0.2, 1]
+        float toneV = randomBetween(5, 10)*0.1f;
+        float toneH = randomBetween(6, 10)*0.01f;
+      //  toneH=0.08914729f;
+        
+        face.setSkinColor(Color.getHSBColor(toneH, 0.3372549f, toneV));
+        face.setMakeupEyeColor(Color.getHSBColor(toneH, 0.3372549f, toneV));
+
+        // the lips are just a little bit darker
+        face.setLipsColor(Color.getHSBColor(toneH, 0.3372549f, toneV-0.1f));
+
+        int hairR=255;
+        int hairG=randomBetween(0, 255);
+        int hairB=randomBetween(0, 51);
+        face.setHairColor(new Color(hairR,hairG,hairB));
+        
+
+                // found out the right values by doing:
+                // skinColor = new Color(255, 215, 169, 255);
+                // float[] values = Color.RGBtoHSB(255, 215, 169, null);
+                // for (float f : values) {
+                // System.out.println(f);
+                // }
 
         switch (gender) {
 
@@ -186,24 +211,32 @@ public class RectComputer {
                     beardW = 0;
                 }
                 hairNum = RectComputer.randomBetween(0, 7);
+
                 break;
 
             case "gal":
+
+
+                face.setMakeupEyeColor(new Color(randomBetween(0,255),randomBetween(0,255),randomBetween(0,255)));
+                face.setLipsColor(new Color(randomBetween(0,255),randomBetween(0,255),randomBetween(0,255)));
+
                 moustSize = 0;
                 moustCurl = 0;
                 chinH = 0;
                 chinW = 0;
                 beardL = 0;
                 beardW = 0;
-                hairNum = RectComputer.randomBetween(3, (HairStylezEnum.values().length - 1));
+                hairNum = RectComputer.randomBetween(9, (HairStylezEnum.values().length - 1));
                 break;
 
             default:
+
+                face.setMakeupEyeColor(new Color(randomBetween(0,255),randomBetween(0,255),randomBetween(0,255)));
+                face.setLipsColor(new Color(randomBetween(0,255),randomBetween(0,255),randomBetween(0,255)));
                 moustSize = RectComputer.randomBetween(0, 20);
                 moustCurl = RectComputer.randomBetween(-40, 40);
                 chinH = RectComputer.randomBetween(0, 6);
                 chinW = RectComputer.randomBetween(0, 6);
-                //TODO DEFINE MAXNUMBERS 2
                 beardL = RectComputer.randomBetween(0, 5);
                 beardW = RectComputer.randomBetween(0, 10);
                 hairNum = RectComputer.randomBetween(0, (HairStylezEnum.values().length - 1));
@@ -211,6 +244,7 @@ public class RectComputer {
         }
 
         face.setHairCut(hairNum);
+        face.getHaircut().getBackHair().setLength(RectComputer.randomBetween(0, 50));
 
         face.getFacialHair().setFacialHair(moustSize, moustCurl, chinH, chinW,beardL,beardW);
 
@@ -230,7 +264,7 @@ public class RectComputer {
         face.getEyebrows().setEyebrows(RectComputer.randomBetween(0, 25),
                 RectComputer.randomBetween(0, 4));
 
-        face.getEars().setEarSize(RectComputer.randomBetween(0, 50));
+        face.getEars().setEarSize(RectComputer.randomBetween(1, 50));
 
         calcAllFeatures(face);
 

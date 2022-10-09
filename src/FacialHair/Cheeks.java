@@ -8,13 +8,38 @@ public class Cheeks extends SymmetricalFeature {
 
     private int beardLength; // [0,5] -- at -0 nothing shows
     private int beardWidth; // [0,10]
+    private int age;
 
     public void drawBeardArea(Graphics2D g2d, Color hairColor) {
 
+        // adds wrinkes from age
+
+        g2d.setColor(Color.black); 
+        for (int i=0;i<age;i++){
+
+            Path2D.Double wr1 = new Path2D.Double();
+
+            //wrinkes of cheekbones
+            wr1.moveTo(left, top+height*(i-1)/12);
+            wr1.curveTo(left, top+height*(i-1)/12, left+width*(i)/3,top+height*(i+2)/12, right+width/6, top+height*i/12);
+            g2d.draw(wr1);
+            Shape wrr1 = drawMirrored(wr1);
+            g2d.draw(wrr1);
+
+            //wrinkes around mouth
+            Path2D.Double wr2 = new Path2D.Double();
+            wr2.moveTo(left+width*(51-i)/50, top + height * 8 / 10);
+            wr2.curveTo(left+width*(4-i)/5, midy, left+width*(4-i)/3,midy, left+width*(11-i)/10, top + height*4/10);
+            g2d.draw(wr2);
+            Shape wrr2 = drawMirrored(wr2);
+            g2d.draw(wrr2);
+
+        }
+
+        // adds beard if any
         if ((beardLength > 0)) {
 
             Path2D.Double br = new Path2D.Double();
-
             br.moveTo(left, top);
             int topRightX = right;
             int topRightY = top + height * 2 / 5;
@@ -32,12 +57,9 @@ public class Cheeks extends SymmetricalFeature {
             g2d.fill(spr);
             g2d.setColor(Color.black); 
 
-        }
-    }
 
-    void setUpBeard(int soulpatchHeight, int soulpatchWidth) {
-        this.beardLength = beardLength;
-        this.beardWidth = beardWidth;
+
+        }
     }
 
 
@@ -58,4 +80,16 @@ public class Cheeks extends SymmetricalFeature {
         this.beardWidth = beardWidth;
     }
 
+
+
+    public int getAge() {
+        return age;
+    }
+
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    
 }
