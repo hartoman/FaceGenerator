@@ -10,6 +10,7 @@ import FunctionalClasses.SymmetricalFeature;
    public abstract class TopOfHead extends SymmetricalFeature {
 
     protected Color hairColor, skinColor;
+    protected int age;
 
         abstract void drawTopOfHead(Graphics2D g2d);
 
@@ -17,6 +18,33 @@ import FunctionalClasses.SymmetricalFeature;
             this.hairColor=hairColor;
             this.skinColor=skinColor;
         }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public void drawForeheadWrinkes(Graphics2D g2d){
+
+            g2d.setStroke(new BasicStroke(0.5f));
+            
+            for (int i=0;i<(age-1)/2;i++){
+                Path2D.Double wrL = new Path2D.Double();
+                wrL.moveTo(left + width *1 /12, bottom-height*i/10);
+                wrL.curveTo(left + width *3/ 12, top+height*(5-i)/6, left + width *5/12, top+height*(5-i)/6, left+width/2, bottom-height*i/10);
+                Shape wrR=drawMirrored(wrL);
+                g2d.draw(wrL);
+                g2d.draw(wrR);
+            }
+
+            g2d.setStroke(new BasicStroke());
+            
+        }
+
+
     }
 
 
@@ -28,6 +56,7 @@ import FunctionalClasses.SymmetricalFeature;
         @Override
         void drawTopOfHead(Graphics2D g2d) {
             // nothing to draw if the head is bald
+           
         }
     }
 

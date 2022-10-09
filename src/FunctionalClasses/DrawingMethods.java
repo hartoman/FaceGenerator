@@ -51,7 +51,7 @@ import FacialFeatures.*;
              drawRect(face.getEars().getBoundRect(), g2d);
 
             // drawRect(facialHair.moustache.getBoundRect, g2d);
-            drawRect(face.getFacialHair().getChinArea().getBoundRect(), g2d);
+             drawRect(face.getFacialHair().getChinArea().getBoundRect(), g2d);
 
             // line starting from middle of face and ending on outline at the given height
         //     drawBezHeight(Face.getHeight()/2,g2d,Face.getMaxwidth(),Face.getMidWidth(),face.getHead().getBezhandles());

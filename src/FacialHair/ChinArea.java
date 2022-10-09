@@ -21,10 +21,10 @@ public class ChinArea extends SymmetricalFeature {
             sp.curveTo(soulLeftest, midy, soulLeftest, soulLowest, right, soulLowest);
             sp.closePath();
 
-            g2d.setColor(hairColor);
-            g2d.draw(sp);
             Shape spr = drawMirrored(sp);
+            g2d.draw(sp);
             g2d.draw(spr);
+            g2d.setColor(hairColor);
             g2d.fill(sp);
             g2d.fill(spr);
             g2d.setColor(Color.black);

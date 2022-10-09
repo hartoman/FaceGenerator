@@ -90,7 +90,8 @@ public class UiPanel extends JPanel {
     class GeneralHeadPanel extends Subpanel {
 
         JButton skinColorButton;
-        JSlider thiccSlider, headShapeSlider;
+        JLabel ageLabel;
+        JSlider thiccSlider, headShapeSlider, ageSlider;
         int tmpthicc, tmpshape;
 
         GeneralHeadPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
@@ -101,14 +102,18 @@ public class UiPanel extends JPanel {
         @Override
         public void createElements() {
 
-            tmpthicc = face.getHead().getThiccness();
-            tmpshape = face.getHead().getHeadShape();
+        //    tmpthicc = face.getHead().getThiccness();
+         //   tmpshape = face.getHead().getHeadShape();
+            ageLabel = new JLabel("Age");
 
             skinColorButton = new JButton("Skin Color");
             thiccSlider = UiMethods.createSlider("Slick", 0, "Thicc", 40, 0, sliderTextColor,
                     "Determines thiccness of head");
             headShapeSlider = UiMethods.createSlider("Conical", 0, "Potato", 40, 0, sliderTextColor,
                     "Determines shape of head");
+
+            ageSlider = UiMethods.createSlider("Young", 0, "Old", 10, 0, sliderTextColor,
+            "Wrinkles from old age");                    
 
             System.out.println(javax.swing.UIManager.getDefaults().getFont("Label.font"));
         }
@@ -120,6 +125,9 @@ public class UiPanel extends JPanel {
             add(skinColorButton);
             add(thiccSlider);
             add(headShapeSlider);
+
+            add(ageLabel);
+            add(ageSlider);
 
         }
 
@@ -156,6 +164,20 @@ public class UiPanel extends JPanel {
                     tmpshape = headShapeSlider.getValue();
                     face.getHead().setThiccness(tmpthicc);
                     face.getHead().setHeadShape(tmpshape);
+                    RectComputer.calcAllFeatures(face);
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+
+            // head shape slider
+            ageSlider.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent event) {
+              //      tmpshape = ageSlider.getValue();
+              //      face.getHead().setThiccness(tmpthicc);
+                //    face.getHead().setHeadShape(tmpshape);
+                    face.setAge(ageSlider.getValue());
                     RectComputer.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }

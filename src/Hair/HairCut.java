@@ -18,7 +18,7 @@ public abstract class HairCut implements Serializable {
     }
 
     // draws the part of the hair that is on the head
-    public void drawHairCut(Graphics2D g2d,Color hairColor,Color skinColor) {
+    public void drawHairCut(Graphics2D g2d,Color hairColor,Color skinColor,int age) {
 
         
         // templs above top of head
@@ -26,8 +26,11 @@ public abstract class HairCut implements Serializable {
             temples.drawTemples(g2d,hairColor);
         }
         topOfHead.setHaircutColors(hairColor,skinColor);
-
+        topOfHead.setAge(age);
+        topOfHead.drawForeheadWrinkes(g2d);
+        
         topOfHead.drawTopOfHead(g2d);
+
     }
 
     // draws the part of the hair that is on the back (longer hair)

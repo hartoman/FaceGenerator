@@ -17,10 +17,10 @@ public class FacialHair implements Serializable {
     }
 
     public void drawFacialHair(Graphics2D g2d, Color hairColor) {
-
-        moustache.drawMoustache(g2d, hairColor);
-        chin.drawChinArea(g2d, hairColor);
+        
         cheeks.drawBeardArea(g2d, hairColor);
+        chin.drawChinArea(g2d, hairColor);
+        moustache.drawMoustache(g2d, hairColor);
 
     }
 

@@ -131,7 +131,15 @@ public class Eyes extends SymmetricalFeature {
         int modsize = eyeSize+70;
         int negDist = -(eyeDist-10);
         
+        /* 
         Rectangle modRect = new Rectangle(getBoundRect().x+getBoundRect().width*negDist/100,
+        getBoundRect().y,
+        getBoundRect().width*(modsize)/100,
+        getBoundRect().height*modsize/100
+        );
+*/
+
+        Rectangle modRect = new Rectangle(getBoundRect().x+getBoundRect().width*-negDist/100,
         getBoundRect().y,
         getBoundRect().width*(modsize)/100,
         getBoundRect().height*modsize/100

@@ -72,16 +72,18 @@ public class Face implements Serializable {
 
         // on the face are the main facial features
         head.drawHead(g2d, skinColor);
-        eyes.drawEyes(g2d, eyeballColor, eyePupilColor, makeupEyeColor);
+        
 
         mouth.drawMouth(g2d, lipsColor);
 
         // draw the rest of hair
-        haircut.drawHairCut(g2d, hairColor, skinColor);
+        haircut.drawHairCut(g2d, hairColor, skinColor,age);
         // ears above hair
         ears.drawEars(g2d, skinColor);
         // facial hair above ears
         facialHair.drawFacialHair(g2d, hairColor);
+        //eyes above facial hair
+        eyes.drawEyes(g2d, eyeballColor, eyePupilColor, makeupEyeColor);
         // nose above facial hair
         nose.drawNose(g2d, skinColor);
         // eyebrows above nose
@@ -132,13 +134,15 @@ public class Face implements Serializable {
         // soulpatchWidth: [0,6]
         facialHair.setFacialHair(0, 0, 0, 0, 0, 0);
 
+        // [0,4]
+        setAge(0);                         
+
         setHairCut(2);
 
         setExpression(Emotion.POKERFACE);
         // alt: setExpression(0, 45, 0, 0);
 
-        // TODO unify setAge
-        facialHair.getCheeks().setAge(4);       //[0,4]
+
 
         RectComputer.calcAllFeatures(this);
     }
@@ -168,6 +172,7 @@ public class Face implements Serializable {
     public void setHairCut(int selection) {
 
         haircut = HairStylezEnum.values()[selection].makeHair();
+        
 
     }
 
@@ -313,4 +318,17 @@ public class Face implements Serializable {
         this.eyeballColor = eyeballColor;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+        this.facialHair.getCheeks().setAge(age);
+    }
+
+
+
+
+    
 }
