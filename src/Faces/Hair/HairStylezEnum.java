@@ -2,7 +2,7 @@ package Hair;
 
 public enum HairStylezEnum {
 
-    BALD {
+    BALD {      //0
         @Override
         public HairCut makeHair() {
             return new Bald();
@@ -13,7 +13,7 @@ public enum HairStylezEnum {
         public HairCut makeHair() {
             return new BaldLongHair();
         }
-    },      //
+    },      
     SKINHEAD {
         @Override
         public HairCut makeHair() {
@@ -32,7 +32,7 @@ public enum HairStylezEnum {
             return new HighFringe();
         }
     },
-    PARTMIDDLE {
+    PARTMIDDLE {            //5
         @Override
         public HairCut makeHair() {
             return new PartMiddle();
@@ -62,7 +62,7 @@ public enum HairStylezEnum {
             return new MiaWallace();
         }
     },  
-    HIGHFRINGELONGHAIR {
+    HIGHFRINGELONGHAIR {                //10
         @Override
         public HairCut makeHair() {
             return new HighFringeLongHair();

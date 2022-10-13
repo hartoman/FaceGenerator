@@ -79,7 +79,7 @@ import FacialFeatures.*;
 
             Path2D.Double bezheight1 = new Path2D.Double();
 
-            Point bezPoint1 = RectComputer.headPointOnYpos(yPos1, bezhandles);
+            Point bezPoint1 = AssistingMethods.headPointOnYpos(yPos1, bezhandles);
 
             bezheight1.moveTo(maxwidth - midWidth, yPos1);
             bezheight1.lineTo(bezPoint1.x, yPos1);

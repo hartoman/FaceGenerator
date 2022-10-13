@@ -144,7 +144,7 @@ public class Face implements Serializable {
 
 
 
-        RectComputer.calcAllFeatures(this);
+        AssistingMethods.calcAllFeatures(this);
     }
 
     // resets all colors to default
@@ -316,6 +316,10 @@ public class Face implements Serializable {
 
     public void setEyeballColor(Color eyeballColor) {
         this.eyeballColor = eyeballColor;
+    }
+
+    public void setFacialHair(FacialHair facialHair) {
+        this.facialHair = facialHair;
     }
 
     public int getAge() {

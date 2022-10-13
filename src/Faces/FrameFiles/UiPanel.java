@@ -13,6 +13,7 @@ import java.awt.Color;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+
 //sets up basic dimensions and layout
 public class UiPanel extends JPanel {
 
@@ -152,7 +153,7 @@ public class UiPanel extends JPanel {
                     tmpthicc = thiccSlider.getValue();
                     face.getHead().setThiccness(tmpthicc);
                     face.getHead().setHeadShape(tmpshape);
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -164,7 +165,7 @@ public class UiPanel extends JPanel {
                     tmpshape = headShapeSlider.getValue();
                     face.getHead().setThiccness(tmpthicc);
                     face.getHead().setHeadShape(tmpshape);
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -178,7 +179,7 @@ public class UiPanel extends JPanel {
               //      face.getHead().setThiccness(tmpthicc);
                 //    face.getHead().setHeadShape(tmpshape);
                     face.setAge(ageSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -239,7 +240,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getNose().setNoseSize(noseSizeSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -249,7 +250,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getEars().setEarSize(earSizeSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -259,7 +260,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getMouth().setMouthSize(mouthSizeSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -269,7 +270,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getMouth().setLipSize(lipsSizeSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -354,7 +355,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.setHairCut(hairStyleSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -366,7 +367,7 @@ public class UiPanel extends JPanel {
 
                     face.getHaircut().getBackHair().setLength(hairLengthSlider.getValue());
 
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -377,7 +378,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getEyebrows().setEyebrowSize(eyebrowSizeSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -388,7 +389,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getEyebrows().setEyebrowThiccness(eyebrowThiccnessSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -409,8 +410,8 @@ public class UiPanel extends JPanel {
         @Override
         public void createElements() {
 
-            eyeSizeslider = UiMethods.createSlider("Beady", 10, "Large", 35, 25, sliderTextColor, "Eye Size");
-            eyeDistlider = UiMethods.createSlider("Close", 5, "Far", 15, 10, sliderTextColor, "Eye Size");
+            eyeSizeslider = UiMethods.createSlider("Beady", 0, "Large", 35, 25, sliderTextColor, "Eye Size");
+            eyeDistlider = UiMethods.createSlider("Far", -10, "Close", 30, 10, sliderTextColor, "Eye Size");
 
             irisColorButton = new JButton("Iris Color");
             eyeballColorButton = new JButton("Eyeball Color");
@@ -446,7 +447,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getEyes().setSize(eyeSizeslider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -457,7 +458,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getEyes().setEyedist(eyeDistlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -468,7 +469,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getEyes().setAngle(eyeAnglSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -479,7 +480,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getEyes().setDistortion1(upEyelidSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -490,7 +491,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getEyes().setDistortion2(lowerEyelidSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -589,8 +590,10 @@ public class UiPanel extends JPanel {
             RandMaleButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
 
-                    face = RectComputer.createRandomFace("guy");
+                    RandomFaces r = new RandomFaces(w, h);
+                    face = r.RandomGuy();
                     FaceFrame.grid.setFace(face);
+                    
                     FaceFrame.grid.repaint();
 
                 }
@@ -598,7 +601,9 @@ public class UiPanel extends JPanel {
             // random gal face
             RandFemaleButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    face = RectComputer.createRandomFace("gal");
+                    
+                    RandomFaces r = new RandomFaces(w, h);
+                    face = r.RandomGal();
                     FaceFrame.grid.setFace(face);
                     FaceFrame.grid.repaint();
 
@@ -607,7 +612,9 @@ public class UiPanel extends JPanel {
             // totally random face
             TotallyRandomButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    face = RectComputer.createRandomFace("default");
+                    
+                    RandomFaces r = new RandomFaces(w, h);
+                    face = r.RandomTotally();
                     FaceFrame.grid.setFace(face);
                     FaceFrame.grid.repaint();
                 }
@@ -701,7 +708,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getFacialHair().getMoustache().setMoustacheSize(moustacheSizeSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -712,7 +719,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getFacialHair().getMoustache().setCurled((moustacheCurveSlider.getValue()));
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -723,7 +730,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getFacialHair().getChinArea().setSoulpatchHeight(chinHairLengthSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -734,7 +741,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getFacialHair().getChinArea().setSoulpatchWidth(chinHairWidthSlider.getValue());
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -744,7 +751,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getFacialHair().getCheeks().setBeardLength((beardLengthSlider.getValue()));
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -754,7 +761,7 @@ public class UiPanel extends JPanel {
                 public void stateChanged(ChangeEvent event) {
 
                     face.getFacialHair().getCheeks().setBeardWidth((beardWidthSlider.getValue()));
-                    RectComputer.calcAllFeatures(face);
+                    AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });

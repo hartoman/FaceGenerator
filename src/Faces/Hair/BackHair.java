@@ -2,7 +2,7 @@ package Hair;
 import java.awt.*;
 
 import FacialFeatures.Face;
-import FunctionalClasses.RectComputer;
+import FunctionalClasses.AssistingMethods;
 import java.io.Serializable;
 
 
@@ -15,7 +15,7 @@ public class BackHair implements Serializable{
     void drawHair(Graphics2D g2d,Color hairColor){
 
         int bHairL = Face.getMaxwidth()/9-Face.getMaxwidth()*length/50/9;
-        int bHairR = RectComputer.symmetricHorizonal(bHairL);
+        int bHairR = AssistingMethods.symmetricHorizonal(bHairL);
         int bHairT = Face.getMinHeight();
         int bHairB = Face.getHeight()+Face.getHeight()*length/50;
         g2d.setColor(hairColor);

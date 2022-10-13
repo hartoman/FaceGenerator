@@ -2,6 +2,7 @@
 
 import javax.swing.JFrame;
 import FrameFiles.FaceFrame;
+import FunctionalClasses.AssistingMethods;
 
 /**
  *
@@ -17,6 +18,7 @@ public class FaceGenerator {
         // gets height of the screen
         int height = FaceFrame.getScreenHeightPercentage(90);
         FaceFrame.adaptUIFont(); 
+
                 
         FaceFrame a = new FaceFrame("Random Face Generator", height, height, 20, 20);
         a.setExtendedState(JFrame.MAXIMIZED_BOTH);//makes screen adjust to fullsize

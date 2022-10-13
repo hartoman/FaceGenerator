@@ -22,7 +22,7 @@ import java.io.Serializable;
             // move to new position around center Y axis
             int newMaxX = (int) (rightFeature.getBounds().getX());
 
-            at.translate(RectComputer.symmetricHorizonal(newMaxX), 0);
+            at.translate(AssistingMethods.symmetricHorizonal(newMaxX), 0);
 
             // mirror it (around axis x=0)
             at.scale(-1, 1);

@@ -22,7 +22,7 @@ public  class Mouth extends SymmetricalFeature {
         int mouthLLY = midy + (height * smile / 100);
         int bh1X = left + (width * 2 / 5);
         int bh1Y = mouthULY - openness + smile;
-        int bh2X = RectComputer.symmetricHorizonal(bh1X);
+        int bh2X = AssistingMethods.symmetricHorizonal(bh1X);
         int bh2Y = mouthLLY + openness + smile;
 
         // lips

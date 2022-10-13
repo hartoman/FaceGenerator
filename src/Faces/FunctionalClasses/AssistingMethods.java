@@ -1,14 +1,14 @@
 package FunctionalClasses;
 import FacialFeatures.Face;
-import FrameFiles.FaceFrame;
+
 import java.util.Random;
-import Hair.HairStylezEnum;
+
 
 //import Toolz.LineHandler.*;
 import java.awt.*;
 
 // contains all methods used for the creation of the facial features
-public class RectComputer {
+public class AssistingMethods {
 
     // calculates coordinates for all facial features
     public static void calcAllFeatures(Face face) {
@@ -91,7 +91,7 @@ public class RectComputer {
         Point leftPoint = headPointOnYpos(topOfHeadLeftY, bezHandles);
         int topOfHeadLeftX = leftPoint.x * 9 / 10;
         Rectangle tmptoprect = getBoundingBox(topOfHeadLeftX, (y1),
-                RectComputer.symmetricHorizonal(topOfHeadLeftX),
+                AssistingMethods.symmetricHorizonal(topOfHeadLeftX),
                 (topOfHeadLeftY));
         face.getHaircut().getTopOfHead().setBoundRect(tmptoprect);
 
@@ -139,11 +139,25 @@ public class RectComputer {
         return new Rectangle(leftMostX, topMostY, rightMostX - leftMostX, bottomMostY - topMostY);
     }
 
+    // returns a random number between including min and max
     public static int randomBetween(int min, int max) {
         Random random = new Random();
         return random.nextInt(max + 1 - min) + min;
     }
 
+    // returns random number between min and max, but focused around the middle
+    public static int randBtwnNormalized(int min, int max){
+        int x=randomBetween(min,max);
+        int y=randomBetween(min,max);
+        int z=randomBetween(min,max);
+
+        int result=Math.min(Math.max(x,y), z) ;
+
+
+        return result;
+    }
+
+    // randomly gives true or false
     public static boolean randomBool() {
         if (randomBetween(0, 10000000) % 2 == 0) {
             return true;
@@ -152,124 +166,10 @@ public class RectComputer {
         }
     }
 
-    public static Face createRandomFace(String gender) {
-
-        int moustSize, moustCurl, chinH, chinW, beardL, beardW,hairNum;
-
-        boolean hasMoust = RectComputer.randomBool();
-        boolean hasBeard = RectComputer.randomBool();
+    
 
 
-        Face face= new Face(FaceFrame.w(),FaceFrame.h());
 
-        // for different tones we adjust the last value: [0.2, 1]
-        float toneV = randomBetween(5, 10)*0.1f;
-        float toneH = randomBetween(6, 10)*0.01f;
-      //  toneH=0.08914729f;
-        
-        face.setSkinColor(Color.getHSBColor(toneH, 0.3372549f, toneV));
-        face.setMakeupEyeColor(Color.getHSBColor(toneH, 0.3372549f, toneV));
-
-        // the lips are just a little bit darker
-        face.setLipsColor(Color.getHSBColor(toneH, 0.3372549f, toneV-0.1f));
-
-        int hairR=255;
-        int hairG=randomBetween(0, 255);
-        int hairB=randomBetween(0, 51);
-        face.setHairColor(new Color(hairR,hairG,hairB));
-        
-
-                // found out the right values by doing:
-                // skinColor = new Color(255, 215, 169, 255);
-                // float[] values = Color.RGBtoHSB(255, 215, 169, null);
-                // for (float f : values) {
-                // System.out.println(f);
-                // }
-
-        switch (gender) {
-
-            case "guy":
-                if (hasMoust) {
-                    moustSize = RectComputer.randomBetween(0, 20);
-                    moustCurl = RectComputer.randomBetween(-40, 40);
-                } else {
-                    moustSize = 0;
-                    moustCurl = 0;
-                }
-
-                if (hasBeard) {
-                    chinH = RectComputer.randomBetween(0, 6);
-                    chinW = RectComputer.randomBetween(0, 6);
-                    //TODO DEFINE MAXNUMBERS
-                    beardL = RectComputer.randomBetween(0, 5);
-                    beardW = RectComputer.randomBetween(0, 10);
-
-                } else {
-                    chinH = 0;
-                    chinW = 0;
-                    beardL = 0;
-                    beardW = 0;
-                }
-                hairNum = RectComputer.randomBetween(0, 7);
-
-                break;
-
-            case "gal":
-
-
-                face.setMakeupEyeColor(new Color(randomBetween(0,255),randomBetween(0,255),randomBetween(0,255)));
-                face.setLipsColor(new Color(randomBetween(0,255),randomBetween(0,255),randomBetween(0,255)));
-
-                moustSize = 0;
-                moustCurl = 0;
-                chinH = 0;
-                chinW = 0;
-                beardL = 0;
-                beardW = 0;
-                hairNum = RectComputer.randomBetween(9, (HairStylezEnum.values().length - 1));
-                break;
-
-            default:
-
-                face.setMakeupEyeColor(new Color(randomBetween(0,255),randomBetween(0,255),randomBetween(0,255)));
-                face.setLipsColor(new Color(randomBetween(0,255),randomBetween(0,255),randomBetween(0,255)));
-                moustSize = RectComputer.randomBetween(0, 20);
-                moustCurl = RectComputer.randomBetween(-40, 40);
-                chinH = RectComputer.randomBetween(0, 6);
-                chinW = RectComputer.randomBetween(0, 6);
-                beardL = RectComputer.randomBetween(0, 5);
-                beardW = RectComputer.randomBetween(0, 10);
-                hairNum = RectComputer.randomBetween(0, (HairStylezEnum.values().length - 1));
-                break;
-        }
-
-        face.setHairCut(hairNum);
-        face.getHaircut().getBackHair().setLength(RectComputer.randomBetween(0, 50));
-
-        face.getFacialHair().setFacialHair(moustSize, moustCurl, chinH, chinW,beardL,beardW);
-
-        face.getHead().setHead(RectComputer.randomBetween(0, 50), RectComputer.randomBetween(0, 50));
-
-        face.getEyes().setEyes(RectComputer.randomBetween(-10, 10),
-                RectComputer.randomBetween(-10, 10),
-                RectComputer.randomBetween(-25, 25),
-                RectComputer.randomBetween(10, 35),
-                RectComputer.randomBetween(5, 15));
-
-        face.getNose().setNoseSize(RectComputer.randomBetween(1, 8));
-
-        face.getMouth().setMouth(RectComputer.randomBetween(0, 40),
-                RectComputer.randomBetween(0, 30));
-
-        face.getEyebrows().setEyebrows(RectComputer.randomBetween(0, 25),
-                RectComputer.randomBetween(0, 4));
-
-        face.getEars().setEarSize(RectComputer.randomBetween(1, 50));
-
-        calcAllFeatures(face);
-
-        return face;
-    }
 
 
 }

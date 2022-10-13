@@ -29,11 +29,11 @@ public class Head implements Serializable{
         bY2 = (Face.getHeight() - (Face.getMinHeight() * mod4) / 120);
 
         // calculates the other half of the head
-        bXR1 = RectComputer.symmetricHorizonal(bXL1);
-        bXR2 = RectComputer.symmetricHorizonal(bXL2);
+        bXR1 = AssistingMethods.symmetricHorizonal(bXL1);
+        bXR2 = AssistingMethods.symmetricHorizonal(bXL2);
 
         // sets the rectangle boundary of the left half of the face
-        face.setHalfFace( RectComputer.getBoundingBox(Math.max(bXL1, bXL2), Face.getMinHeight(), Face.getMidWidth(), Face.getHeight()));
+        face.setHalfFace( AssistingMethods.getBoundingBox(Math.max(bXL1, bXL2), Face.getMinHeight(), Face.getMidWidth(), Face.getHeight()));
 
     }
 
