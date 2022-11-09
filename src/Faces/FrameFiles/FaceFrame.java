@@ -1,23 +1,18 @@
-/*
- * Made by Christos Chartomatsidis, 2022
- * This application is free to use, but it comes as-is:
- * I hold no responsibility for any damage or loss of that may arise from it's use.
- * Attribution is not required, but would be greatly appreciated.
- * For any comments, bug-reports, and ideas do not hesitate to contact me at:
- * hartoman@gmail.com
- */
-package FrameFiles;
+// Copyright © 2022 Christos Chartomatsidis
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.net.URL;
-import javax.imageio.ImageIO;
+/*
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version. This program is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+General Public License for more details. You should have received a copy of the GNU 
+General Public License along with this program. If not, see http://www.gnu.org/licenses/. 
+
+*/
+package Faces.FrameFiles;
+
 import javax.swing.*;
-import java.awt.Image;
-import FacialFeatures.Face;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -30,20 +25,12 @@ import java.awt.GridLayout;
 
 public class FaceFrame extends JFrame {
 
-    static int w, h, rows, columns, wdOfRow, htOfRow;
-    static Grid grid;
+    static FaceGrid grid;
     static UiPanel uipanel;
     static MenuBar menu;
 
 
     public FaceFrame(String title, int w, int h, int rows, int columns) {
-
-        FaceFrame.w = w;
-        FaceFrame.h = h;
-        FaceFrame.rows = rows;
-        FaceFrame.columns = columns;
-        wdOfRow = w / columns;
-        htOfRow = h / rows;
 
         setSize(w * 2, h);
         setTitle(title);
@@ -58,122 +45,12 @@ public class FaceFrame extends JFrame {
         setJMenuBar(menu);
 
         uipanel = new UiPanel(w, h);
-        grid = new Grid(uipanel.getFace());
+        grid = new FaceGrid(uipanel.getFace(),w,h,rows,columns);
 
         add(grid);
         add(uipanel);
-        
+       }
 
-    }
-
-    public static int w() {
-        return FaceFrame.w;
-    }
-
-    public static int h() {
-        return FaceFrame.h;
-    }
-
-    public static void transparentBackground(boolean transparent) {
-        if (transparent) {
-            FaceFrame.grid.background = null;
-            FaceFrame.grid.setBackground(new Color(255, 255, 255, 0));
-        } else {
-            FaceFrame.grid.setBackground(new Color(255, 255, 255, 255));
-        }
-    }
-
-    // sets up the painting grid
-    class Grid extends JPanel {
-
-        Image background;
-        Face face;
-
-        Grid(Face face) {
-            setSize(w, h);
-            setPreferredSize(new Dimension(w, h));
-            setMinimumSize(new Dimension(w, h));
-            setMaximumSize(new Dimension(w, h));
-            this.face = face;
-
-            // setBackgroundImage("pir.jpg");
-        }
-
-        @Override
-        public void paintComponent(Graphics g) {
-
-            super.paintComponent(g);
-
-            // draws background image
-            g.drawImage(background, 0, 0, null);
-
-            // paints the gridlines
-            // paintGridlines(g);
-            // paints the face
-            paintFace(g);
-
-            g.dispose();
-
-        }
-
-        // sets the background image
-        public void setBackgroundImage(String filename) {
-
-            if (filename != null) {
-                try {
-                    URL url = getClass().getClassLoader().getResource(filename);
-                    background = ImageIO.read(url).getScaledInstance(w, h, Image.SCALE_SMOOTH);
-                    // background = ImageIO.read(url);
-                } catch (Exception ex) {
-                    System.out.println("at least one wrong filename");
-                    System.exit(1);
-                }
-            }
-            removeAll();
-        }
-
-        // convenience method, draws a grid
-        public void paintGridlines(Graphics g) {
-            // draws gridlines
-            int k;
-            w = getSize().width;
-            h = getSize().height;
-
-            for (k = 0; k < rows; k++) {
-                g.drawLine(0, k * htOfRow, w, k * htOfRow);
-            }
-
-            for (k = 0; k < columns; k++) {
-                g.drawLine(k * wdOfRow, 0, k * wdOfRow, h);
-            }
-        }
-
-        // core rendering method
-        public void paintFace(Graphics g) {
-
-            // transforms Graphics to Graphics2D
-            Graphics2D g2d = (Graphics2D) g;
-
-            // ...which can have anti-aliasing, to smoothen lines and edges
-            RenderingHints rh = new RenderingHints(
-                    RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setRenderingHints(rh);
-
-            // and draw the face
-            face.drawFace(g2d);
-        }
-
-        public Face getFace() {
-            return face;
-        }
-
-        public void setFace(Face face) {
-            this.face = face;
-            repaint();
-        }
-
-    }
 
     // gets a given percentage of the screen height
     public static int getScreenHeightPercentage(int percentage) {

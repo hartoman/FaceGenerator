@@ -1,12 +1,17 @@
+// Copyright © 2022 Christos Chartomatsidis
+
 /*
- * Made by Christos Chartomatsidis, 2022
- * This application is free to use, but it comes as-is:
- * I hold no responsibility for any damage or loss of that may arise from it's use.
- * Attribution is not required, but would be greatly appreciated.
- * For any comments, bug-reports, and ideas do not hesitate to contact me at:
- * hartoman@gmail.com
+ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version. This program is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+    General Public License for more details. You should have received a copy of the GNU 
+    General Public License along with this program. If not, see http://www.gnu.org/licenses/. 
+
  */
-package FunctionalClasses;
+
+package  Faces.FunctionalClasses;
 
 /**
  *

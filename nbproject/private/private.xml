@@ -3,10 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/chris/NetBeansProjects/FaceGenerator/src/FrameFiles/UiPanel.java</file>
             <file>file:/home/chris/NetBeansProjects/FaceGenerator/src/FaceGenerator.java</file>
-            <file>file:/home/chris/NetBeansProjects/FaceGenerator/src/FunctionalClasses/RectComputer.java</file>
-            <file>file:/home/chris/NetBeansProjects/FaceGenerator/src/FrameFiles/FaceFrame.java</file>
+            <file>file:/home/chris/NetBeansProjects/FaceGenerator/src/Faces/Emotions/Emotion.java</file>
         </group>
     </open-files>
 </project-private>

@@ -1,12 +1,22 @@
-package FrameFiles;
+// Copyright © 2022 Christos Chartomatsidis
+
+/*
+ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version. This program is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+    General Public License for more details. You should have received a copy of the GNU 
+    General Public License along with this program. If not, see http://www.gnu.org/licenses/. 
+
+ */
+package  Faces.FrameFiles;
 
 import javax.swing.*;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.security.CodeSource;
-import FacialFeatures.Face;
+import  Faces.FacialFeatures.Face;
 import java.io.*;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.*;
 
 public class MenuBar extends JMenuBar {
 
@@ -31,9 +41,9 @@ public class MenuBar extends JMenuBar {
         add(column0);
 
         // first columne
-        JMenu column1 = new JMenu("Import/Export");
-        m11 = new JMenuItem("Save image as jpg");
-        m12 = new JMenuItem("Save image as png (transparent background)");
+        JMenu column1 = new JMenu("Export Image...");
+        m11 = new JMenuItem("... as jpg");
+        m12 = new JMenuItem("... as png (transparent background)");
 
         column1.add(m11);
         column1.add(m12);
@@ -59,8 +69,8 @@ public class MenuBar extends JMenuBar {
                         JOptionPane.INFORMATION_MESSAGE);
                 String fullpath = gmf.getCurrentDirectoryPath() + filename;
                 if ((filename != null) && (!filename.isEmpty())) {
-
-                    FaceFrame.transparentBackground(false);
+                    
+                  //  FaceFrame.grid.setTransparentBackground(false);
                     gmf.ToJpg(fullpath);
 
                 }
@@ -75,11 +85,11 @@ public class MenuBar extends JMenuBar {
                 String fullpath = gmf.getCurrentDirectoryPath() + filename;
                 if ((filename != null) && (!filename.isEmpty())) {
 
-                    FaceFrame.transparentBackground(true);
+                    FaceFrame.grid.setTransparentBackground(true);
                     FaceFrame.grid.removeAll();
                     FaceFrame.grid.updateUI();
                     gmf.ToPng(fullpath);
-
+                    FaceFrame.grid.setTransparentBackground(false);
                 }
 
             }
@@ -88,13 +98,15 @@ public class MenuBar extends JMenuBar {
         // "SERIALIZE
         m00.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                String filename = JOptionPane.showInputDialog(null, "Enter filename",
-                        "Save image as png (transparent background)", JOptionPane.INFORMATION_MESSAGE);
-                String fullpath = gmf.getCurrentDirectoryPath() + filename;
-                if ((filename != null) && (!filename.isEmpty())) {
 
-                    System.out.println("serialized");
-                    gmf.serialFace(fullpath, FaceFrame.grid.getFace());
+                JFileChooser fc = new JFileChooser(gmf.getCurrentDirectoryPath());
+                int choice = fc.showSaveDialog(null);
+
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    File fileToSave = fc.getSelectedFile();
+                    String fullname = fileToSave.getAbsolutePath();
+                    gmf.serialFace(fullname, FaceFrame.grid.getFace());
+
                 }
 
             }
@@ -103,21 +115,29 @@ public class MenuBar extends JMenuBar {
         // DESERIALIZE
         m01.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                String filename = JOptionPane.showInputDialog(null, "Enter filename",
-                        "Save image as png (transparent background)", JOptionPane.INFORMATION_MESSAGE);
-                String fullpath = gmf.getCurrentDirectoryPath() + filename;
-                if ((filename != null) && (!filename.isEmpty())) {
+
+                // dialog opens focused on current directory path
+                JFileChooser fc = new JFileChooser(gmf.getCurrentDirectoryPath());
+
+                // restrict the user to select files of all types
+                fc.setAcceptAllFileFilterUsed(false);
+                FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only serializable Face files", "ser");
+                fc.addChoosableFileFilter(restrict);
+
+                int choice = fc.showOpenDialog(null);
+
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    String fullpath = fc.getSelectedFile().getAbsolutePath();
+                    System.out.println(fullpath);
                     Face tmp = null;
                     tmp = gmf.deSerialFace(fullpath);
-
-                    if ((tmp != null)) {
+                    if (tmp != null) {
                         FaceFrame.uipanel.setFace(tmp);
-                        System.out.println("deserialized");
                     } else {
-                        JOptionPane.showMessageDialog(null, "File does not exist, or wrong file name",
-                                "Error Loading Serialized File", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Incompatible serialVersionUID\n\n"
+                                + "Make sure that the .ser file is of type 'Face' and formatted in the current version",
+                                "Error Loading File", JOptionPane.ERROR_MESSAGE);
                     }
-
                 }
 
             }
@@ -128,131 +148,37 @@ public class MenuBar extends JMenuBar {
         // TODO: UPDATE
         m21.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JOptionPane.showMessageDialog(null, "Map Parameters: \n"
-                // + "Number of Squares = how many squares the grid has on each side. For
-                // example, 20 means 20x20 map.\n"
-                // + "Distortion = noise added to the lines of the grid. 0 means that there is
-                // no distortion.\n\n"
-                // + "Various map Options:\n"
-                // + "Just play around and experiment, there are a lot of customization options
-                // for various types of maps"
-                // + "Import/Export Options:\n"
-                // + "Save map as jpg/ png = exports the map as image of the chosen type, with
-                // the selected transparencies.\n"
-                // + "Load/export from json = store/load raw map data in json format. All files
-                // must be in the folder where the jar is run from.",
+                JOptionPane.showMessageDialog(null, "What Can You do with Face Generator:\n"
+                +"\nThis simple program draws cartoonish sketches of faces, just by using equations based on the ratios\n"
+                +"between various facial characteristics.So EVERYTHING you see, is just a product of simple maths (which \n"
+                +"nonetheless required painful trial-and-error) , < not a single line > has been hand-drawn.\n\n"
+                +"The goal is to easily make on-the-fly NPCs for both pen-and-paper and computer games.\n"
+                +"The faces made can be exported as .jpg, .png (with transparent background), or as a serialized .ser file.\n"
+                +"The .ser files can later be reloaded, and the emotions they display can be changed,\n"
+                +"which can be super-useful for NPCs reactions to story events, dialog choices etc.\n"
+                +"\nThe user is able to create his own sketch and fine-tune most of the features, but there is also the choice for\n"
+                +"Completely randomly generated   The possibilities and combinations are practically endless"
+                
                         , "How to Use", JOptionPane.QUESTION_MESSAGE);
             }
         });
         m22.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JOptionPane.showMessageDialog(null, "Random Map Generator v_1.2\n\n"
-                // + "is made by Christos Chartomatsidis, 2022.\n"
-                // + "Free for any use, attribution not required but is much appreciated.\n"
-                // + "This application may be used as-is, I hold no responsibility if something
-                // goes wrong.\nHopefully it won't.\n\n"
-                // + "For comments, bug reports, suggestions, or anything else, drop me a line
-                // at\nhartoman@gmail.com\n"
-                // + "I hope you guys have as much fun using it, as I had creating it :)",
-                        , "About", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Face Generator v_1.0\n\n" +
+                        "Boring legal stuff:\n" +
+                        "\nCopyright © 2022 Christos Chartomatsidis\n" +
+                        "This program is free software: you can redistribute it and/or modify it under the terms of the GNU \nGeneral Public License as published by"
+                        + " the Free Software Foundation, either version 3 of the License,\nor (at your option) any later version. This program is distributed in the hope that it will be useful,\n but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS \nFOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. \nYou should have received a copy of the GNU General Public License along with this program. \nIf not, see http://www.gnu.org/licenses/."
+
+                        + "\n\nAttribution is not required but would be very much appreciated.\n"
+
+                        + "For comments, bug reports, suggestions, or anything else, drop me a line at\nhartoman@gmail.com\n"
+                        + "I hope you guys have as much fun using it, as I had creating it :)", "About",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
     }
 
-    // all of the export-import methods
-    class GroupedMenuBarFunctions {
-
-        // returns the folder name of the current directory where the jar runs from
-        public String getCurrentDirectoryPath() {
-
-            String jarDir = new String();
-            // this gets the folder name from where the jar file is executed
-            try {
-                CodeSource codeSource = MenuBar.class.getProtectionDomain().getCodeSource();
-                File jarFile = new File(codeSource.getLocation().toURI().getPath());
-                jarDir = jarFile.getParentFile().getPath() + "/";
-
-            } catch (Exception e) {
-                System.out.println("exception or whatever");
-            }
-            return jarDir;
-        }
-
-        // exports map as jpg picture
-        private void ToJpg(String filename) {
-
-            String fullfilename = filename + ".jpg";
-
-            BufferedImage bi = new BufferedImage(FaceFrame.grid.getWidth(), FaceFrame.grid.getHeight(),
-                    BufferedImage.TYPE_INT_RGB);
-            Graphics g = bi.createGraphics();
-            FaceFrame.grid.paint(g); // this == JComponent
-            g.dispose();
-            try {
-                ImageIO.write(bi, "jpg", new File(fullfilename));
-            } catch (Exception e) {
-            }
-        }
-
-        // exports map as transparent png picture
-        private void ToPng(String filename) {
-
-            String fullfilename = filename + ".png";
-            BufferedImage bi = new BufferedImage(FaceFrame.grid.getWidth(), FaceFrame.grid.getHeight(),
-                    BufferedImage.TYPE_INT_ARGB);
-            Graphics g = bi.createGraphics();
-            FaceFrame.grid.paint(g); // this == JComponent
-            g.dispose();
-            try {
-                ImageIO.write(bi, "png", new File(fullfilename));
-            } catch (Exception e) {
-            }
-        }
-
-        public void serialFace(String filename, Face face) {
-
-            String fullname = filename + ".ser";
-            try {
-                FileOutputStream fileOut = new FileOutputStream(fullname);
-                ObjectOutputStream out = new ObjectOutputStream(fileOut);
-                out.writeObject(face);
-
-                out.close();
-                fileOut.close();
-                System.out.println("Face saved!");
-            } catch (IOException i) {
-                i.printStackTrace();
-            }
-
-        }
-
-        public Face deSerialFace(String fullpath) {
-            Face face = null;
-            String filename = fullpath + ".ser";
-
-            FileInputStream fileIn;
-            try {
-                fileIn = new FileInputStream(filename);
-                ObjectInputStream in = new ObjectInputStream(fileIn);
-                face = (Face) in.readObject();
-                in.close();
-                fileIn.close();
-
-            } catch (FileNotFoundException e) {
-
-                System.out.println("File not Found  or Wrong File Name");
-
-            } catch (IOException e) {
-
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-
-                e.printStackTrace();
-            }
-
-            return face;
-
-        }
-    }
+   
 
 }

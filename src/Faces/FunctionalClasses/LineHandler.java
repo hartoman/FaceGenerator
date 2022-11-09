@@ -1,4 +1,17 @@
-package FunctionalClasses;
+// Copyright © 2022 Christos Chartomatsidis
+
+/*
+ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version. This program is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+    General Public License for more details. You should have received a copy of the GNU 
+    General Public License along with this program. If not, see http://www.gnu.org/licenses/. 
+
+ */
+
+ package  Faces.FunctionalClasses;
 
 import java.awt.Point;
 import java.lang.Exception;
@@ -41,8 +54,8 @@ public class LineHandler {
         return new Linear(a,b,null);
     }
 
-    // calculates the line that comes perpendicular to the one designated by points a and b
-    public Linear linearPerpendicular(Point external,Point ptA,Point ptB){
+    // calculates the line (in equation form) that comes perpendicular to the one designated by points a and b from external point of origin
+    public Linear calcPerpendicularLine(Point external,Point ptA,Point ptB){
 
         Linear line = pointsToLinear(ptA,ptB);
       
@@ -56,15 +69,15 @@ public class LineHandler {
         return new Linear(perpA,perpB,null);
     }
 
-    // calculates the orthogonal projection of the external
-    public Point orthogonalProjection(Point external,Point ptA,Point ptB){
+    // calculates the orthogonal projection of an external point on a line designated by points A and B
+    public Point calcOrthogonalProjection(Point external,Point ptA,Point ptB){
 
         Linear line = pointsToLinear(ptA,ptB);
         if(line.lineX!=null){                                   // if line is parallel to y axis
             return new Point(line.lineX,external.y);            
             }
 
-        Linear perp = linearPerpendicular(external,ptA,ptB);    // else
+        Linear perp = calcPerpendicularLine(external,ptA,ptB);    // else
 
         int orthX = (perp.b-line.b)/(line.a-perp.a);
         int orthY = line.a*orthX+line.b;
@@ -105,7 +118,7 @@ public class LineHandler {
         } catch (PointNotOnLineException e) {
             System.out.println(e.getMessage());
 
-            return bezierPointAt(orthogonalProjection(x,ptA,ptB), ptA, ptB, cp0, cp1);
+            return bezierPointAt(calcOrthogonalProjection(x,ptA,ptB), ptA, ptB, cp0, cp1);
         }
 
         double t = percentOfLine(x,ptA,ptB);

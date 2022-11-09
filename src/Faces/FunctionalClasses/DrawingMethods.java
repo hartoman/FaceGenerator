@@ -1,7 +1,20 @@
-package FunctionalClasses;
+// Copyright © 2022 Christos Chartomatsidis
+
+/*
+ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version. This program is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+    General Public License for more details. You should have received a copy of the GNU 
+    General Public License along with this program. If not, see http://www.gnu.org/licenses/. 
+
+ */
+
+ package  Faces.FunctionalClasses;
+import Faces.FacialFeatures.Face;
 import java.awt.*;
 import java.awt.geom.*;
-import FacialFeatures.*;
 
    /* convenience methods for drawing the framing lines */
     public class DrawingMethods {
@@ -21,42 +34,44 @@ import FacialFeatures.*;
 
             // draws the horizontal lines
            
-              for (int i = 0; i < numLines; i++) {
-              g2d.drawLine(x1, y1 + height1 * i / numLines, width1 + x1, y1 + height1 * i /
-              numLines);
-              }
+     //         for (int i = 0; i < numLines; i++) {
+      //        g2d.drawLine(x1, y1 + height1 * i / numLines, width1 + x1, y1 + height1 * i /
+      //        numLines);
+      //        }
               
               // draw vertical lines for the eyes
-              g2d.drawLine(x1 + width1 * 2 / 6, y1, x1 + width1 * 2 / 6, height1 + y1);
-              g2d.drawLine(x1 + width1 * 5 / 6, y1, x1 + width1 * 5 / 6, height1 + y1);
+            // g2d.drawLine(x1 + width1 * 2 / 6, y1, x1 + width1 * 2 / 6, height1 + y1);
+            // g2d.drawLine(x1 + width1 * 5 / 6, y1, x1 + width1 * 5 / 6, height1 + y1);
               
             /*  */
 
             // show bezier handles (endpoints of the line)
-             Path2D.Double bez = new Path2D.Double();
-             bez.moveTo(face.getHead().getBXL1(), face.getHead().getBY1());
-             bez.lineTo(face.getHead().getBXL2(), face.getHead().getBY2());
-             g2d.draw(bez);
+      //       Path2D.Double bez = new Path2D.Double();
+      //       bez.moveTo(face.getHead().getBXL1(), face.getHead().getBY1());
+     //        bez.lineTo(face.getHead().getBXL2(), face.getHead().getBY2());
+     //        g2d.draw(bez);
 
             // gray color for bounding rectangles
             g2d.setColor(Color.gray);
 
-             drawRect(halfFace, g2d);
-             drawRect(face.getNose().getBoundRect(), g2d);
-             drawRect(face.getEyebrows().getBoundRect(), g2d);
+        //     drawRect(halfFace, g2d);
+        //     drawRect(face.getNose().getBoundRect(), g2d);
+       //      drawRect(face.getEyebrows().getBoundRect(), g2d);
 
-             drawRect(face.getHaircut().getTopOfHead().getBoundRect(), g2d);
-             drawRect(face.getHaircut().getTemples().getBoundRect(), g2d);
-             drawRect(face.getMouth().getBoundRect(), g2d);
-             drawRect(face.getEars().getBoundRect(), g2d);
+       //      drawRect(face.getHaircut().getTopOfHead().getBoundRect(), g2d);
+      //       drawRect(face.getHaircut().getTemples().getBoundRect(), g2d);
+      //       drawRect(face.getMouth().getBoundRect(), g2d);
+        //     drawRect(face.getEars().getBoundRect(), g2d);
 
             // drawRect(facialHair.moustache.getBoundRect, g2d);
-             drawRect(face.getFacialHair().getChinArea().getBoundRect(), g2d);
+         //    drawRect(face.getFacialHair().getChinArea().getBoundRect(), g2d);
 
-            // line starting from middle of face and ending on outline at the given height
+       //     // line starting from middle of face and ending on outline at the given height
         //     drawBezHeight(Face.getHeight()/2,g2d,Face.getMaxwidth(),Face.getMidWidth(),face.getHead().getBezhandles());
 
-            drawRect(face.getFacialHair().getCheeks().getBoundRect(), g2d);
+        //    drawRect(face.getFacialHair().getCheeks().getBoundRect(), g2d);
+
+         //     drawRect(face.getEyewear().getBoundRect(), g2d);
 
             // back to default
             g2d.setColor(Color.black);

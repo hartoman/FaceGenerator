@@ -1,5 +1,17 @@
-package FunctionalClasses;
-import FacialFeatures.Face;
+// Copyright © 2022 Christos Chartomatsidis
+
+/*
+ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version. This program is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+    General Public License for more details. You should have received a copy of the GNU 
+    General Public License along with this program. If not, see http://www.gnu.org/licenses/. 
+
+ */
+package  Faces.FunctionalClasses;
+import  Faces.FacialFeatures.Face;
 
 import java.util.Random;
 
@@ -17,20 +29,24 @@ public class AssistingMethods {
         face.getHead().calcHead(face); // gets ratios for the rest
         calcGuidingLines(8, face); // calculates assisting rectangles
 
-        // the rest
+        // facial features
         face.getEyes().setBoundingBoxParameters();
         face.getNose().setBoundingBoxParameters();
         face.getEyebrows().setBoundingBoxParameters();
         face.getEars().setBoundingBoxParameters();
         face.getMouth().setBoundingBoxParameters();
 
+        // haircut
         face.getHaircut().getTemples().setBoundingBoxParameters();
         face.getHaircut().getTopOfHead().setBoundingBoxParameters();
 
+        // facial hair
         face.getFacialHair().getMoustache().setBoundingBoxParameters();
         face.getFacialHair().getChinArea().setBoundingBoxParameters();
         face.getFacialHair().getCheeks().setBoundingBoxParameters();
 
+        // eyewear
+        face.getEyewear().setBoundingBoxParameters();
     }
 
     // divides the face to calculate bounding rectangles for facial features
@@ -74,7 +90,7 @@ public class AssistingMethods {
 
         // facial hair - chin
         face.getFacialHair().getChinArea().boundRect = getBoundingBox(x1 + width1 * 2 / 6, (y1 + height1 * 6 / numLines),
-                (x1 + width1),
+                symmetricHorizonal(x1 + width1 * 2 / 6),
                 (y1 + height1));
 
   
@@ -84,7 +100,17 @@ public class AssistingMethods {
         Point bezPoint1 = headPointOnYpos(earsLeftY, bezHandles);
         Point bezPoint2 = headPointOnYpos(earsRightY, bezHandles);
         int earsRightX = (int) Math.max(bezPoint1.x, bezPoint2.x);
-        face.getEars().boundRect = getBoundingBox(earsRightX - width1 * 3 / 6, earsLeftY, earsRightX, earsRightY);
+        Rectangle earbox = getBoundingBox(earsRightX - width1 * 3 / 6, earsLeftY, earsRightX, earsRightY); 
+        face.getEars().setBoundRect(earbox); 
+
+
+        // eyewear uses a single 
+        int eyewearTLX=earsRightX;
+        int eyewearTLY=  earsLeftY + ((earsRightY-earsLeftY) / 5);
+        int eyewearBRX=symmetricHorizonal(earsRightX);
+        int eyewearBRY= earsLeftY + ((earsRightY-earsLeftY) );
+        Rectangle eyeWearBox = getBoundingBox(eyewearTLX, eyewearTLY, eyewearBRX, eyewearBRY);
+         face.getEyewear().setBoundRect(eyeWearBox);
 
         // for the top of the head  (same)
         int topOfHeadLeftY = y1 + height1 * 5 / 2 / numLines;
@@ -108,10 +134,11 @@ public class AssistingMethods {
         int cheeksLefty=(y1 + height1 * 4 / numLines);
         int cheeksLeftX=earsRightX;
 
-       // int brY=y1 + height1 * 60/61;
+        // int brY=y1 + height1 * 60/61;
         int cheeksRightY=y1 + height1;// * 59/61;
         int cheeksRightX=x1 + width1 * 4 / 6;
         
+        // beard
         Rectangle tmpbeard = getBoundingBox(cheeksLeftX, cheeksLefty, cheeksRightX, cheeksRightY);
         face.getFacialHair().getCheeks().setBoundRect(tmpbeard);
 
@@ -146,14 +173,29 @@ public class AssistingMethods {
     }
 
     // returns random number between min and max, but focused around the middle
-    public static int randBtwnNormalized(int min, int max){
+    public static int rollThreeKeepMed(int min, int max){
         int x=randomBetween(min,max);
         int y=randomBetween(min,max);
         int z=randomBetween(min,max);
-
         int result=Math.min(Math.max(x,y), z) ;
+        return result;
+    }
 
+     // returns random number between min and max, but focused around the middle
+     public static int rollThreeKeepMin(int min, int max){
+        int x=randomBetween(min,max);
+        int y=randomBetween(min,max);
+        int z=randomBetween(min,max);
+        int result=Math.min(Math.min(x,y), z) ;
+        return result;
+    }
 
+     // returns random number between min and max, but focused around the middle
+     public static int rollThreeKeepMax(int min, int max){
+        int x=randomBetween(min,max);
+        int y=randomBetween(min,max);
+        int z=randomBetween(min,max);
+        int result=Math.max(Math.max(x,y), z) ;
         return result;
     }
 

@@ -1,23 +1,29 @@
+// Copyright © 2022 Christos Chartomatsidis
+
 /*
- * Made by Christos Chartomatsidis, 2022
- * This application is free to use, but it comes as-is:
- * I hold no responsibility for any damage or loss of that may arise from it's use.
- * Attribution is not required, but would be greatly appreciated.
- * For any comments, bug-reports, and ideas do not hesitate to contact me at:
- * hartoman@gmail.com
+ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version. This program is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+    General Public License for more details. You should have received a copy of the GNU 
+    General Public License along with this program. If not, see http://www.gnu.org/licenses/. 
+
  */
+package  Faces.FacialFeatures;
 
-package FacialFeatures;
-
-import FacialHair.FacialHair;
-import FunctionalClasses.*;
+import Faces.FunctionalClasses.AssistingMethods;
+import Faces.FunctionalClasses.*;
+import Faces.EyeWear.EyeWearEnum;
+import Faces.EyeWear.EyeWear;
+import Faces.FacialHair.FacialHair;
 
 import java.awt.*;
 import java.io.Serializable;
 
-import Emotions.Emotion;
-import Hair.HairCut;
-import Hair.HairStylezEnum;
+import  Faces.Emotions.Emotion;
+import  Faces.Hair.HairCut;
+import  Faces.Hair.HairStylezEnum;
 
 /**
  *
@@ -40,6 +46,7 @@ public class Face implements Serializable {
     private Ears ears;
     private HairCut haircut;
     private FacialHair facialHair;
+    private EyeWear eyewear;
 
     // in the constructor all important parameters can be calibrated
     public Face(int w, int h) {
@@ -89,11 +96,15 @@ public class Face implements Serializable {
         // eyebrows above nose
         eyebrows.drawEyebrows(g2d, hairColor);
 
-         DrawingMethods.drawGuidingLines(8, g2d,this);
+        // eyewear above all else
+        eyewear.drawEyeWear(g2d);
+
+    //    DrawingMethods.drawGuidingLines(8, g2d,this);
     }
 
     // resets all parameters of the face
     public void resetFace() {
+
 
         resetColors();
         /* adjustable parameters */
@@ -139,10 +150,10 @@ public class Face implements Serializable {
 
         setHairCut(2);
 
+        setEyeWear(0);
+
         setExpression(Emotion.POKERFACE);
         // alt: setExpression(0, 45, 0, 0);
-
-
 
         AssistingMethods.calcAllFeatures(this);
     }
@@ -155,7 +166,7 @@ public class Face implements Serializable {
         skinColor = Color.white;
 
         // for different tones we adjust the last value: [0.2, 1]
-     //   skinColor = Color.getHSBColor(0.08914729f, 0.3372549f, 0.2f);
+        // skinColor = Color.getHSBColor(0.08914729f, 0.3372549f, 0.2f);
         // to find out the right values:
         // skinColor = new Color(255, 215, 169, 255);
         // float[] values = Color.RGBtoHSB(255, 215, 169, null);
@@ -173,15 +184,20 @@ public class Face implements Serializable {
 
         haircut = HairStylezEnum.values()[selection].makeHair();
         
-
     }
 
+    public void setEyeWear(int selection){
+
+        eyewear=EyeWearEnum.values()[selection].makeEyeWear();
+    }
+
+    
     // sets the facial expression
     public void setExpression(Emotion emotion) {
         getEyebrows().setAnger(emotion.getAnger()); // curvature: [-50,50]
         getEyes().setDistortion3(emotion.getEyeOpenness()); // eye openness: [0,75]
         getMouth().setOpenness(emotion.getMouthOpenness()); // openness: [0,40]
-        getMouth().setSmile(emotion.getSmile()); // smile: [-15,15] //TODO TRY -20,20
+        getMouth().setSmile(emotion.getSmile()); // smile: [-15,15] 
 
     }
 
@@ -268,6 +284,10 @@ public class Face implements Serializable {
         return ears;
     }
 
+    public EyeWear getEyewear() {
+        return eyewear;
+    }
+
     // setters
 
     public static void setMinHeight(int minHeight) {
@@ -329,6 +349,12 @@ public class Face implements Serializable {
     public void setAge(int age) {
         this.age = age;
         this.facialHair.getCheeks().setAge(age);
+    }
+
+
+
+    public void setEyewear(EyeWear eyewear) {
+        this.eyewear = eyewear;
     }
 
 

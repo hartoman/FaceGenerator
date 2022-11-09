@@ -1,0 +1,16 @@
+Faces.Hair.Bald
+Faces.Hair.SkinHead
+Faces.Hair.MiaWallace
+Faces.Hair.PartSideLongHair
+Faces.Hair.HighFringeLongHair
+Faces.Hair.HightTempleHairCut
+Faces.Hair.Mohawk
+Faces.Hair.SpikyHair
+Faces.Hair.LowFringe
+Faces.Hair.PartMiddleLongHair
+Faces.Hair.HightTempleLongHair
+Faces.Hair.PartSide
+Faces.Hair.HighFringe
+Faces.Hair.BaldLongHair
+Faces.Hair.HairCut
+Faces.Hair.PartMiddle

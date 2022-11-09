@@ -1,11 +1,27 @@
-package FrameFiles;
+// Copyright © 2022 Christos Chartomatsidis
 
+/*
+ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version. This program is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+    General Public License for more details. You should have received a copy of the GNU 
+    General Public License along with this program. If not, see http://www.gnu.org/licenses/. 
+
+ */
+
+
+ package  Faces.FrameFiles;
+
+import Faces.FunctionalClasses.AssistingMethods;
+import Faces.FunctionalClasses.RandomFaces;
 import javax.swing.*;
 
-import FacialFeatures.Face;
-import Emotions.Emotion;
-import FunctionalClasses.*;
-import Hair.HairStylezEnum;
+import  Faces.FacialFeatures.Face;
+import  Faces.Emotions.Emotion;
+import  Faces.EyeWear.EyeWearEnum;
+import  Faces.Hair.HairStylezEnum;
 
 import java.awt.GridLayout;
 import java.awt.Dimension;
@@ -13,6 +29,8 @@ import java.awt.Color;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.*;
 
 //sets up basic dimensions and layout
 public class UiPanel extends JPanel {
@@ -90,10 +108,11 @@ public class UiPanel extends JPanel {
 
     class GeneralHeadPanel extends Subpanel {
 
-        JButton skinColorButton;
-        JLabel ageLabel;
+        JButton skinColorButton,backgroundButton,clearBackground;
+        JLabel ageLabel,eyeWearLabel;
         JSlider thiccSlider, headShapeSlider, ageSlider;
         int tmpthicc, tmpshape;
+        JComboBox<String> eyeWearList;
 
         GeneralHeadPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
 
@@ -103,20 +122,32 @@ public class UiPanel extends JPanel {
         @Override
         public void createElements() {
 
-        //    tmpthicc = face.getHead().getThiccness();
-         //   tmpshape = face.getHead().getHeadShape();
+            // tmpthicc = face.getHead().getThiccness();
+            // tmpshape = face.getHead().getHeadShape();
             ageLabel = new JLabel("Age");
+            eyeWearLabel = new JLabel("Eye Wear");
 
             skinColorButton = new JButton("Skin Color");
+            backgroundButton = new JButton("Background Image");
+            clearBackground = new JButton("Clear Background");
+
             thiccSlider = UiMethods.createSlider("Slick", 0, "Thicc", 40, 0, sliderTextColor,
                     "Determines thiccness of head");
             headShapeSlider = UiMethods.createSlider("Conical", 0, "Potato", 40, 0, sliderTextColor,
                     "Determines shape of head");
 
             ageSlider = UiMethods.createSlider("Young", 0, "Old", 10, 0, sliderTextColor,
-            "Wrinkles from old age");                    
+                    "Wrinkles from old age");
 
-            System.out.println(javax.swing.UIManager.getDefaults().getFont("Label.font"));
+            
+            
+
+            String[] eyewrlist = new String[EyeWearEnum.values().length];
+            for (int i = 0; i < EyeWearEnum.values().length; i++) {
+                eyewrlist[i] = EyeWearEnum.values()[i].toString();
+            }
+            eyeWearList = new JComboBox<String>(eyewrlist);
+
         }
 
         @Override
@@ -130,6 +161,12 @@ public class UiPanel extends JPanel {
             add(ageLabel);
             add(ageSlider);
 
+            add(eyeWearLabel);
+            add(eyeWearList);
+
+            add(backgroundButton);
+            add(clearBackground);
+
         }
 
         @Override
@@ -139,10 +176,13 @@ public class UiPanel extends JPanel {
             skinColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Skin color", new Color(255, 215, 169, 255));
-                    face.setSkinColor(tmpColor);
-                    face.setMakeupEyeColor(tmpColor);
-                    skinColorButton.setBackground(tmpColor);
-                    FaceFrame.grid.repaint();
+                    if (tmpColor != null) {
+                        face.setSkinColor(tmpColor);
+                        face.setMakeupEyeColor(tmpColor);
+                        skinColorButton.setBackground(tmpColor);
+                        FaceFrame.grid.repaint();
+                    }
+
                 }
             });
 
@@ -170,20 +210,73 @@ public class UiPanel extends JPanel {
                 }
             });
 
-
             // head shape slider
             ageSlider.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent event) {
-              //      tmpshape = ageSlider.getValue();
-              //      face.getHead().setThiccness(tmpthicc);
-                //    face.getHead().setHeadShape(tmpshape);
+                    // tmpshape = ageSlider.getValue();
+                    // face.getHead().setThiccness(tmpthicc);
+                    // face.getHead().setHeadShape(tmpshape);
                     face.setAge(ageSlider.getValue());
                     AssistingMethods.calcAllFeatures(face);
                     FaceFrame.grid.repaint();
                 }
             });
 
+            // eyewear choice slider
+            eyeWearList.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+                    EyeWearEnum ew[] = EyeWearEnum.values();
+                    int chosenEw=0;
+
+                    String selection = eyeWearList.getSelectedItem().toString();
+                    for (int i = 0; i < ew.length; i++) {
+
+                        if (ew[i].toString().equals(selection)) {
+                            chosenEw = i;
+                            break;
+                        }
+                    }
+                    face.setEyeWear(chosenEw);
+                    AssistingMethods.calcAllFeatures(face);
+                    FaceFrame.grid.repaint();
+                }
+            });
+
+            backgroundButton.addActionListener(new java.awt.event.ActionListener() {
+                GroupedMenuBarFunctions gmf = new GroupedMenuBarFunctions();
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+                String imgPath="";// = JColorChooser.showDialog(null, "Skin color", new Color(255, 215, 169, 255));
+                           
+                                    // dialog opens focused on current directory path
+                JFileChooser fc = new JFileChooser(gmf.getCurrentDirectoryPath());
+
+                // restrict the user to select files of all types
+                fc.setAcceptAllFileFilterUsed(false);
+                FileNameExtensionFilter restrict = new FileNameExtensionFilter("select a .jpg, .png or .bmp file", "jpg","png","bmp");
+                fc.addChoosableFileFilter(restrict);
+
+                int choice = fc.showOpenDialog(null);
+
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    imgPath = fc.getSelectedFile().getAbsolutePath();
+                    System.out.println(imgPath);
+                }
+
+                    if ((imgPath!= null)&&(imgPath !="")) {
+                        FaceFrame.grid.setBackgroundImage(imgPath);
+                        FaceFrame.grid.repaint();
+                    }
+                }
+            });
+
+            clearBackground.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    FaceFrame.grid.setBackgroundImage(null);
+                }
+            });
         }
     }
 
@@ -279,10 +372,12 @@ public class UiPanel extends JPanel {
             lipsColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Lips color", new Color(255, 190, 169, 255));
-                    face.setLipsColor(tmpColor);
-                    lipsColorButton.setBackground(tmpColor);
-                    FaceFrame.grid.removeAll();
-                    FaceFrame.grid.repaint();
+                    if(tmpColor!=null){
+                        face.setLipsColor(tmpColor);
+                        lipsColorButton.setBackground(tmpColor);
+                        FaceFrame.grid.removeAll();
+                        FaceFrame.grid.repaint();  
+                    }
                 }
             });
         }
@@ -343,9 +438,14 @@ public class UiPanel extends JPanel {
             hairColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Hair color", new Color(0, 17, 16, 0));
-                    face.setHairColor(tmpColor);
-                    hairColorButton.setBackground(tmpColor);
-                    FaceFrame.grid.repaint();
+                    
+                    if(tmpColor!=null){
+                        face.setHairColor(tmpColor);
+                        hairColorButton.setBackground(tmpColor);
+                        FaceFrame.grid.repaint();
+                    }
+                    
+                    
                 }
             });
 
@@ -500,9 +600,12 @@ public class UiPanel extends JPanel {
             irisColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Iris color", Color.DARK_GRAY);
-                    face.setEyePupilColor(tmpColor);
-                    irisColorButton.setBackground(tmpColor);
-                    FaceFrame.grid.repaint();
+                    if(tmpColor!=null){
+                        face.setEyePupilColor(tmpColor);
+                        irisColorButton.setBackground(tmpColor);
+                        FaceFrame.grid.repaint();
+                    }
+                   
                 }
             });
 
@@ -510,9 +613,12 @@ public class UiPanel extends JPanel {
             eyeballColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Eyeball color", Color.white);
-                    face.setEyeballColor(tmpColor);
-                    eyeballColorButton.setBackground(tmpColor);
-                    FaceFrame.grid.repaint();
+                    if(tmpColor!=null){
+                        face.setEyeballColor(tmpColor);
+                        eyeballColorButton.setBackground(tmpColor);
+                        FaceFrame.grid.repaint();
+                    }
+                   
                 }
             });
 
@@ -520,9 +626,12 @@ public class UiPanel extends JPanel {
             eyeShadowColorButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     Color tmpColor = JColorChooser.showDialog(null, "Eye shadow color", new Color(255, 215, 169, 255));
-                    face.setMakeupEyeColor(tmpColor);
+                    if(tmpColor!=null){
+                        face.setMakeupEyeColor(tmpColor);
                     eyeShadowColorButton.setBackground(tmpColor);
                     FaceFrame.grid.repaint();
+                    }
+                    
                 }
             });
 
@@ -580,8 +689,9 @@ public class UiPanel extends JPanel {
             // resets the face
             resetButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
+                   
                     face.resetFace();
-
+                    FaceFrame.grid.setBackgroundImage(null);
                     FaceFrame.grid.repaint();
 
                 }
@@ -593,7 +703,7 @@ public class UiPanel extends JPanel {
                     RandomFaces r = new RandomFaces(w, h);
                     face = r.RandomGuy();
                     FaceFrame.grid.setFace(face);
-                    
+
                     FaceFrame.grid.repaint();
 
                 }
@@ -601,7 +711,7 @@ public class UiPanel extends JPanel {
             // random gal face
             RandFemaleButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    
+
                     RandomFaces r = new RandomFaces(w, h);
                     face = r.RandomGal();
                     FaceFrame.grid.setFace(face);
@@ -612,7 +722,7 @@ public class UiPanel extends JPanel {
             // totally random face
             TotallyRandomButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    
+
                     RandomFaces r = new RandomFaces(w, h);
                     face = r.RandomTotally();
                     FaceFrame.grid.setFace(face);
@@ -633,7 +743,7 @@ public class UiPanel extends JPanel {
                             break;
                         }
                     }
-                    face.setExpression(chosenEmot);
+                 //   face.setExpression(chosenEmot);
                     FaceFrame.grid.repaint();
                 }
             });
@@ -644,8 +754,8 @@ public class UiPanel extends JPanel {
 
         JSlider moustacheSizeSlider, moustacheCurveSlider,
                 chinHairLengthSlider, chinHairWidthSlider,
-                beardLengthSlider,beardWidthSlider;
-        JLabel moustacheLabel, chinHairLabel,beardLabel;
+                beardLengthSlider, beardWidthSlider;
+        JLabel moustacheLabel, chinHairLabel, beardLabel;
 
         FacialHairPanel(String title, Color backgroundColor, Color labelTextColor, Color sliderTextColor) {
 
@@ -660,7 +770,7 @@ public class UiPanel extends JPanel {
             chinHairLabel = new JLabel("Chin");
             beardLabel = new JLabel("Beard");
 
-            UiMethods.setColortoLabels(labelTextColor, moustacheLabel, chinHairLabel,beardLabel);
+            UiMethods.setColortoLabels(labelTextColor, moustacheLabel, chinHairLabel, beardLabel);
 
             moustacheSizeSlider = UiMethods.createSlider("None", 0, "General", 20, 0, sliderTextColor,
                     "Moustache Size");
@@ -671,16 +781,14 @@ public class UiPanel extends JPanel {
             chinHairLengthSlider = UiMethods.createSlider("None", 0, "Long", 6, 0, sliderTextColor,
                     "Chin Hair Length");
 
-            chinHairWidthSlider = UiMethods.createSlider("None", 0, "Wide", 6, 0, sliderTextColor,
+            chinHairWidthSlider = UiMethods.createSlider("None", 0, "Wide", 5, 0, sliderTextColor,
                     "Chin Hair Width");
 
-            beardLengthSlider= UiMethods.createSlider("None", 0, "Long", 5, 0, sliderTextColor,
-            "Beard Length");
-      
-            
-            beardWidthSlider= UiMethods.createSlider("None", 0, "Fuzzy", 10, 0, sliderTextColor,
-            "Beard Fuzziness");
+            beardLengthSlider = UiMethods.createSlider("None", 0, "Long", 5, 0, sliderTextColor,
+                    "Beard Length");
 
+            beardWidthSlider = UiMethods.createSlider("None", 0, "Fuzzy", 10, 0, sliderTextColor,
+                    "Beard Fuzziness");
 
         }
 
