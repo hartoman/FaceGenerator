@@ -1,9 +1,0 @@
-Faces.Hair.Spikes
-Faces.Hair.TopOfHead
-Faces.Hair.MohawkTop
-Faces.Hair.HighTemples
-Faces.Hair.BaldTop
-Faces.Hair.HighFringeTop
-Faces.Hair.LowFringeTop
-Faces.Hair.PartMiddleTop
-Faces.Hair.PartSideTop

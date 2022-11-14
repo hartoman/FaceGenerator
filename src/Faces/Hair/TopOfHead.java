@@ -172,8 +172,8 @@ import  Faces.FunctionalClasses.SymmetricalFeature;
             g2d.fillArc(left, top, width, top + height * 6 / 3, 0, 180);
 
              g2d.setColor(skinColor);
-            g2d.fillArc(left, midy+height/8, width/2, midy+height/4, 0, 180);
-            g2d.fillArc(left+width/2, midy+height/8, width/2, midy+height/4, 0, 180);
+            g2d.fillArc(left, midy+height/7, width/2, midy+height/4, 0, 180);
+            g2d.fillArc(left+width/2, midy+height/7, width/2, midy+height/4, 0, 180);
 
             g2d.setColor(Color.black);
 
@@ -236,8 +236,8 @@ import  Faces.FunctionalClasses.SymmetricalFeature;
             }
 
             g2d.setColor(skinColor);
-            g2d.fillArc(left, midy+height/8, width/2, midy+height/4, 0, 180);
-            g2d.fillArc(left+width/2, midy+height/8, width/2, midy+height/4, 0, 180);
+            g2d.fillArc(left, midy+height/7, width/2, midy+height/4, 0, 180);
+            g2d.fillArc(left+width/2, midy+height/7, width/2, midy+height/4, 0, 180);
 
             g2d.setColor(Color.black);
 

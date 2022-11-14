@@ -20,6 +20,8 @@ FaceGenerator is a tool that generates cartoony sketches of faces.
 A Game-Master (GM) can use these to create custom NPCs for his pen-and-paper RPG campaign / boardgame on the spot .
 The stand-alone classes can also be implemented in a computer game, to procedurally create content (i.e. for roguelike games).
 
+FaceGenerator is intended as a personal project, made for fun and honing my skills in java.
+I hope you guys have as much of a good time playing around with it, as I had creating it.
 
 
 ## How to use
@@ -49,19 +51,21 @@ There are also options to randomly create sketches of faces, both male, female, 
 Saves the sketch as a serialized (.ser) file, which can be loaded at a later time, and be further processed. This feature can be useful for computer games, to assign a portrait to each NPC, and have them change emotions during in-game events and conversations.
 Only the sketch is saved, not the background image.
 
-### Menu: Import/Export
+### Menu: Export Image
 
-There is a checkbox named 'Show Gridlines'. While it doesn't have any effect on what the user sees on-screen, it affects the exported image of the map.
+Through here, the painted image can be exported in two formats: jpg and png
 
 #### as .JPG
 
-This saves the map to a simple jpg image, located in the folder from where the application is running.
+This saves the map to a simple jpg image, located in the folder from where the application is running. This includes the chosen background image
 
 #### as .PNG
 
-Same as with jpg, but the background tiles are transparent.
+Same as with jpg, but the background is transparent.
 
 
 
 
 ## Technical Support
+
+For suggestions, bug reports and any comments or extra ideas, you are all welcome to drop me a line. 
